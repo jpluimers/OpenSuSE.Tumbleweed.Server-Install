@@ -13,7 +13,7 @@ Over time, there will be some documents indicating installation progress and pro
 Table of Contents
 =================
 
-.. contents:: Table of Contents
+.. contents::
 
 headless install
 ================
@@ -37,14 +37,14 @@ In about 20 gigabyte disk space, you can "Minimal server selection (text mode)" 
 
 These are the **patterns** I extended with:
 
-- Enhanced Base System
-- Console Tools
-- File Server
-- Network Administration
-- Mail and News Server
-- Web and LAMP Server
-- Internet Gateway
-- DHCP and DNS Server
+- `Enhanced Base System<https://software.opensuse.org/package/patterns-openSUSE-enhanced_base>`_
+- `Console Tools<https://www.google.com/search?q="Console+Tools"+site%3Aopensuse.org>`_
+- `File Server<https://www.google.com/search?q="File+Server"+site%3Aopensuse.org>`_
+- `Network Administration<https://www.google.com/search?q="Network+Administration"+site%3Aopensuse.org>`_
+- `Mail and News Server<https://www.google.com/search?q="Mail+and+News+Server"+site%3Aopensuse.org>`_
+- `Web and LAMP Server<https://www.google.com/search?q="Web+and+LAMP+Server"+site%3Aopensuse.org>`_
+- `Internet Gateway<https://www.google.com/search?q="Internet+Gateway"+site%3Aopensuse.org>`_
+- `DHCP and DNS Server<https://www.google.com/search?q="DHCP+and+DNS+Server"+site%3Aopensuse.org>`_
 
 After that I added some **packages** too:
 
@@ -54,50 +54,57 @@ After that I added some **packages** too:
 
 - `etckeeper<https://software.opensuse.org/package/etckeeper>`_
 - `syslogd<https://software.opensuse.org/package/syslogd>`_
-- emacs
-- joe
-- nano
-- pico
-- vi
-- dovecot
-- mutt
-- par
-- mc
-- mirror
-- p7zip
-- zip
-- zsync
-- git
-- mercurial*
-- perl
-- php*
-- apache2-mod_php5*
-- python*
-- dropbox*
-- cacert
-- bridge-utils
-- fping
-- ftp
-- gftp
-- icecast
-- links
-- iptraf-ng
-- shellinabox
-- kvirustotal
+- `emacs<https://software.opensuse.org/package/emacs>`_
+- `joe<https://software.opensuse.org/package/joe>`_
+- `nano<https://software.opensuse.org/package/nano>`_
+- `pico<https://software.opensuse.org/package/pico>`_
+- `vim<https://software.opensuse.org/package/vim>`_
+- `dovecot<https://software.opensuse.org/package/dovecot>`_
+- `mutt<https://software.opensuse.org/package/mutt>`_
+- `par<https://software.opensuse.org/package/par>`_
+- `mc<https://software.opensuse.org/package/mc>`_
+- `mirror<https://software.opensuse.org/package/mirror>`_
+- `p7zip<https://software.opensuse.org/package/p7zip>`_
+- `zip<https://software.opensuse.org/package/zip>`_
+- `zsync<https://software.opensuse.org/package/zsync>`_
+- `git<https://software.opensuse.org/package/git>`_
+- `mercurial<https://software.opensuse.org/package/mercurial>`_*
+- `perl<https://software.opensuse.org/package/perl>`_
+- `php<https://software.opensuse.org/package/php>`_*
+- `apache2-mod_php5<https://software.opensuse.org/package/apache2-mod_php5>`_*
+- `python<https://software.opensuse.org/package/python>`_*
+- `dropbox<https://software.opensuse.org/package/dropbox>`_*
+- `ca-certificates-cacert<https://software.opensuse.org/package/ca-certificates-cacert>`_
+- `bridge-utils<https://software.opensuse.org/package/bridge-utils>`_
+- `fping<https://software.opensuse.org/package/fping>`_
+- `ftp<https://software.opensuse.org/package/ftp>`_
+- `gftp<https://software.opensuse.org/package/gftp>`_
+- `icecast<https://software.opensuse.org/package/icecast>`_
+- `links<https://software.opensuse.org/package/links>`_
+- `iptraf-ng<https://software.opensuse.org/package/iptraf-ng>`_
+- `shellinabox<https://software.opensuse.org/package/shellinabox>`_
+- `kvirustotal<https://software.opensuse.org/package/kvirustotal>`_
 
 These packages were already installed:
 
-- info
-- man
-- man-pages
-- mc
-- top
-- w3m
+- `info<https://software.opensuse.org/package/info>`_
+- `man<https://software.opensuse.org/package/man>`_
+- `man-pages<https://software.opensuse.org/package/man-pages>`_
+- `mc<https://software.opensuse.org/package/mc>`_
+- `w3m<https://software.opensuse.org/package/w3m>`_
 
 Didn't yet install:
 
-- bash-doc*
-- samba-doc*
+- `bash-doc<https://software.opensuse.org/package/bash-doc>`_*
+- `samba-doc<https://software.opensuse.org/package/samba-doc>`_*
+
+.. sidebar::
+
+  If you want to know `which package provides a certain file<http://unix.stackexchange.com/questions/158041/how-do-i-find-a-package-that-provides-a-given-file-in-opensuse>`_, then use this command::
+
+      zypper search --provides --match-exact hg
+
+  Where ``hg`` is the file you are looking for.
 
 ``halt`` will fail, use ``halt -p`` to halt under ESXi 5.1
 ----------------------------------------------------------
