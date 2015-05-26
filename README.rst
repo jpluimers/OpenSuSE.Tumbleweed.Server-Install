@@ -94,6 +94,13 @@ Didn't yet install:
 - bash-doc*
 - samba-doc*
 
+``halt`` will fail, use ``halt -p`` to halt under ESXi 5.1
+----------------------------------------------------------
+
+A long time ago, `I wrote that<http://wiert.me/2012/12/30/opensuse-12-x-a-plain-halt-will-not-shutdown-the-system-properly/>`_ ``halt`` fails, but ``halt -p`` succeeds when running under VMware ESXi 5.1 (I don't run physical boxes any more).
+
+This still fails under OpenSuSE Tumbleweed 13.2.
+
 text-mode installation and conflicts
 ------------------------------------
 
@@ -155,6 +162,7 @@ Part of the hardening is executing this from ``/etc/ssh``::
     wget https://github.com/comotion/gone/blob/github/modules/ssh
     chmod 700 ssh
     ./ssh
+    rm ./ssh
 
 I finally saved the changes using ``etckeeper``::
 
