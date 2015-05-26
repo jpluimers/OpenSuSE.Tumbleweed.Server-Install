@@ -10,6 +10,11 @@ The first machine I installed OpenSuSE Tumbleweed on is ``revue`` [#revue]_. It 
 
 Over time, there will be some documents indicating installation progress and problem solving.
 
+Table of Contents
+=================
+
+.. contents:: Table of Contents
+
 headless install
 ================
 
@@ -146,6 +151,31 @@ This is how I got started:
   It hooks into package managers like apt to automatically commit changes made to ``/etc`` during package upgrades. It tracks file metadata that git does not normally support, but that is important for /etc, such as the permissions of ``/etc/shadow``.
 
   It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.
+
+configuring sudo
+----------------
+
+1. Start ``yast``
+2. Open ``Security and Users``, then ``Sudo``
+3. Click ``Add``
+
+  1. Select a ``User`` (in my case ``jeroenp``)
+  2. Select a ``Host`` (in my case ``ALL``)
+  3. At ``RunAs`` type ``ALL`` (this will get translated to ``(ALL)``)
+  4. Ensure that ``No Password`` has a checkmark
+  5. Click ``Add``
+
+    1. Select a ``Command`` (in my case ``ALL``)
+    2. Press ``OK``
+
+  5. Press ``OK``
+
+4. Press ``OK``
+5. Quit ``yast``
+
+This will generate ``/etc/sudoers.YaST2.save`` add a line to ``/etc/sudoers``::
+
+    jeroenp	ALL = (ALL) NOPASSWD:ALL
 
 configuring ssh
 ---------------
@@ -306,6 +336,80 @@ Finally start ``sshd``::
     rcsshd start
     rcsshd status
 
+configuring ntpd, firewall and jail for it
+------------------------------------------
+
+By default, OpenSuSE Tumbleweed 13.2 has ``ntdp`` enabled and configured as client and server, even though some of the tools mislead into thinking the server is not working correctly.
+
+But first the firewall portion:
+
+1. Start ``yast``
+2. Open ``Security and Users``, then ``Firewall``
+3. Go to ``Allowed Services``
+4. Ensure ``xntp Server`` is in the list, when not:
+
+  1. Add ``xntp Server`` to the list
+  2. Press ``Next`` followed by ``Finish`` to apply the changes
+
+5. Quit ``yast``
+
+1. Start ``yast``
+2. Open ``Network Services``, then ``NTP Configuration``
+3. Go to ``Security Settings``
+4. Ensure ``Run NTP Daemon in Chroot Jail`` is in the checked, when not:
+
+  1. Check ``Run NTP Daemon in Chroot Jail``
+  2. Press ``OK``
+
+5. Quit ``yast``
+
+An `ntpq<http://doc.ntp.org/4.2.8/ntpq.html>`_ verification shows the client portion works fine (you `could do this in the past from rcntpd status<http://linux.derkeiler.com/Mailing-Lists/SuSE/2013-02/msg00442.html>`_, see below)::
+
+    revue:/etc # ntpq -p
+         remote           refid      st t when poll reach   delay   offset  jitter
+    ==============================================================================
+    +vps.vdven.org   193.79.237.14    2 u  132  128  377    3.839    0.102   0.130
+    *metronoom.dmz.c .PPS.            1 u   64  128  377    4.520   -0.079   0.096
+    +arethusa.tweake 193.190.230.65   2 u  131  128  377    2.795    0.047   0.066
+    -srv.nl.margash. 113.133.43.202   3 u   58  128  377    3.371    0.919   0.390
+
+But it won't run as a server just yet, as the deprecated `ntpdc<http://doc.ntp.org/4.2.8/ntpdc.html>`_ shows::
+
+    revue:/etc # ntpdc -p
+    localhost: timed out, nothing received
+    ***Request timed out
+
+This is also shown when running `rcntpd status` where you get message containing `"localhost: timed out, nothing received"<https://www.google.com/search?q="localhost%3A+timed+out%2C+nothing+received">`_::
+
+    revue:/etc # rcntpd status
+    ● ntpd.service - NTP Server Daemon
+       Loaded: loaded (/usr/lib/systemd/system/ntpd.service; enabled; vendor preset: disabled)
+       Active: active (running) since Tue 2015-05-26 20:45:59 CEST; 44min ago
+         Docs: man:ntpd(1)
+      Process: 2371 ExecStart=/usr/sbin/start-ntpd start (code=exited, status=0/SUCCESS)
+     Main PID: 2383 (ntpd)
+       CGroup: /system.slice/ntpd.service
+               └─2383 /usr/sbin/ntpd -p /var/run/ntp/ntpd.pid -g -u ntp:ntp -i /var/lib/ntp -c /etc/ntp.conf
+
+    May 26 20:45:54 revue start-ntpd[2371]: Starting network time protocol daemon (NTPD)sntp 4.2.8p2@1.3265-o Wed Apr 22 00:47:12 UTC 2015 (1)
+    May 26 20:45:54 revue start-ntpd[2371]: kod_init_kod_db(): Cannot open KoD db file /var/db/ntp-kod: No such file or directory
+    May 26 20:45:54 revue sntp[2384]: 2015-05-26 20:45:54.222429 (-0100) -0.00246 +/- 0.012134 192.168.71.1 s2 no-leap
+    May 26 20:45:54 revue start-ntpd[2371]: 2015-05-26 20:45:54.222429 (-0100) -0.00246 +/- 0.012134 192.168.71.1 s2 no-leap
+    May 26 20:45:54 revue ntpd[2383]: Listening on routing socket on fd #22 for interface updates
+    May 26 20:45:54 revue ntpd[2383]: switching logging to file /var/log/ntp
+    May 26 20:45:59 revue start-ntpd[2371]: localhost: timed out, nothing received
+    May 26 20:45:59 revue start-ntpd[2371]: ***Request timed out
+    May 26 20:45:59 revue /usr/sbin/start-ntpd[2390]: runtime configuration: keyid 1
+                                                      passwd 3a84bf3
+                                                      addserver 192.168.71.1
+                                                      quit
+    May 26 20:45:59 revue systemd[1]: Started NTP Server Daemon.
+
+It took me quite a while to figure out why these two show failures. It's because ``ntpdc`` is deprecated, and it is `used by conf.start-ntpd<https://build.opensuse.org/package/view_file/openSUSE:Factory/ntp/conf.start-ntpd?expand=1>`_. Too bad it is so hard to get the actual source DVCS of OpenSuSE so I don't know the history of that file.
+
+.. sidebar::
+
+  For the tests, I got inspired by `How to Install and Configure Linux NTP Server and Client.<http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/>`_
 
 ----------------------------------------------------------------------------
 
