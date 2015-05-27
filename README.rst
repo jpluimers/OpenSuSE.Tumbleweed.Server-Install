@@ -23,7 +23,7 @@ text-mode console will break line drawing after first boot
 
 A long standing bug, and I'm amazed not more people complain about this.
 
-I've queued a `blog entry <https://wiert.wordpress.com/?p=27755&amp">`_ about this titled "TUMBLEWEED: local console yast linedrawing characters garbage after first reboot".
+I've queued a `blog entry <https://wiert.wordpress.com/?p=27755">`_ about this titled "TUMBLEWEED: local console yast linedrawing characters garbage after first reboot".
 
 The workaround is simple: Call ``/bin/unicode_start`` on the command line
 before starting ``yast``. It looks you need this only once per machine.
@@ -183,6 +183,10 @@ configuring sudo
 This will generate ``/etc/sudoers.YaST2.save`` add a line to ``/etc/sudoers``::
 
     jeroenp	ALL = (ALL) NOPASSWD:ALL
+
+.. sidebar::
+
+  Note that `each ALL entry has a different meaning<http://superuser.com/questions/357467/what-do-the-alls-in-the-line-admin-all-all-all-in-ubuntus-etc-sudoers>`_.
 
 configuring ssh
 ---------------
@@ -417,6 +421,45 @@ It took me quite a while to figure out why these two show failures. It's because
 .. sidebar::
 
   For the tests, I got inspired by `How to Install and Configure Linux NTP Server and Client.<http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/>`_
+
+
+Configuring ``samba``
+---------------------
+
+1. Start ``yast``
+2. Open ``Network Services``, then ``Samba Server``
+3. Fill in the ``Workgroup or Domain Name`` (I kept it at ``WORKGROUP`` as my domain-less Windows machines are configured like that)
+4. Press ``Next``
+5. Choose the ``Server type`` (I kept it at ``Not a Domain Controller`` as don't run a domain)
+6. Press ``Next``
+7. In the ``Samba Configuration`` screen:
+
+  1. Ensure ``Service Start`` is set to ``During Boot``.
+  2. Ensure ``Open Port in Firewall`` is checked.
+  3. Press ``OK``
+
+8. Quit ``yast``
+
+This will modify these files:
+
+- ``/etc/apparmor.d/local/usr.sbin.smbd-shares`` (upon Samba start)
+- ``/etc/samba/smb.conf``
+- ``/etc/sysconfig/SuSEfirewall2``
+
+and add these configuration files:
+
+- ``/etc/printcap`` (which will be auto-generated from ``/etc/cups/printers.conf`` if it exists)
+- ``/etc/systemd/system/multi-user.target.wants/nmb.service``
+- ``/etc/systemd/system/multi-user.target.wants/smb.service``
+
+Run these commands to `test if the configuration was successful<https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312>`_ with `testclient<https://www.samba.org/samba/docs/man/manpages/testparm.1.html>`_ and `https://www.samba.org/samba/docs/man/manpages/smbclient.1.html<>`_::
+
+    testparm /etc/samba/smb.conf
+    smbclient -L `hostname`
+
+.. sidebar::
+
+  During ``smbclient`` you will have to type your password.
 
 ----------------------------------------------------------------------------
 
