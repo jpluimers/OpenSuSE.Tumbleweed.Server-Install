@@ -485,15 +485,84 @@ and add these configuration files:
 - ``/etc/systemd/system/multi-user.target.wants/nmb.service``
 - ``/etc/systemd/system/multi-user.target.wants/smb.service``
 
-Run these commands to `test if the configuration was successful<https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312>`_ with `testclient<https://www.samba.org/samba/docs/man/manpages/testparm.1.html>`_ and `https://www.samba.org/samba/docs/man/manpages/smbclient.1.html<>`_::
+Run these commands to `test if the basic configuration was successful<https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312>`_ with `testclient<https://www.samba.org/samba/docs/man/manpages/testparm.1.html>`_ and `https://www.samba.org/samba/docs/man/manpages/smbclient.1.html<>`_::
 
     testparm /etc/samba/smb.conf
     smbclient -L `hostname`
 
 .. sidebar::
 
-  During ``smbclient`` you will have to type your password.
+  During ``smbclient`` you will have to type your unix password.
 
+Testing and fixing so clients can talk to our Samba server
+----------------------------------------------------------
+
+Now it is time to test the smb connectivity as well::
+
+  smbclient //`hostname`/profiles -U jeroenp
+  Enter jeroenp's password:
+  Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.2.1-3406-SUSE-oS13.2-x86_64]
+  tree connect failed: NT_STATUS_ACCESS_DENIED
+
+.. sidebar::
+
+  Do **not** try to solve the `NT_STATUS_ACCESS_DENIED issue<https://forum.manjaro.org/index.php?topic=19252.0>`_ by enabling ``client lanman auth`` as this makes your system less secure (`LANMAN authentication can be cracked quite easily<https://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html#idp59214864>`_).
+
+The first think to check is the samba password database, as samba uses different authentication database than the standard linux one (hence the linux password above).
+Check it with `pdbedit<https://www.samba.org/samba/docs/man/manpages/pdbedit.8.html>`_ like this::
+
+    pdbedit --list --verbose jeroenp
+
+If it shows ``Username not found!`` then you need to add the user:
+
+    revue:/etc # pdbedit --create --user jeroenp
+    new password:
+    retype new password:
+    Unix username:        jeroenp
+    NT username:
+    Account Flags:        [U          ]
+    User SID:             S-1-5-21-539969646-619626457-384116915-1000
+    Primary Group SID:    S-1-5-21-539969646-619626457-384116915-513
+    Full Name:            Jeroen Pluimers
+    Home Directory:       \\revue\jeroenp\.9xprofile
+    HomeDir Drive:        P:
+    Logon Script:
+    Profile Path:         \\revue\profiles\.msprofile
+    Domain:               REVUE
+    Account desc:
+    Workstations:
+    Munged dial:
+    Logon time:           0
+    Logoff time:          Wed, 06 Feb 2036 16:06:39 CET
+    Kickoff time:         Wed, 06 Feb 2036 16:06:39 CET
+    Password last set:    Wed, 27 May 2015 20:51:21 CEST
+    Password can change:  Wed, 27 May 2015 20:51:21 CEST
+    Password must change: never
+    Last bad password   : 0
+    Bad password count  : 0
+    Logon hours         : FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+.. sidebar::
+
+  Do **not** use `smbpasswd<https://www.samba.org/samba/docs/man/manpages/smbpasswd.8.html>`_ to add the user as that only supports the ``smbpasswd`` database format, `whereas ``pdbedit`` supports any password backend<http://unix.stackexchange.com/questions/107032/deleting-a-samba-user-pbdedit-vs-smbpasswd-whats-the-difference/107033#107033>`_.
+
+Now do final checks::
+
+    smbclient --list `hostname` --user jeroenp
+    smbclient //`hostname`/profiles -U jeroenp
+
+One day: `syncing between the Samba password and system password storage<https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418>`_ is setup
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+See `Use SMB Information for Linux Authentication<https://www.google.com/search?q="Use+SMB+Information+for+Linux+Authentication">`_`
+
+
+Fixing password synchronisation?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. sidebar::
+
+  Background reading (web-archive link as the site itself is down): `Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares.<http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html>`_.
 ----------------------------------------------------------------------------
 
 .. [#opensuse] I keep using the old `SuSE <https://en.wikipedia.org/wiki/SUSE>`_ writing, I'm an old fart.
