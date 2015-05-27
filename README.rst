@@ -563,6 +563,170 @@ One day: `syncing between the Samba password and system password storage<https:/
 
 See `Use SMB Information for Linux Authentication<https://www.google.com/search?q="Use+SMB+Information+for+Linux+Authentication">`_`
 
+configuring named/BIND
+----------------------
+
+1. Start ``yast``
+2. Open ``System``, then ``/etc/sysconfig Editor``
+3. In ``Configuration Options``, open these tree nodes: ``Network``; ``DNS``; ``Name Server``
+4. Ensure the below entries have the correct values:
+
+  1. ``NAMED_RUN_CHROOTED`` has no value
+  2. ``NAMED_ARGS`` has no value
+  3. ``NAMED_CONF_INCLUDE_FILES`` has value ``options logging master slaves rnd-access.conf``
+  4. ``NAMED_INITIALIZE_SCRIPTS`` has value ``createNamedConfInclude`` (this is the default value)
+
+5. If any value needed to be changed, then press ``Finish`` and confirm the changes.
+6. Open ``Security and Users``, then ``Firewall``
+7. Go to ``Allowed Services``
+8. Ensure ``bind DNS server`` is in the list, when not:
+
+  1. Add ``bind DNS server`` to the list
+  2. Press ``Next`` followed by ``Finish`` to apply the changes
+
+9. Quit ``yast``
+
+Add an empty ``/etc/named.d/forwarders.conf``.
+
+Add ``/etc/named.d/master``::
+
+    zone "4delphi.com" {
+            type master;
+            file "master/4delphi.com";
+    };
+
+    zone "pluimers.com" {
+            type master;
+            file "master/pluimers.com";
+    };
+
+    zone "pluimers.localnet" {
+            type master;
+            file "master/pluimers.localnet";
+            notify no;
+            allow-query     { internals; };
+            allow-transfer  { internals; };
+    };
+
+    zone "71.168.192.IN-ADDR.ARPA" {
+            type master;
+            file "master/192.168.71";
+            notify no;
+            allow-query     { internals; };
+            allow-transfer  { internals; };
+    };
+
+    zone "171.168.192.IN-ADDR.ARPA" {
+            type master;
+            file "master/192.168.171";
+            notify no;
+            allow-query     { internals; };
+            allow-transfer  { internals; };
+    };
+
+Add ``/etc/named.d/options``::
+
+    acl internals {
+                    127.0.0.1/24;
+                    192.168.71.0/16;
+                    192.168.171.0/16;
+                  };
+
+    acl externals {
+                    82.161.131.169; // jeroen - ADSL xs4all
+                    80.100.143.119; // jeroen - fiber xs4all
+                    37.153.243.241; // jeroen - fiber helden van nu 1 - router
+                    37.153.243.242; // jeroen - fiber helden van nu 2 - server DNS 1
+                    37.153.243.243; // jeroen - fiber helden van nu 3 - server
+                    37.153.243.244; // jeroen - fiber helden van nu 4 - server
+                    37.153.243.245; // jeroen - fiber helden van nu 5 - server
+                    37.153.243.246; // jeroen - fiber helden van nu 6 - server DNS 2
+                      62.195.34.14; // jeroen - Cable UPC (tijdelijk)
+                     176.9.152.131; // remco - Hetzner guest
+                     176.9.152.132; // cor - Hetzner guest
+                     176.9.143.167; // remco/cor - Hetzner host
+                       109.70.6.22; // jaco - Dynasol
+                  };
+
+Ensure these files exist:
+
+``/var/lib/named/master/192.168.171``::
+
+    $TTL 1H
+    @               IN      SOA     ns.pluimers.localnet.   root.4delphi.com. (
+                            2005011803 ; serial
+                            1H         ; refresh
+                            900        ; retry
+                            3W         ; expire
+                            2H         ; default_ttl
+                            )
+    @               IN      NS      ns.pluimers.localnet.
+    80             IN      PTR     jp1.pluimers.localnet.
+    80             IN      PTR     snap.pluimers.localnet.
+    80             IN      PTR     ns.pluimers.localnet.
+    70             IN      PTR     snip.pluimers.localnet.
+
+``/var/lib/named/master/192.168.71``::
+
+    $TTL 1H
+    @               IN      SOA     ns.pluimers.localnet.   root.4delphi.com. (
+                            2005011803 ; serial
+                            1H         ; refresh
+                            900        ; retry
+                            3W         ; expire
+                            2H         ; default_ttl
+                            )
+    @               IN      NS      ns.pluimers.localnet.
+    80             IN      PTR     jp1.pluimers.localnet.
+    80             IN      PTR     snap.pluimers.localnet.
+    80             IN      PTR     ns.pluimers.localnet.
+    70             IN      PTR     snip.pluimers.localnet.
+
+``/var/lib/named/master/named.local``::
+
+    $TTL 2H
+    @               IN      SOA     localhost.      root.localhost. (
+                            2004111611 ; serial
+                            1H         ; refresh
+                            900        ; retry
+                            3W         ; expire
+                            2H         ; default_ttl
+                            )
+    1               IN      PTR     localhost.
+    @               IN      NS      localhost.
+
+``/var/lib/named/master/pluimers.localnet``::
+
+    $TTL 2H
+    @               IN      SOA     ns.pluimers.localnet.    root.4delphi.com. (
+                            2004111615 ; serial
+                            1H         ; refresh
+                            900        ; retry
+                            3W         ; expire
+                            2H         ; default_ttl
+                            )
+    @                       IN      MX      5       mail.pluimers.com.
+    @                       IN      NS      ns.pluimers.localnet.
+    @                       IN      A       192.168.71.80
+    localhost               IN      A       127.0.0.1
+    jp1                     IN      A       192.168.71.80
+    ns                      IN      A       192.168.71.80
+    snap                    IN      A       192.168.71.80
+    snip                    IN      A       192.168.71.70
+
+``/var/lib/named/master/pluimers.com``::
+
+    to fill in later
+
+``/var/lib/named/master/4delphi.com``::
+
+    to fill in later
+
+Finally stop/start the named service::
+
+    rcnamed stop
+    rcnamed start
+    rcnamed status
 
 Fixing password synchronisation?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
