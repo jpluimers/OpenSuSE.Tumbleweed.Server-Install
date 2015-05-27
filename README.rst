@@ -159,6 +159,39 @@ This is how I got started:
 
   It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.
 
+removing hardlinks from the ``etckeeper`` repository
+----------------------------------------------------
+
+Inspired by `this answer<http://unix.stackexchange.com/questions/63627/excluding-files-in-etckeeper-with-gitignore-doesnt-work/63628#63628>`_ to get rid of these messages during `etckeeper commit<https://github.com/joeyh/etckeeper#what-etckeeper-does>`_ to delete many `hardlinked bootsplash files<http://lists.opensuse.org/opensuse-factory/2014-06/msg00115.html>`_::
+
+    etckeeper warning: hardlinked files could cause problems with git:
+    bootsplash/themes/openSUSE/bootloader/af.tr
+    ...
+    bootsplash/themes/openSUSE/bootloader/pt.tr
+    bootsplash/themes/openSUSE/bootloader/pt_BR.tr
+    bootsplash/themes/openSUSE/bootloader/ro.tr
+    ...
+    bootsplash/themes/openSUSE/bootloader/xh.tr
+    bootsplash/themes/openSUSE/bootloader/zh_CN.tr
+    bootsplash/themes/openSUSE/bootloader/zh_TW.tr
+    bootsplash/themes/openSUSE/bootloader/zu.tr
+    bootsplash/themes/openSUSE/cdrom/af.tr
+    ...
+    bootsplash/themes/openSUSE/cdrom/pt.tr
+    bootsplash/themes/openSUSE/cdrom/pt_BR.tr
+    bootsplash/themes/openSUSE/cdrom/ro.tr
+    ...
+    bootsplash/themes/openSUSE/cdrom/xh.tr
+    bootsplash/themes/openSUSE/cdrom/zh_CN.tr
+    bootsplash/themes/openSUSE/cdrom/zh_TW.tr
+    bootsplash/themes/openSUSE/cdrom/zu.tr
+
+Note the ``--cache`` part in the command to delete, as then the files will not be deleted locally, only in the repository::
+
+    git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr
+    git rm --cached bootsplash/themes/openSUSE/cdrom/*.tr
+    git commit -m "git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr and bootsplash/themes/openSUSE/cdrom/*.tr"
+
 configuring sudo
 ----------------
 
