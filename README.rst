@@ -186,11 +186,18 @@ Inspired by `this answer<http://unix.stackexchange.com/questions/63627/excluding
     bootsplash/themes/openSUSE/cdrom/zh_TW.tr
     bootsplash/themes/openSUSE/cdrom/zu.tr
 
+Add these two lines to ``/etc/.gitignore``
+
+    bootsplash/themes/openSUSE/bootloader/*.tr
+    bootsplash/themes/openSUSE/cdrom/*.tr
+
 Note the ``--cache`` part in the command to delete, as then the files will not be deleted locally, only in the repository::
 
+    git add .gitignore
     git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr
     git rm --cached bootsplash/themes/openSUSE/cdrom/*.tr
     git commit -m "git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr and bootsplash/themes/openSUSE/cdrom/*.tr"
+
 
 configuring sudo
 ----------------
@@ -549,7 +556,7 @@ If it shows ``Username not found!`` then you need to add the user:
 Now do final checks::
 
     smbclient --list `hostname` --user jeroenp
-    smbclient //`hostname`/profiles -U jeroenp
+    smbclient //`hostname`/jeroenp -U jeroenp
 
 One day: `syncing between the Samba password and system password storage<https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418>`_ is setup
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
