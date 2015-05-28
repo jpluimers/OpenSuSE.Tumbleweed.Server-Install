@@ -563,6 +563,13 @@ One day: `syncing between the Samba password and system password storage<https:/
 
 See `Use SMB Information for Linux Authentication<https://www.google.com/search?q="Use+SMB+Information+for+Linux+Authentication">`_`
 
+Fixing password synchronisation?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. sidebar::
+
+  Background reading (web-archive link as the site itself is down): `Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares.<http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html>`_.
+
 configuring named/BIND
 ----------------------
 
@@ -728,12 +735,22 @@ Finally stop/start the named service::
     rcnamed start
     rcnamed status
 
-Fixing password synchronisation?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Ensure that ``/var/lib/named/master`` gets synced to ``/etc/named/master``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. sidebar::
+Based on these links, I've added a sync script.
 
-  Background reading (web-archive link as the site itself is down): `Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares.<http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html>`_.
+- `etckeeper configuration documentation<https://github.com/joeyh/etckeeper#configuration>`_
+- `unix: using variables<http://www.tutorialspoint.com/unix/unix-using-variables.htm>`_
+
+I stored it in ``/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh``::
+
+    #! /bin/sh
+    ## http://www.tutorialspoint.com/unix/unix-using-variables.htm
+    TARGET=/etc/named/master
+    mkdir -p $TARGET
+    rsync -avloz /var/lib/named/master/ $TARGET/
+
 ----------------------------------------------------------------------------
 
 .. [#opensuse] I keep using the old `SuSE <https://en.wikipedia.org/wiki/SUSE>`_ writing, I'm an old fart.
