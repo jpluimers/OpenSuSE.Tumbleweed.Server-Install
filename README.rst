@@ -10,6 +10,15 @@ The first machine I installed OpenSuSE Tumbleweed on is ``revue`` [#revue]_. It 
 
 Over time, there will be some documents indicating installation progress and problem solving.
 
+TODO
+====
+
+- web site (HTTP-HTTPS)
+- pop3 (port 110)
+- email (SMTP-SSMTP) 25/587
+- rsync (backups) port 873
+- modem reboot script (when either ipv4 or ipv6 are down)
+
 Table of Contents
 =================
 
@@ -386,6 +395,97 @@ Finally start ``sshd``::
 
     rcsshd start
     rcsshd status
+
+install and configure `noip` dynamic DNS update script
+------------------------------------------------------
+
+The script is based on <https://github.com/mdmower/bash-no-ip-updater.git>.
+
+Create the below ``/etc/noip.com.install.sh`` script with ``chmod 700``, then run it to install.
+
+Full source is at <https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3>::
+
+    #! /bin/sh
+    #
+    # creates /etc/NoIP directory
+    # clones https://github.com/mdmower/bash-no-ip-updater.git
+    # copies configuration file so it is outside of the git sub-repository (and can be versioned with etckeeper)
+    # modifies the script to use the copied configuration file
+
+    ETC_TARGET=/etc/noip.com
+    LOG_TARGET=/var/log/noip.com
+    CONFIG_BASE=bash-no-ip-updater
+    CONFIG_TARGET=$CONFIG_BASE.config
+    SCRIPT_TARGET=noipupdater.sh
+    CRON_HOURLY_TARGET=/etc/cron.hourly/$SCRIPT_TARGET
+
+    mkdir $ETC_TARGET
+    pushd $ETC_TARGET
+    git clone https://github.com/mdmower/$CONFIG_BASE.git
+    cp $CONFIG_BASE/config $CONFIG_TARGET
+
+    mkdir -p $LOG_TARGET
+
+    # replace
+    ## LOGDIR="$HOME/logs"
+    # with
+    ## LOGDIR="/var/logs/noip.com"
+    # use double quotes to allow for variable expansion: http://stackoverflow.com/questions/17477890/expand-variables-in-sed/17477911#17477911
+    # escape slashes in arguments: http://www.grymoire.com/Unix/Sed.html#uh-62
+    echo old:
+    sed -n "/^LOGDIR=\"\$HOME\/logs\"$/ p" $CONFIG_TARGET
+    LOG_TARGET_EXPANDED=`echo "$LOG_TARGET" | sed 's:[]\[\^\$\.\*\/]:\\\\&:g'`
+    #echo "/^LOGDIR=\"\$HOME\/logs\"$/ s/\"\$HOME\/logs\"$/\"${LOG_TARGET}\"/"
+    #echo "/^LOGDIR=\"\$HOME\/logs\"$/ s/\"\$HOME\/logs\"$/\"${LOG_TARGET_EXPANDED}\"/"
+    sed -e "/^LOGDIR=\"\$HOME\/logs\"$/ s/\"\$HOME\/logs\"$/\"${LOG_TARGET_EXPANDED}\"/" $CONFIG_TARGET > $CONFIG_TARGET.tmp && mv $CONFIG_TARGET.tmp $CONFIG_TARGET
+    echo new:
+    sed -n "/^LOGDIR=\".*\"$/ p" $CONFIG_TARGET
+
+    pushd $CONFIG_BASE
+    # in ``noip.com/bash-no-ip-updater/noipupdater.sh``  replace
+    ## CONFIGFILE="$( cd "$( dirname "$0" )" && pwd )/config"
+    # by
+    ## CONFIGFILE="$( cd "$( dirname "$0" )" && pwd ).config"
+    # in-place sed: http://stackoverflow.com/questions/5171901/sed-command-find-and-replace-in-file-and-overwrite-file-doesnt-work-it-empties/5174368#5174368
+    # set tips: http://www.grymoire.com/Unix/Sed.html
+    ## sed -e 'script script' index.html > index.html.tmp && mv index.html.tmp index.html
+    echo "old:"
+    sed -n '/^CONFIGFILE\=.*\/config"$/ p' $SCRIPT_TARGET
+    sed -e '/^CONFIGFILE\=.*\/config"$/ s/\/config"$/.config"/' $SCRIPT_TARGET > $SCRIPT_TARGET.tmp && mv $SCRIPT_TARGET.tmp $SCRIPT_TARGET
+    echo "new:"
+    sed -n '/^CONFIGFILE\=.*\.config"$/ p' $SCRIPT_TARGET
+    chmod 755 $SCRIPT_TARGET
+    popd
+
+    popd
+    echo files:
+    find noip.com* | grep -v \.git
+
+    # http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables/7875614#7875614
+    #!/bin/bash
+    cat >$CRON_HOURLY_TARGET <<EOL
+    #! /bin/sh
+    #
+    # Hourly job to ensure the noip.com information for this host is up-to-date.
+    #
+    $ETC_TARGET/$CONFIG_BASE/$SCRIPT_TARGET
+    EOL
+
+    echo Hourly crontab entry in $CRON_HOURLY_TARGET
+    chmod 755 $CRON_HOURLY_TARGET
+    cat $CRON_HOURLY_TARGET
+
+Now modify the ``/etc/noip.com/bash-no-ip-updater.config`` file; alter these entries::
+
+    USERNAME="email@address.com"
+    PASSWORD="password"
+    HOST="host.domain.com"
+
+.. sidebar:
+
+  I could just use my account name (email was not needed). Other people seem to need their email. Try both.
+
+Finally run ``/etc/noip.com/bash-no-ip-updater/noipupdater.sh`` ones and look at the log file ``/var/log/noip.com/noip.log`` to see the result and check ``/var/log/noip.com/last_ip`` if the IP-address is indeed correct.
 
 configuring ntpd, firewall and jail for it
 ------------------------------------------
