@@ -18,6 +18,138 @@ TODO
 - email (SMTP-SSMTP) 25/587
 - rsync (backups) port 873
 - modem reboot script (when either ipv4 or ipv6 are down)
+- certificates for web and shellinabox
+- update root zones through cron
+- DNS security <https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server--2> and <http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm>
+
+NOTES
+=====
+
+``create-shellinabox-self-signed-certificate.sh``::
+
+    cd /var/lib/shellinabox
+    openssl genrsa -des3 -out server.key 1024
+    openssl req -new -key server.key -out server.csr
+    cp server.key server.key.org
+    openssl rsa -in server.key.org -out server.key
+    openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+    cat server.crt server.key > certificate.pem
+
+Wget/curl are the beste solution to update the ``root.hint``. See:
+
+- <http://lists.opensuse.org/opensuse/2008-05/msg01589.html> - use dig, maybe not good
+- <http://lists.opensuse.org/opensuse/2008-05/msg01746.html>
+- <http://lists.opensuse.org/opensuse/2008-05/msg01755.html> - how to post it so Security picks it up
+- <http://lists.opensuse.org/opensuse/2008-05/msg01658.html> - use ftp
+
+The change in root servers resulted in a `security bug fix<https://bugzilla.novell.com/show_bug.cgi?id=392173>`_, but that took a while.
+
+`This script<http://www.tldp.org/HOWTO/DNS-HOWTO-8.html>`_ gets it through dig too, but not the best solution.
+
+Neither ftp, nor http are really secure to get these files from <http://ftp.internic.net/domain/>:
+
+- <ftp://ftp.internic.net/domain/db.cache>
+- <ftp://ftp.internic.net/domain/named.cache>
+- <ftp://ftp.internic.net/domain/named.root>
+- <http://www.internic.net/domain/db.cache>
+- <http://www.internic.net/domain/named.cache>
+- <http://www.internic.net/domain/named.root>
+
+An alternative might be to get the ``.sig`` there in in a secure way, then `use gpg to verify the signatures<http://www.linuxquestions.org/questions/linux-newbie-8/md5-and-sig-537564/>`_ (as `gpg seems more secure than md5 signatures<http://stackoverflow.com/questions/15194779/md5-vs-gpg-signature/15195785#15195785>`_).
+
+This is more difficult than it looks like, as you need their GPG public key with ID ``0BD07395``.
+
+Some notes:
+
+    ## http://codenimbus.com/2010/08/02/override-robots-txt-with-wget/
+    wget -e robots=off --wait 1 http://your.site.here
+
+    ## http://data.iana.org/root-anchors/draft-icann-dnssec-trust-anchor.html
+    wget -e robots=off -m -np http://data.iana.org/root-anchors
+
+    wget -m -np http://www.internic.net/zones
+
+    ## http://www.pgpi.org/doc/pgpintro/#p12
+    gpg --verify named.root.sig named.root
+
+    ## http://www.links.org/?p=542
+    ## https://www.google.com/search?q=key+0BD07395
+    ## http://xenotrope.blogspot.nl/2015/04/on-dnssec-part-2-i-actually-used-dnssec.html
+
+    ## http://ivan.kanis.fr/verifying-a-gpg-signed-file.html
+    ## https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html
+
+    ## https://www.gnupg.org/gph/en/manual/x457.html
+    ## http://superuser.com/questions/227991/where-to-upload-pgp-public-key-are-keyservers-still-surviving
+    gpg --keyserver keys.gnupg.net --recv-key 0BD07395
+    gpg --verify named.root.sig named.root
+
+    ## http://security.stackexchange.com/questions/6841/ways-to-sign-gpg-public-key-so-it-is-trusted
+
+Somore more::
+
+    snap:/tmp/www.internic.net/zones # gpg --verify named.root.sig named.root
+    gpg: Signature made Sat May 23 14:50:54 2015 CEST using DSA key ID 0BD07395
+    gpg: Can't check signature: No public key
+
+    gpg --keyserver keys.gnupg.net --recv-key 0BD07395
+
+    gpg --verify named.root.sig named.root
+    gpg: Signature made Sat May 23 14:50:54 2015 CEST using DSA key ID 0BD07395
+    gpg: Good signature from "Registry Administrator <nstld@verisign-grs.com>"
+    gpg: WARNING: This key is not certified with a trusted signature!
+    gpg:          There is no indication that the signature belongs to the owner.
+    Primary key fingerprint: 81F6 6E4A 1CE4 4531 08DB  6811 84FA 869E 0BD0 7395
+
+
+
+I had this in ``named_root_hint.cron``::
+
+    #! /bin/sh
+    #
+
+    RootHint=root.hint
+    NamedCache=named.cache
+    NamedCacheDownloadPath=ftp.internic.net/domain/$NamedCache
+    FtpNamedCacheDownloadPath=ftp://$NamedCacheDownloadPath
+    VarLibNamed=/var/lib/named/
+    VarLibNamedNamedCache=$VarLibNamed$NamedCache
+    VarLibNamedRootHint=$VarLibNamed$RootHint
+    VarLibNamedNamedCacheNew=$VarLibNamed$NamedCache.new
+
+    #echo "$RootHint"
+    #echo "$NamedCacheDownloadPath"
+    #echo "ftp://ftp.internic.net/domain"
+    #echo "$FtpNamedCacheDownloadPath"
+    #echo "$VarLibNamedNamedCache"
+    #echo "$VarLibNamedNamedCacheNew"
+
+    cd $VarLibNamed
+    wget -q -N $FtpNamedCacheDownloadPath
+
+    if (test -e $VarLibNamedNamedCache) ; then
+
+      diff $VarLibNamedNamedCache $VarLibNamedNamedCacheNew
+
+      if [ "$?" -ne "0" ] ; then
+      # if $VarLibNamedNamedCacheNew does not exist, or $VarLibNamedNamedCache is different from $VarLibNamedNamedCacheNew
+
+        cp -f $VarLibNamedNamedCache $VarLibNamedNamedCacheNew
+        echo "There is a fresh $VarLibNamedNamedCacheNew file that you might want to update into $VarLibNamedRootHint"
+      fi
+
+      diff $VarLibNamedRootHint $VarLibNamedNamedCacheNew
+
+      if [ "$?" -ne "0" ] ; then
+      # if $VarLibNamedNamedCacheNew does not exist, or $VarLibNamedRootHint is different from $VarLibNamedNamedCacheNew
+
+    #    rcnamed restart
+        echo "$VarLibNamedRootHint is different from $VarLibNamedNamedCacheNew, you might need to update $VarLibNamedRootHint, then perform rcnamed restart "
+      fi
+
+      rm -f $VarLibNamedNamedCache
+    fi
+
 
 Table of Contents
 =================
@@ -71,6 +203,7 @@ After that I added some **packages** too:
 - `dovecot<https://software.opensuse.org/package/dovecot>`_
 - `mutt<https://software.opensuse.org/package/mutt>`_
 - `par<https://software.opensuse.org/package/par>`_
+- `make<https://software.opensuse.org/package/make>`_
 - `mc<https://software.opensuse.org/package/mc>`_
 - `mirror<https://software.opensuse.org/package/mirror>`_
 - `p7zip<https://software.opensuse.org/package/p7zip>`_
@@ -134,6 +267,15 @@ It prevents some packages to install like ``mercurial``, ``php`` and ``python``.
 To prevent that, remove the ``patterns-openSUSE-minimal_base-conflicts`` package specific for the OpenSuSE version you use [#removeconflicts]_.
 
 Do this **after** you've selected the patterns you want to install. Otherwise recommended packages can be installed potentially blowing your size.
+
+add git-extras
+--------------
+
+See the `git-extras Install documentation<>https://github.com/tj/git-extras/blob/master/Installation.md`_ for why/how.
+
+Just run this command::
+
+    (cd /tmp && git clone https://github.com/tj/git-extras.git && cd git-extras && git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) && sudo make install)
 
 configuration
 =============
