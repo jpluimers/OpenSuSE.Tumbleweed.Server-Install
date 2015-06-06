@@ -21,9 +21,74 @@ TODO
 - certificates for web and shellinabox
 - update root zones through cron
 - DNS security <https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server--2> and <http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm>
+- ensure 10rsync-var-lib-named-master.sh works
+- reboot / reconnect fritz!box http://www.gtkdb.de/index_7_1302.html
+- fix syslogd and logrotate
 
 NOTES
 =====
+
+syslogd
+~~~~~~~
+
+See `this output<http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/>`_::
+
+    revue:/etc/xinetd.d # systemctl --failed --all
+      UNIT              LOAD   ACTIVE SUB    DESCRIPTION
+    ● logrotate.service loaded failed failed Rotate log files
+    ● syslogd.service   loaded failed failed System Logging Service
+
+    LOAD   = Reflects whether the unit definition was properly loaded.
+    ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+    SUB    = The low-level unit activation state, values depend on unit type.
+
+    2 loaded units listed.
+    To show all installed unit files use 'systemctl list-unit-files'.
+
+Login / Reboot Fritz!Box
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- https://home.debian-hell.org/blog/2013/05/13/update-konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/
+- https://debianforum.de/forum/viewtopic.php?f=15&t=149338
+- https://www.symcon.de/forum/threads/20405-Funktionierende-Scripts-f%C3%BCr-FRITZ!OS-05-50-7390/page3
+- http://www.ip-phone-forum.de/showthread.php?t=196309&page=5
+- https://github.com/XIDA/windowstools/blob/master/tools/callsTray/callsTray.ahk
+- http://www.fritzmod.net/en/tools/curl/
+- https://packetstormsecurity.com/files/129834/AVM-Fritz-box-Auto-Exploiter.html
+- https://debianforum.de/forum/viewtopic.php?f=26&t=136977
+- http://board.gulli.com/thread/1754005-hilfe-fritzbox-ohne-internet-neustarten/
+- https://github.com/carlos22/fritzbox_api_php/blob/master/bin/fritzbox_reboot.php
+- http://www.delphipraxis.net/91808-fritzbox-reconnector-update-fritzbox-control-2-0-videos.html
+- http://www.winfuture-forum.de/index.php?showtopic=165894
+- http://www.wehavemorefun.de/fritzbox/Anrufliste_von_der_Box_holen
+
+- https://www.64k-tec.de/2010/01/fritzbox-tuning-part-1-enable-remote-access-over-ssh/
+- http://sourceforge.net/p/openpli/mailman/openpli-git-commits/?viewmonth=201304&viewday=28
+
+- http://192.168.71.1/system/reboot.lua?sid=5abed5e90f9c7e99&
+
+- Python library: https://github.com/valpo/fritzbox
+- sh sid md5 login: http://www.ip-phone-forum.de/showthread.php?t=264639
+- http://homematic-forum.de/forum/viewtopic.php?f=26&t=11645
+- sh sid md5 login download config: https://home.debian-hell.org/blog/2013/03/21/konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/
+- https://home.debian-hell.org/blog/2013/05/13/update-konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/
+
+- deze werkt! https://home.debian-hell.org/dokuwiki/scripts/fritzbox.backup.mit.curl.bash
+
+- http://superuser.com/questions/149329/what-is-the-curl-command-line-syntax-to-do-a-post-request
+- http://curl.haxx.se/docs/httpscripting.html#POST
+
+html form code::
+
+    <form action="/system/reboot.lua" method="POST">
+    <div id="btn_form_foot">
+    <input type="hidden" name="sid" value="5abed5e90f9c7e99">
+    <button type="submit" name="reboot">Restart</button>
+    </div>
+    </form>
+
+Rest
+~~~~
 
 ``create-shellinabox-self-signed-certificate.sh``::
 
@@ -85,8 +150,9 @@ Some notes:
     gpg --verify named.root.sig named.root
 
     ## http://security.stackexchange.com/questions/6841/ways-to-sign-gpg-public-key-so-it-is-trusted
+    ## http://stackoverflow.com/questions/26217766/download-key-with-gpg-recv-key-and-simultaneously-check-fingerprint-in-a-scr
 
-Somore more::
+Some more::
 
     snap:/tmp/www.internic.net/zones # gpg --verify named.root.sig named.root
     gpg: Signature made Sat May 23 14:50:54 2015 CEST using DSA key ID 0BD07395
@@ -204,6 +270,7 @@ After that I added some **packages** too:
 - `mutt<https://software.opensuse.org/package/mutt>`_
 - `par<https://software.opensuse.org/package/par>`_
 - `make<https://software.opensuse.org/package/make>`_
+- `monit<https://software.opensuse.org/package/monit>`_
 - `mc<https://software.opensuse.org/package/mc>`_
 - `mirror<https://software.opensuse.org/package/mirror>`_
 - `p7zip<https://software.opensuse.org/package/p7zip>`_
@@ -226,6 +293,7 @@ After that I added some **packages** too:
 - `iptraf-ng<https://software.opensuse.org/package/iptraf-ng>`_
 - `shellinabox<https://software.opensuse.org/package/shellinabox>`_
 - `kvirustotal<https://software.opensuse.org/package/kvirustotal>`_
+- `monit<https://software.opensuse.org/package/monit>`_
 
 These packages were already installed:
 
@@ -876,26 +944,25 @@ Add ``/etc/named.d/master``::
 Add ``/etc/named.d/options``::
 
     acl internals {
-                    127.0.0.1/24;
+    		127.0.0.1/24;
                     192.168.71.0/16;
                     192.168.171.0/16;
-                  };
+    	      };
 
     acl externals {
-                    82.161.131.169; // jeroen - ADSL xs4all
-                    80.100.143.119; // jeroen - fiber xs4all
-                    37.153.243.241; // jeroen - fiber helden van nu 1 - router
-                    37.153.243.242; // jeroen - fiber helden van nu 2 - server DNS 1
-                    37.153.243.243; // jeroen - fiber helden van nu 3 - server
-                    37.153.243.244; // jeroen - fiber helden van nu 4 - server
-                    37.153.243.245; // jeroen - fiber helden van nu 5 - server
-                    37.153.243.246; // jeroen - fiber helden van nu 6 - server DNS 2
-                      62.195.34.14; // jeroen - Cable UPC (tijdelijk)
-                     176.9.152.131; // remco - Hetzner guest
-                     176.9.152.132; // cor - Hetzner guest
-                     176.9.143.167; // remco/cor - Hetzner host
+    		82.161.131.169; // jeroen - ADSL xs4all
+    		80.100.143.119; // jeroen - fiber xs4all
+    		37.153.243.241; // jeroen - fiber helden van nu 1 - router
+    		37.153.243.242; // jeroen - fiber helden van nu 2 - server DNS 1
+    		37.153.243.243; // jeroen - fiber helden van nu 3 - server
+    		37.153.243.244; // jeroen - fiber helden van nu 4 - server
+    		37.153.243.245; // jeroen - fiber helden van nu 5 - server
+    		37.153.243.246; // jeroen - fiber helden van nu 6 - server DNS 2
+    		  62.195.34.14; // jeroen - Cable UPC (tijdelijk)
+    		 136.243.21.95; // remco/cor - Hetzner host - ziggy.domainnetwerk.info
+    		 83.163.69.172; // martijn - mwpg.xs4all.nl
                        109.70.6.22; // jaco - Dynasol
-                  };
+            };
 
 Ensure these files exist:
 
@@ -977,6 +1044,21 @@ Finally stop/start the named service::
     rcnamed start
     rcnamed status
 
+.. sidebar::
+
+    Check if your zone files are correct by executing ``named-checkzone``.
+
+    Check if your named configuration is correct by executing ``named-checkconfig``.
+
+    Check if ``named`` delivers the correct zone::
+
+        dig @localhost axfr pluimers.com
+
+    See:
+
+    - `Check BIND – DNS Server configuration file for errors with named-checkconf tools<http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html>`_
+    - `Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool<http://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/>`_
+
 Ensure that ``/var/lib/named/master`` gets synced to ``/etc/named/master``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -992,6 +1074,207 @@ I stored it in ``/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh``::
     TARGET=/etc/named/master
     mkdir -p $TARGET
     rsync -avloz /var/lib/named/master/ $TARGET/
+
+You need to give this script the right permissons, otherwise ``etckeeper`` wil skip it::
+
+    chmod 755 /etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh
+
+Adding aliases for commands removed in ``net-tools``
+----------------------------------------------------
+
+Add this to ``/etc/bash.bashrc.local``::
+
+    # stuff removed from net-tools
+    # see https://features.opensuse.org/317197 and https://build.opensuse.org/package/view_file/network:utilities/net-tools/net-tools.changes
+    ## Because of changes on Thu Apr 10 12:33:41 UTC 2014
+    alias "arp=echo 'use \"ip neigh\" or \"ip -r neight\"' && ip neigh"
+    alias "ifconfig=echo 'use \"ip a\"' && ip a"
+    alias "netstat= echo 'use \"ss\" or \"ss -r\"' && ss"
+    alias "route=echo 'use \"ip r\"' && ip r"
+    ## Because of changes on Sun Mar 29 00:41:21 UTC 2015
+    alias "ipmaddr=echo 'use \"ip maddr\"' && ip maddr"
+    alias "iptunnel=echo 'use \"ip tunnel\"' && ip tunnel"
+
+
+Configuring ``monit`` monitoring service
+----------------------------------------
+
+At first, `monit<https://software.opensuse.org/package/monit>`_ won't run::
+
+    revue:~ # rcmonit restart
+    redirecting to systemctl restart monit.service
+    Failed to restart monit.service: Unit monit.service failed to load: No such file or directory.
+
+Even though it is an offical package, it is missing the `.service file<http://www.freedesktop.org/software/systemd/man/systemd.service.html>`_.
+
+That is easy to fix by downloading and modifying the ``monit.service`` template https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in::
+
+    #! /bin/sh
+    #
+    # Fixes this error:
+    #    revue:~ # rcmonit restart
+    #    redirecting to systemctl restart monit.service
+    #    Failed to restart monit.service: Unit monit.service failed to load: No such file or directory.
+    SERVICE_TARGET=monit.service
+    pushd /etc/systemd/system/
+    # http://stackoverflow.com/questions/13735051/curl-and-capturing-output-to-a-file
+    curl https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in -o $SERVICE_TARGET
+    # escape slashes in arguments: http://www.grymoire.com/Unix/Sed.html#uh-62
+    ## might need to get rid of the backtick and replace \\ by \, see:
+    # http://unix.stackexchange.com/questions/5778/whats-the-difference-between-stuff-and-stuff/5782#5782
+    MONIT_EXPANDED=`echo "$(which monit)" | sed 's:[]\[\^\$\.\*\/]:\\\\&:g'`
+    echo SERVICE_TARGET=$SERVICE_TARGET
+    echo MONIT_EXPANDED=$MONIT_EXPANDED
+
+    echo old:
+    sed -n "/@prefix@\/bin\/monit/ p" $SERVICE_TARGET
+    # replace @prefix@ with the directory where monit resides
+    # replace @sysconfigdir@ with etc
+    sed -e "/@prefix@\/bin\/monit/ s/@prefix@\/bin\/monit/${MONIT_EXPANDED}/" $SERVICE_TARGET > $SERVICE_TARGET.tmp && mv $SERVICE_TARGET.tmp $SERVICE_TARGET
+    sed -e "/@sysconfdir@/ s/@sysconfdir@/etc/" $SERVICE_TARGET > $SERVICE_TARGET.tmp && mv $SERVICE_TARGET.tmp $SERVICE_TARGET
+    echo new:
+    sed -n "/monitrc/ p" $SERVICE_TARGET
+
+    chmod 755 $SERVICE_TARGET
+    popd
+    systemctl enable monit.service
+    systemctl status monit.service
+    systemctl start monit.service
+
+But it still doesn't start, as ``
+
+
+Fooo
+
+
+    This is a `known bug<https://bugzilla.novell.com/show_bug.cgi?id=497574>`_ explained
+    by both `Running two or more Monit instances on the same machine<https://mmonit.com/wiki/Monit/FAQ#instances>`_
+    and `Install Monit on openSUSE 13.2<http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html>`_ but in different wording:
+
+    .. sidebar::
+
+      If you get any error like below,::
+
+        Status not available -- the monit daemon is not running
+
+      Edit /etc/monitrc and uncomment the following pid entry.::
+
+        set pidfile /var/run/monit.pid
+
+    The file ``/usr/sbin/rcmonit`` indicates there the `pid<http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204>`_ file is::
+
+        revue:~ # grep -w pid `which rcmonit`
+        MONIT_PID_FILE="/run/monit/monit.pid"
+        				echo "Warning: No pid file, ${MONIT_PID_FILE} found.  Do not know which process to stop.  Calling stop and start instead."
+        revue:~ # grep -w pid /etc/monitrc
+        revue:~ # ls -al /run/monit/monit.pid
+        ls: cannot access /run/monit/monit.pid: No such file or directory
+
+    #! /bin/sh
+    #
+    # fixes the pidfile in /etc/monitrc
+    ETC_TARGET=/etc/monitrc
+    # use double quotes to allow for variable expansion: http://stackoverflow.com/questions/17477890/expand-variables-in-sed/17477911#17477911
+    # escape slashes in arguments: http://www.grymoire.com/Unix/Sed.html#uh-62
+    echo old:
+    sed -n "/^# set pidfile \/var\/run\/monit.pid$/ p" $ETC_TARGET
+    sed -e "/^# set pidfile \/var\/run\/monit.pid$/ s/^# //" $ETC_TARGET > $ETC_TARGET.tmp && mv $ETC_TARGET.tmp $ETC_TARGET && chmod 600 $ETC_TARGET
+    echo new:
+    sed -n "/^set pidfile \/var\/run\/monit.pid$/ p" $ETC_TARGET
+
+Run it and the result should be like this:
+
+    revue:/etc # ./monitrc-fix.sh
+    old:
+    # set pidfile /var/run/monit.pid
+    new:
+    set pidfile /var/run/monit.pid
+
+If you didn't run ``sed``, then you get this error::
+
+    revue:/etc/systemd/system # systemctl status monit.service
+    ● monit.service - Pro-active monitoring utility for unix systems
+       Loaded: error (Reason: Invalid argument)
+       Active: inactive (dead)
+
+    Jun 04 21:21:26 revue systemd[1]: [/etc/systemd/system/monit.service:23] Executable path is not absolute, ignoring: @prefix@/bin/monit -I -c @sysco...r@/monitrc
+    Jun 04 21:21:26 revue systemd[1]: [/etc/systemd/system/monit.service:24] Executable path is not absolute, ignoring: @prefix@/bin/monit -c @sysconfd...nitrc quit
+    Jun 04 21:21:26 revue systemd[1]: [/etc/systemd/system/monit.service:25] Executable path is not absolute, ignoring: @prefix@/bin/monit -c @sysconfd...trc reload
+    Jun 04 21:21:26 revue systemd[1]: monit.service lacks both ExecStart= and ExecStop= setting. Refusing.
+    Hint: Some lines were ellipsized, use -l to show in full.
+
+
+Finally run this:
+
+    revue:/etc # systemctl enable monit.service
+    monit.service is not a native service, redirecting to /sbin/chkconfig.
+    Executing /sbin/chkconfig monit on
+
+Configuring apache2 for the first time
+--------------------------------------
+
+1. Start ``yast``
+2. Open ``Security and Users``, then ``Sudo``
+3. Click ``Add``
+
+  1. Select a ``User`` (in my case ``jeroenp``)
+  2. Select a ``Host`` (in my case ``ALL``)
+  3. At ``RunAs`` type ``ALL`` (this will get translated to ``(ALL)``)
+  4. Ensure that ``No Password`` has a checkmark
+  5. Click ``Add``
+
+    1. Select a ``Command`` (in my case ``ALL``)
+    2. Press ``OK``
+
+  5. Press ``OK``
+
+4. Press ``OK``
+5. Quit ``yast``
+
+.. sidebar:: Notes when updating (vhosts) configuration from Apache 2.2 to Apache 2.4:
+
+  Instead of using `mod_access_compat<http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html>`_ modify the configuration files to use the directives in `mod_authz_host<http://httpd.apache.org/docs/2.4/mod/mod_authz_host.html>`_.
+
+  See `Upgrading to 2.4 from 2.2<http://httpd.apache.org/docs/2.4/upgrading.html>`_
+
+  Replace the lines::
+
+      Order deny,allow
+      Deny from all
+
+  with::
+
+      Require all denied
+
+  Replace the lines::
+
+      Order allow,deny
+      Allow from all
+
+  with::
+
+      Require all granted
+
+  More background info:
+
+  - Denying: `Apache 2.4 Upgrade and the “Invalid Command ‘Order'” Error<https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/#sthash.u4jTuZ7o.dpuf<https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/>`_
+  - Granting: `Upgrading to Apache 2.4 from Apache HTTP Server 2.2.x<http://brianflove.com/2014/04/23/upgrading-to-apache-2-4-from-apache-http-server-2-2-x/>`_
+
+
+  Common problems when upgrading
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  - Startup errors:
+
+    - ``Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration`` - load module `mod_unixd<http://httpd.apache.org/docs/2.4/mod/mod_unixd.html>`_
+    - ``Invalid command 'Require', perhaps misspelled or defined by a module not included in the server configuration``, or ``Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration`` - load module `mod_access_compat<http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html>`_, or update configuration to 2.4 authorization directives.
+    - ``Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf`` - remove `DefaultType<http://httpd.apache.org/docs/2.4/mod/core.html#defaulttype>`_ and replace with other configuration settings.
+    - ``Invalid command 'AddOutputFilterByType', perhaps misspelled or defined by a module not included in the server configuration`` - `AddOutputFilterByType<http://httpd.apache.org/docs/2.4/mod/mod_filter.html#addoutputfilterbytype>`_ has moved from the core to mod_filter, which must be loaded.
+
+  - Errors serving requests:
+
+    - ``configuration error: couldn't check user: /path`` - load module `mod_authn_core<http://httpd.apache.org/docs/2.4/mod/mod_authn_core.html>`_.
+    - ``.htaccess files aren't being processed`` - Check for an appropriate `AllowOverride<http://httpd.apache.org/docs/2.4/mod/core.html#allowoverride>`_ directive; the default changed to ``None`` in 2.4.
 
 ----------------------------------------------------------------------------
 
