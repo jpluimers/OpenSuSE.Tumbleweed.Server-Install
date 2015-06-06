@@ -1141,34 +1141,72 @@ That is easy to fix by downloading and modifying the ``monit.service`` template 
     systemctl status monit.service
     systemctl start monit.service
 
-But it still doesn't start, as ``
+But it still doesn't start, as `journalctl<https://www.google.com/search?q=journalctl>`_ (the logging part part of `systemd<https://en.wikipedia.org/wiki/Systemd>`_) shows::
 
+    revue:/etc # journalctl _COMM=monit
+    -- Logs begin at Sat 2015-06-06 10:05:54 CEST, end at Sat 2015-06-06 15:00:01 CEST. --
+    Jun 06 10:01:24 revue monit[1496]: Error opening the idfile '/run/monit/.monit.id' -- No such file or directory
+    Jun 06 10:01:24 revue monit[1496]: Error opening the idfile '/run/monit/.monit.id' -- No such file or directory
+    Jun 06 10:01:24 revue monit[1496]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
+    Jun 06 10:01:24 revue monit[1496]: Error opening pidfile '@@PIDDIR@@/monit.pid' for writing -- No such file or directory
+    Jun 06 10:01:24 revue monit[1496]: Monit daemon died
+    Jun 06 10:01:24 revue monit[1496]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
+    Jun 06 10:01:24 revue monit[1551]: Error opening the idfile '/run/monit/.monit.id' -- No such file or directory
+    Jun 06 10:01:24 revue monit[1551]: Error opening the idfile '/run/monit/.monit.id' -- No such file or directory
+    Jun 06 10:01:24 revue monit[1551]: No daemon process found
+    Jun 06 10:01:24 revue monit[1551]: No daemon process found
 
-Fooo
+.. sidebar::
 
+  Note that `journalctl<>`_ can feel a bit complex for casual users, so to get ``/var/log/messages`` back you might want to install ``rsyslog`` as explained by `Whither /var/log/messages?<https://forums.opensuse.org/showthread.php/505084-Whither-var-log-messages>`_.
 
-    This is a `known bug<https://bugzilla.novell.com/show_bug.cgi?id=497574>`_ explained
-    by both `Running two or more Monit instances on the same machine<https://mmonit.com/wiki/Monit/FAQ#instances>`_
-    and `Install Monit on openSUSE 13.2<http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html>`_ but in different wording:
+  For a comparison, read:
 
-    .. sidebar::
+  - `Why journalctl is cool and syslog will survive for another decade « Luc de Louw's Blog.<http://blog.delouw.ch/2013/07/24/why-journalctl-is-cool-and-syslog-will-survive-for-another-decade/>`_.
+  - `3.8 Configuring and Using System Logging<https://docs.oracle.com/cd/E52668_01/E54670/html/ol7-log-sec.html>`_.
 
-      If you get any error like below,::
+A quick look into ``/etc/monitrc`` reveals the initialisation of the ``monit`` package forgot to create ``/run/monit/.monit.id``::
 
-        Status not available -- the monit daemon is not running
+    revue:/etc # grep "\.monit\.id" /etc/monitrc
+    ## default the file is placed in $HOME/.monit.id.
+    set idfile /run/monit/.monit.id
 
-      Edit /etc/monitrc and uncomment the following pid entry.::
+The cause is that the ``idfile`` must both exist (see the error message) `and have a unique id in it<https://mmonit.com/wiki/MMonit/FAQ#monitid>`_.
 
-        set pidfile /var/run/monit.pid
+If it exists but does not have a valid id, then you get this error::
 
-    The file ``/usr/sbin/rcmonit`` indicates there the `pid<http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204>`_ file is::
+    Jun 06 15:34:13 revue systemd[1]: Starting Pro-active monitoring utility for unix systems...
+    Jun 06 15:34:13 revue monit[4404]: Error reading id from file '/run/monit/.monit.id'
+    Jun 06 15:34:13 revue monit[4404]: Error reading id from file '/run/monit/.monit.id'
+    Jun 06 15:34:13 revue monit[4404]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
+    Jun 06 15:34:13 revue systemd[1]: monit.service: main process exited, code=exited, status=1/FAILURE
 
-        revue:~ # grep -w pid `which rcmonit`
-        MONIT_PID_FILE="/run/monit/monit.pid"
-        				echo "Warning: No pid file, ${MONIT_PID_FILE} found.  Do not know which process to stop.  Calling stop and start instead."
-        revue:~ # grep -w pid /etc/monitrc
-        revue:~ # ls -al /run/monit/monit.pid
-        ls: cannot access /run/monit/monit.pid: No such file or directory
+Both issues is easily fixed by creating and running this ``/etc/monit-create-idfile.sh`` script::
+
+    #! /bin/sh
+    #
+    # creates idfile from configuration in in /etc/monitrc
+    ETC_TARGET=/etc/monitrc
+    # http://unix.stackexchange.com/questions/84922/extract-a-part-of-one-line-from-a-file-with-sed/84957#84957
+    # trick: search and edit and print at the same time
+    ID_FILE=`sed -n -e "/^set idfile .*monit.id$/ s/^set idfile // p" $ETC_TARGET`
+    echo id file: $ID_FILE
+    # http://stackoverflow.com/questions/6121091/get-file-directory-path-from-filepath/6121114#6121114
+    ID_FILE_DIRECTORY=$(dirname "${ID_FILE}")
+    echo id file directory: $ID_FILE_DIRECTORY
+    ls -al $ID_FILE
+    mkdir -p $ID_FILE_DIRECTORY
+    touch $ID_FILE
+    ls -al $ID_FILE
+    echo y | monit --resetid
+    cat $ID_FILE && echo
+
+Finally we caome to the last error: some more replacement needs to take place to prevent this error because ``monit`` cannot find its `pid<http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204>`_ file::
+
+    Jun 06 16:20:48 revue monit[4760]: Error opening pidfile '@@PIDDIR@@/monit.pid' for writing -- No such file or directory
+    Jun 06 16:20:48 revue monit[4760]: Monit daemon died
+
+This is then fixed by creating and running this ``/etc/monitrc-fix.sh``::
 
     #! /bin/sh
     #
@@ -1178,37 +1216,16 @@ Fooo
     # escape slashes in arguments: http://www.grymoire.com/Unix/Sed.html#uh-62
     echo old:
     sed -n "/^# set pidfile \/var\/run\/monit.pid$/ p" $ETC_TARGET
-    sed -e "/^# set pidfile \/var\/run\/monit.pid$/ s/^# //" $ETC_TARGET > $ETC_TARGET.tmp && mv $ETC_TARGET.tmp $ETC_TARGET && chmod 600 $ETC_TARGET
+    sed -e "/^# set pidfile \/var\/run\/monit.pid$/ s/^# //" $ETC_TARGET > $ETC_TARGET.tmp && mv $ETC_TARGET.tmp $ETC_TARGET
     echo new:
     sed -n "/^set pidfile \/var\/run\/monit.pid$/ p" $ETC_TARGET
+    systemctl status monit.service
+    systemctl start monit.service
 
-Run it and the result should be like this:
+More ``monit`` configuration tips (including setting up `HTTPS<https://en.wikipedia.org/wiki/HTTPS>`_ with a `self-signed certificate<https://en.wikipedia.org/wiki/Self-signed_certificate>`_ - imporant as ``monit`` uses plain username/password `http basic authentication<https://en.wikipedia.org/wiki/Basic_access_authentication>`_) are at:
 
-    revue:/etc # ./monitrc-fix.sh
-    old:
-    # set pidfile /var/run/monit.pid
-    new:
-    set pidfile /var/run/monit.pid
-
-If you didn't run ``sed``, then you get this error::
-
-    revue:/etc/systemd/system # systemctl status monit.service
-    ● monit.service - Pro-active monitoring utility for unix systems
-       Loaded: error (Reason: Invalid argument)
-       Active: inactive (dead)
-
-    Jun 04 21:21:26 revue systemd[1]: [/etc/systemd/system/monit.service:23] Executable path is not absolute, ignoring: @prefix@/bin/monit -I -c @sysco...r@/monitrc
-    Jun 04 21:21:26 revue systemd[1]: [/etc/systemd/system/monit.service:24] Executable path is not absolute, ignoring: @prefix@/bin/monit -c @sysconfd...nitrc quit
-    Jun 04 21:21:26 revue systemd[1]: [/etc/systemd/system/monit.service:25] Executable path is not absolute, ignoring: @prefix@/bin/monit -c @sysconfd...trc reload
-    Jun 04 21:21:26 revue systemd[1]: monit.service lacks both ExecStart= and ExecStop= setting. Refusing.
-    Hint: Some lines were ellipsized, use -l to show in full.
-
-
-Finally run this:
-
-    revue:/etc # systemctl enable monit.service
-    monit.service is not a native service, redirecting to /sbin/chkconfig.
-    Executing /sbin/chkconfig monit on
+- `How to set up server monitoring system with Monit - Xmodulo<http://xmodulo.com/server-monitoring-system-monit.html>`_.
+- `Install Monit on openSUSE 13.2<http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html>`_.
 
 Configuring apache2 for the first time
 --------------------------------------
