@@ -88,7 +88,6 @@ html form code::
     </form>
 
 Rest
-~~~~
 
 ``create-shellinabox-self-signed-certificate.sh``::
 
@@ -1292,6 +1291,19 @@ Configuring apache2 for the first time
 
     - ``configuration error: couldn't check user: /path`` - load module `mod_authn_core<http://httpd.apache.org/docs/2.4/mod/mod_authn_core.html>`_.
     - ``.htaccess files aren't being processed`` - Check for an appropriate `AllowOverride<http://httpd.apache.org/docs/2.4/mod/core.html#allowoverride>`_ directive; the default changed to ``None`` in 2.4.
+
+Getting and running ``testssl.sh``
+----------------------------------
+
+Simple steps from a non-root account::
+
+    git clone https://github.com/drwetter/testssl.sh.git
+    cd testssl.sh
+
+    OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh beginend.net
+    OPENSSL=./testssl.sh beginend.net
+    OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh www.beginend.net
+    OPENSSL=./testssl.sh www.beginend.net
 
 ----------------------------------------------------------------------------
 

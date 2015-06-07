@@ -77,7 +77,7 @@ To show all installed unit files use &#39;systemctl list-unit-files&#39;.</code>
 &lt;button type=&quot;submit&quot; name=&quot;reboot&quot;&gt;Restart&lt;/button&gt;
 &lt;/div&gt;
 &lt;/form&gt;</code></pre>
-<h2 id="rest">Rest</h2>
+<p>Rest</p>
 <p><code>create-shellinabox-self-signed-certificate.sh</code>:</p>
 <pre><code>cd /var/lib/shellinabox
 openssl genrsa -des3 -out server.key 1024
@@ -1091,6 +1091,15 @@ Allow from all</code></pre>
 </ul></li>
 </ul>
 </blockquote>
+<h3 id="getting-and-running-testssl.sh">Getting and running <code>testssl.sh</code></h3>
+<p>Simple steps from a non-root account:</p>
+<pre><code>git clone https://github.com/drwetter/testssl.sh.git
+cd testssl.sh
+
+OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh beginend.net
+OPENSSL=./testssl.sh beginend.net
+OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh www.beginend.net
+OPENSSL=./testssl.sh www.beginend.net</code></pre>
 <hr />
 <div class="footnotes">
 <hr />
