@@ -15,6 +15,7 @@
 <p>The first machine I installed OpenSuSE Tumbleweed on is <code>revue</code> <a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. It is a bit of a gimmic, as I already had machines called <code>snip</code> and <code>snap</code>. Dutch people will know why.</p>
 <p><code>snip</code> and <code>snap</code> run regular OpenSuSE releases. <code>revue</code> is my first machine running a <a href="https://en.wikipedia.org/wiki/Rolling_release">rolling</a> release.</p>
 <p>Over time, there will be some documents indicating installation progress and problem solving.</p>
+<h1 id="table-of-contents">Table of Contents</h1>
 <h1 id="todo">TODO</h1>
 <ul>
 <li>web site (HTTP-HTTPS)</li>
@@ -26,10 +27,10 @@
 <li>update root zones through cron</li>
 <li>DNS security &lt;<a href="https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server" class="uri">https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server</a>--2&gt; and &lt;<a href="http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm" class="uri">http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm</a>&gt;</li>
 <li>ensure 10rsync-var-lib-named-master.sh works</li>
-<li>reboot / reconnect fritz!box <a href="http://www.gtkdb.de/index_7_1302.html" class="uri">http://www.gtkdb.de/index_7_1302.html</a></li>
 <li>fix syslogd and logrotate</li>
 </ul>
 <h1 id="notes">NOTES</h1>
+<p>Things that might need doing.</p>
 <h2 id="syslogd">syslogd</h2>
 <p>See <a href="http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/">this output</a>:</p>
 <pre><code>revue:/etc/xinetd.d # systemctl --failed --all
@@ -43,42 +44,9 @@ SUB    = The low-level unit activation state, values depend on unit type.
 
 2 loaded units listed.
 To show all installed unit files use &#39;systemctl list-unit-files&#39;.</code></pre>
-<h2 id="login-reboot-fritzbox">Login / Reboot Fritz!Box</h2>
-<ul>
-<li><a href="https://home.debian-hell.org/blog/2013/05/13/update-konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/" class="uri">https://home.debian-hell.org/blog/2013/05/13/update-konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/</a></li>
-<li><a href="https://debianforum.de/forum/viewtopic.php?f=15&amp;t=149338" class="uri">https://debianforum.de/forum/viewtopic.php?f=15&amp;t=149338</a></li>
-<li><a href="https://www.symcon.de/forum/threads/20405-Funktionierende-Scripts-f%C3%BCr-FRITZ!OS-05-50-7390/page3">https://www.symcon.de/forum/threads/20405-Funktionierende-Scripts-f%C3%BCr-FRITZ!OS-05-50-7390/page3</a></li>
-<li><a href="http://www.ip-phone-forum.de/showthread.php?t=196309&amp;page=5" class="uri">http://www.ip-phone-forum.de/showthread.php?t=196309&amp;page=5</a></li>
-<li><a href="https://github.com/XIDA/windowstools/blob/master/tools/callsTray/callsTray.ahk" class="uri">https://github.com/XIDA/windowstools/blob/master/tools/callsTray/callsTray.ahk</a></li>
-<li><a href="http://www.fritzmod.net/en/tools/curl/" class="uri">http://www.fritzmod.net/en/tools/curl/</a></li>
-<li><a href="https://packetstormsecurity.com/files/129834/AVM-Fritz-box-Auto-Exploiter.html" class="uri">https://packetstormsecurity.com/files/129834/AVM-Fritz-box-Auto-Exploiter.html</a></li>
-<li><a href="https://debianforum.de/forum/viewtopic.php?f=26&amp;t=136977" class="uri">https://debianforum.de/forum/viewtopic.php?f=26&amp;t=136977</a></li>
-<li><a href="http://board.gulli.com/thread/1754005-hilfe-fritzbox-ohne-internet-neustarten/" class="uri">http://board.gulli.com/thread/1754005-hilfe-fritzbox-ohne-internet-neustarten/</a></li>
-<li><a href="https://github.com/carlos22/fritzbox_api_php/blob/master/bin/fritzbox_reboot.php" class="uri">https://github.com/carlos22/fritzbox_api_php/blob/master/bin/fritzbox_reboot.php</a></li>
-<li><a href="http://www.delphipraxis.net/91808-fritzbox-reconnector-update-fritzbox-control-2-0-videos.html" class="uri">http://www.delphipraxis.net/91808-fritzbox-reconnector-update-fritzbox-control-2-0-videos.html</a></li>
-<li><a href="http://www.winfuture-forum.de/index.php?showtopic=165894" class="uri">http://www.winfuture-forum.de/index.php?showtopic=165894</a></li>
-<li><a href="http://www.wehavemorefun.de/fritzbox/Anrufliste_von_der_Box_holen" class="uri">http://www.wehavemorefun.de/fritzbox/Anrufliste_von_der_Box_holen</a></li>
-<li><a href="https://www.64k-tec.de/2010/01/fritzbox-tuning-part-1-enable-remote-access-over-ssh/" class="uri">https://www.64k-tec.de/2010/01/fritzbox-tuning-part-1-enable-remote-access-over-ssh/</a></li>
-<li><a href="http://sourceforge.net/p/openpli/mailman/openpli-git-commits/?viewmonth=201304&amp;viewday=28" class="uri">http://sourceforge.net/p/openpli/mailman/openpli-git-commits/?viewmonth=201304&amp;viewday=28</a></li>
-<li><a href="http://192.168.71.1/system/reboot.lua?sid=5abed5e90f9c7e99" class="uri">http://192.168.71.1/system/reboot.lua?sid=5abed5e90f9c7e99</a>&amp;</li>
-<li>Python library: <a href="https://github.com/valpo/fritzbox" class="uri">https://github.com/valpo/fritzbox</a></li>
-<li>sh sid md5 login: <a href="http://www.ip-phone-forum.de/showthread.php?t=264639" class="uri">http://www.ip-phone-forum.de/showthread.php?t=264639</a></li>
-<li><a href="http://homematic-forum.de/forum/viewtopic.php?f=26&amp;t=11645" class="uri">http://homematic-forum.de/forum/viewtopic.php?f=26&amp;t=11645</a></li>
-<li>sh sid md5 login download config: <a href="https://home.debian-hell.org/blog/2013/03/21/konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/" class="uri">https://home.debian-hell.org/blog/2013/03/21/konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/</a></li>
-<li><a href="https://home.debian-hell.org/blog/2013/05/13/update-konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/" class="uri">https://home.debian-hell.org/blog/2013/05/13/update-konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/</a></li>
-<li>deze werkt! <a href="https://home.debian-hell.org/dokuwiki/scripts/fritzbox.backup.mit.curl.bash" class="uri">https://home.debian-hell.org/dokuwiki/scripts/fritzbox.backup.mit.curl.bash</a></li>
-<li><a href="http://superuser.com/questions/149329/what-is-the-curl-command-line-syntax-to-do-a-post-request" class="uri">http://superuser.com/questions/149329/what-is-the-curl-command-line-syntax-to-do-a-post-request</a></li>
-<li><a href="http://curl.haxx.se/docs/httpscripting.html#POST" class="uri">http://curl.haxx.se/docs/httpscripting.html#POST</a></li>
-</ul>
-<p>html form code:</p>
-<pre><code>&lt;form action=&quot;/system/reboot.lua&quot; method=&quot;POST&quot;&gt;
-&lt;div id=&quot;btn_form_foot&quot;&gt;
-&lt;input type=&quot;hidden&quot; name=&quot;sid&quot; value=&quot;5abed5e90f9c7e99&quot;&gt;
-&lt;button type=&quot;submit&quot; name=&quot;reboot&quot;&gt;Restart&lt;/button&gt;
-&lt;/div&gt;
-&lt;/form&gt;</code></pre>
-<p>Rest</p>
-<p><code>create-shellinabox-self-signed-certificate.sh</code>:</p>
+<p>Needs investigation.</p>
+<h2 id="rest">Rest</h2>
+<p>Run <code>create-shellinabox-self-signed-certificate.sh</code>:</p>
 <pre><code>cd /var/lib/shellinabox
 openssl genrsa -des3 -out server.key 1024
 openssl req -new -key server.key -out server.csr
@@ -86,7 +54,7 @@ cp server.key server.key.org
 openssl rsa -in server.key.org -out server.key
 openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 cat server.crt server.key &gt; certificate.pem</code></pre>
-<p>Wget/curl are the beste solution to update the <code>root.hint</code>. See:</p>
+<p>Wget/curl are the best solution to update the <code>root.hint</code>. See:</p>
 <ul>
 <li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01589.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01589.html</a>&gt; - use dig, maybe not good</li>
 <li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01746.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01746.html</a>&gt;</li>
@@ -175,13 +143,12 @@ if (test -e $VarLibNamedNamedCache) ; then
 
   rm -f $VarLibNamedNamedCache
 fi</code></pre>
-<h1 id="table-of-contents">Table of Contents</h1>
 <h1 id="headless-install">headless install</h1>
-<h3 id="text-mode-console-will-break-line-drawing-after-first-boot">text-mode console will break line drawing after first boot</h3>
+<h2 id="text-mode-console-will-break-line-drawing-after-first-boot">text-mode console will break line drawing after first boot</h2>
 <p>A long standing bug, and I'm amazed not more people complain about this.</p>
 <p>I've queued a <a href="https://wiert.wordpress.com/?p=27755&quot;">blog entry</a> about this titled &quot;TUMBLEWEED: local console yast linedrawing characters garbage after first reboot&quot;.</p>
 <p>The workaround is simple: Call <code>/bin/unicode_start</code> on the command line before starting <code>yast</code>. It looks you need this only once per machine.</p>
-<h3 id="start-with-minimal-server-selection-text-mode">Start with &quot;Minimal server selection (text mode)&quot;</h3>
+<h2 id="start-with-minimal-server-selection-text-mode">Start with &quot;Minimal server selection (text mode)&quot;</h2>
 <p>The OpenSuSE way of a headless install starts with &quot;Minimal server selection (text mode)&quot;. On top of that you extend the installation.</p>
 <p>In about 20 gigabyte disk space, you can &quot;Minimal server selection (text mode)&quot; extended by a limited set of packages.</p>
 <p>These are the <strong>patterns</strong> I extended with:</p>
@@ -256,21 +223,21 @@ fi</code></pre>
 <pre><code>zypper search --provides --match-exact hg</code></pre>
 <p>Where <code>hg</code> is the file you are looking for.</p>
 </blockquote>
-<h3 id="halt-will-fail-use-halt--p-to-halt-under-esxi-5.1"><code>halt</code> will fail, use <code>halt -p</code> to halt under ESXi 5.1</h3>
+<h2 id="halt-will-fail-use-halt--p-to-halt-under-esxi-5.1"><code>halt</code> will fail, use <code>halt -p</code> to halt under ESXi 5.1</h2>
 <p>A long time ago, <a href="http://wiert.me/2012/12/30/opensuse-12-x-a-plain-halt-will-not-shutdown-the-system-properly/">I wrote that</a> <code>halt</code> fails, but <code>halt -p</code> succeeds when running under VMware ESXi 5.1 (I don't run physical boxes any more).</p>
 <p>This still fails under OpenSuSE Tumbleweed 13.2.</p>
-<h3 id="text-mode-installation-and-conflicts">text-mode installation and conflicts</h3>
+<h2 id="text-mode-installation-and-conflicts">text-mode installation and conflicts</h2>
 <p>The easiest way to start a headless install is picking &quot;Minimal server selection (text mode)&quot; during installation.</p>
 <p>The problem however is that this indeed minimal. It is enforced by the <code>patterns-openSUSE-minimal_base-conflicts</code> <a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> pattern which is part of the minimal install.</p>
 <p>It prevents some packages to install like <code>mercurial</code>, <code>php</code> and <code>python</code>.</p>
 <p>To prevent that, remove the <code>patterns-openSUSE-minimal_base-conflicts</code> package specific for the OpenSuSE version you use <a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a>.</p>
 <p>Do this <strong>after</strong> you've selected the patterns you want to install. Otherwise recommended packages can be installed potentially blowing your size.</p>
-<h3 id="add-git-extras">add git-extras</h3>
+<h2 id="add-git-extras">add git-extras</h2>
 <p>See the git-extras Install documentation&lt;&gt;https://github.com/tj/git-extras/blob/master/Installation.md_ for why/how.</p>
 <p>Just run this command:</p>
 <pre><code>(cd /tmp &amp;&amp; git clone https://github.com/tj/git-extras.git &amp;&amp; cd git-extras &amp;&amp; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) &amp;&amp; sudo make install)</code></pre>
 <h1 id="configuration">configuration</h1>
-<h3 id="getting-started-with-etckeeper">getting started with etckeeper</h3>
+<h2 id="getting-started-with-etckeeper">getting started with etckeeper</h2>
 <p>A while ago <code>etckeeper</code> (which is <a href="https://github.com/joeyh/etckeeper">open source on GitHub</a>) was <a href="http://joeyh.name/code/etckeeper/">requested</a> to be put into the factory repository, and now <a href="https://software.opensuse.org/package/etckeeper">is</a>.</p>
 <p>This is how I got started:</p>
 <ol style="list-style-type: decimal">
@@ -293,7 +260,7 @@ git push -u origin --tags # pushes up any tags</code></pre></li>
 <p>It hooks into package managers like apt to automatically commit changes made to <code>/etc</code> during package upgrades. It tracks file metadata that git does not normally support, but that is important for /etc, such as the permissions of <code>/etc/shadow</code>.</p>
 <p>It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.</p>
 </blockquote>
-<h3 id="removing-hardlinks-from-the-etckeeper-repository">removing hardlinks from the <code>etckeeper</code> repository</h3>
+<h2 id="removing-hardlinks-from-the-etckeeper-repository">removing hardlinks from the <code>etckeeper</code> repository</h2>
 <p>Inspired by <a href="http://unix.stackexchange.com/questions/63627/excluding-files-in-etckeeper-with-gitignore-doesnt-work/63628#63628">this answer</a> to get rid of these messages during <a href="https://github.com/joeyh/etckeeper#what-etckeeper-does">etckeeper commit</a> to delete many <a href="http://lists.opensuse.org/opensuse-factory/2014-06/msg00115.html">hardlinked bootsplash files</a>:</p>
 <pre><code>etckeeper warning: hardlinked files could cause problems with git:
 bootsplash/themes/openSUSE/bootloader/af.tr
@@ -325,7 +292,7 @@ bootsplash/themes/openSUSE/cdrom/zu.tr</code></pre>
 git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr
 git rm --cached bootsplash/themes/openSUSE/cdrom/*.tr
 git commit -m &quot;git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr and bootsplash/themes/openSUSE/cdrom/*.tr&quot;</code></pre>
-<h3 id="configuring-sudo">configuring sudo</h3>
+<h2 id="configuring-sudo">configuring sudo</h2>
 <ol style="list-style-type: decimal">
 <li>Start <code>yast</code></li>
 <li>Open <code>Security and Users</code>, then <code>Sudo</code></li>
@@ -359,7 +326,7 @@ git commit -m &quot;git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr a
 <p><strong></strong></p>
 <p>Note that <a href="http://superuser.com/questions/357467/what-do-the-alls-in-the-line-admin-all-all-all-in-ubuntus-etc-sudoers">each ALL entry has a different meaning</a>.</p>
 </blockquote>
-<h3 id="configuring-ssh">configuring ssh</h3>
+<h2 id="configuring-ssh">configuring ssh</h2>
 <p>Up until OpenSuSE 12.x, there was yast2-sshd. It is <a href="https://www.suse.com/documentation/opensuse114/book_security/data/sec_ssh_yast.html">still in the documentation</a>, but it <a href="http://lists.opensuse.org/opensuse/2013-11/msg00751.html">has been orphaned</a> so you need to configure it manually. It isn't hard: below is the diff of the <code>/etc/sshd_config</code> file.</p>
 <p>Note that when manually changing sshd configuration options, you can test (<code>-t</code>) or test-extended (<code>-T</code>) <a href="https://www.ixsystems.com/whats-new/how-secure-can-secure-shell-ssh-be-basic-configuration-of-openssh/">like this</a>:</p>
 <pre><code>sshd –t
@@ -509,9 +476,10 @@ git push</code></pre>
 <p>Finally start <code>sshd</code>:</p>
 <pre><code>rcsshd start
 rcsshd status</code></pre>
-<h3 id="install-and-configure-noip-dynamic-dns-update-script">install and configure noip dynamic DNS update script</h3>
+<h2 id="install-and-configure-noip-dynamic-dns-update-script">install and configure noip dynamic DNS update script</h2>
 <p>The script is based on &lt;<a href="https://github.com/mdmower/bash-no-ip-updater.git" class="uri">https://github.com/mdmower/bash-no-ip-updater.git</a>&gt;.</p>
 <p>Create the below <code>/etc/noip.com.install.sh</code> script with <code>chmod 700</code>, then run it to install.</p>
+<p>One of the things it does is move the config file outside the repository (<a href="https://github.com/mdmower/bash-no-ip-updater/pull/2">I've made a pull-request for that</a>) as it contains credentials.</p>
 <p>Full source is at &lt;<a href="https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3" class="uri">https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3</a>&gt;:</p>
 <pre><code>#! /bin/sh
 #
@@ -587,7 +555,7 @@ cat $CRON_HOURLY_TARGET</code></pre>
 PASSWORD=&quot;password&quot;
 HOST=&quot;host.domain.com&quot;</code></pre>
 <p>Finally run <code>/etc/noip.com/bash-no-ip-updater/noipupdater.sh</code> ones and look at the log file <code>/var/log/noip.com/noip.log</code> to see the result and check <code>/var/log/noip.com/last_ip</code> if the IP-address is indeed correct.</p>
-<h3 id="configuring-ntpd-firewall-and-jail-for-it">configuring ntpd, firewall and jail for it</h3>
+<h2 id="configuring-ntpd-firewall-and-jail-for-it">configuring ntpd, firewall and jail for it</h2>
 <p>By default, OpenSuSE Tumbleweed 13.2 has <code>ntdp</code> enabled and configured as client and server, even though some of the tools mislead into thinking the server is not working correctly.</p>
 <p>But first the firewall portion:</p>
 <ol style="list-style-type: decimal">
@@ -659,7 +627,7 @@ May 26 20:45:59 revue systemd[1]: Started NTP Server Daemon.</code></pre>
 <p><strong></strong></p>
 <p>For the tests, I got inspired by <a href="http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/">How to Install and Configure Linux NTP Server and Client.</a></p>
 </blockquote>
-<h3 id="configuring-samba">Configuring <code>samba</code></h3>
+<h2 id="configuring-samba">Configuring <code>samba</code></h2>
 <ol style="list-style-type: decimal">
 <li>Start <code>yast</code></li>
 <li>Open <code>Network Services</code>, then <code>Samba Server</code></li>
@@ -698,7 +666,7 @@ smbclient -L `hostname`</code></pre>
 <p><strong></strong></p>
 <p>During <code>smbclient</code> you will have to type your unix password.</p>
 </blockquote>
-<h3 id="testing-and-fixing-so-clients-can-talk-to-our-samba-server">Testing and fixing so clients can talk to our Samba server</h3>
+<h2 id="testing-and-fixing-so-clients-can-talk-to-our-samba-server">Testing and fixing so clients can talk to our Samba server</h2>
 <p>Now it is time to test the smb connectivity as well:</p>
 <pre><code>smbclient //`hostname`/profiles -U jeroenp
 Enter jeroenp&#39;s password:
@@ -721,14 +689,14 @@ tree connect failed: NT_STATUS_ACCESS_DENIED</code></pre>
 <p>Now do final checks:</p>
 <pre><code>smbclient --list `hostname` --user jeroenp
 smbclient //`hostname`/jeroenp -U jeroenp</code></pre>
-<h3 id="one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup">One day: <a href="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418">syncing between the Samba password and system password storage</a> is setup</h3>
-<p>See <a href="https://www.google.com/search?q=&quot;Use+SMB+Information+for+Linux+Authentication&quot;">Use SMB Information for Linux Authentication</a>`</p>
+<h2 id="one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup">One day: <a href="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418">syncing between the Samba password and system password storage</a> is setup</h2>
+<p>See <a href="https://www.google.com/search?q=&quot;Use+SMB+Information+for+Linux+Authentication&quot;">Use SMB Information for Linux Authentication</a>.</p>
 <h2 id="fixing-password-synchronisation">Fixing password synchronisation?</h2>
 <blockquote>
 <p><strong></strong></p>
 <p>Background reading (web-archive link as the site itself is down): <a href="http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html">Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares.</a>.</p>
 </blockquote>
-<h3 id="configuring-namedbind">configuring named/BIND</h3>
+<h2 id="configuring-namedbind">configuring named/BIND</h2>
 <ol style="list-style-type: decimal">
 <li>Start <code>yast</code></li>
 <li>Open <code>System</code>, then <code>/etc/sysconfig Editor</code></li>
@@ -905,7 +873,7 @@ mkdir -p $TARGET
 rsync -avloz /var/lib/named/master/ $TARGET/</code></pre>
 <p>You need to give this script the right permissons, otherwise <code>etckeeper</code> wil skip it:</p>
 <pre><code>chmod 755 /etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh</code></pre>
-<h3 id="adding-aliases-for-commands-removed-in-net-tools">Adding aliases for commands removed in <code>net-tools</code></h3>
+<h2 id="adding-aliases-for-commands-removed-in-net-tools">Adding aliases for commands removed in <code>net-tools</code></h2>
 <p>Add this to <code>/etc/bash.bashrc.local</code>:</p>
 <pre><code># stuff removed from net-tools
 # see https://features.opensuse.org/317197 and https://build.opensuse.org/package/view_file/network:utilities/net-tools/net-tools.changes
@@ -917,7 +885,7 @@ alias &quot;route=echo &#39;use \&quot;ip r\&quot;&#39; &amp;&amp; ip r&quot;
 ## Because of changes on Sun Mar 29 00:41:21 UTC 2015
 alias &quot;ipmaddr=echo &#39;use \&quot;ip maddr\&quot;&#39; &amp;&amp; ip maddr&quot;
 alias &quot;iptunnel=echo &#39;use \&quot;ip tunnel\&quot;&#39; &amp;&amp; ip tunnel&quot;</code></pre>
-<h3 id="configuring-monit-monitoring-service">Configuring <code>monit</code> monitoring service</h3>
+<h2 id="configuring-monit-monitoring-service">Configuring <code>monit</code> monitoring service</h2>
 <p>At first, <a href="https://software.opensuse.org/package/monit">monit</a> won't run:</p>
 <pre><code>revue:~ # rcmonit restart
 redirecting to systemctl restart monit.service
@@ -1028,7 +996,7 @@ systemctl start monit.service</code></pre>
 <li><a href="http://xmodulo.com/server-monitoring-system-monit.html">How to set up server monitoring system with Monit - Xmodulo</a>.</li>
 <li><a href="http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html">Install Monit on openSUSE 13.2</a>.</li>
 </ul>
-<h3 id="configuring-apache2-for-the-first-time">Configuring apache2 for the first time</h3>
+<h2 id="configuring-apache2-for-the-first-time">Configuring apache2 for the first time</h2>
 <ol style="list-style-type: decimal">
 <li>Start <code>yast</code></li>
 <li>Open <code>Security and Users</code>, then <code>Sudo</code></li>
@@ -1091,7 +1059,7 @@ Allow from all</code></pre>
 </ul></li>
 </ul>
 </blockquote>
-<h3 id="getting-and-running-testssl.sh">Getting and running <code>testssl.sh</code></h3>
+<h2 id="getting-and-running-testssl.sh">Getting and running <code>testssl.sh</code></h2>
 <p>Simple steps from a non-root account:</p>
 <pre><code>git clone https://github.com/drwetter/testssl.sh.git
 cd testssl.sh
@@ -1100,6 +1068,15 @@ OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+pol
 OPENSSL=./testssl.sh beginend.net
 OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh www.beginend.net
 OPENSSL=./testssl.sh www.beginend.net</code></pre>
+<h2 id="login-reboot-fritzbox">Login / Reboot Fritz!Box</h2>
+<p>There is a bash script for Fritz!Box access at &lt;<a href="https://github.com/jpluimers/bash-fritzclient" class="uri">https://github.com/jpluimers/bash-fritzclient</a>&gt;.</p>
+<p>Installation is simple:</p>
+<ol style="list-style-type: decimal">
+<li>Go to <code>/etc</code></li>
+<li><code>git clone https://github.com/jpluimers/bash-fritzclient.git</code></li>
+<li>Copy <code>bash-fritzclient\bash-fritzclient.config.template</code> to <code>/etc/bash-fritzclient.template</code></li>
+<li>Configure <code>/etc/bash-fritzclient.template</code>.</li>
+</ol>
 <hr />
 <div class="footnotes">
 <hr />

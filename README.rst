@@ -10,6 +10,11 @@ The first machine I installed OpenSuSE Tumbleweed on is ``revue`` [#revue]_. It 
 
 Over time, there will be some documents indicating installation progress and problem solving.
 
+Table of Contents
+=================
+
+.. contents::
+
 TODO
 ====
 
@@ -22,14 +27,15 @@ TODO
 - update root zones through cron
 - DNS security <https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server--2> and <http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm>
 - ensure 10rsync-var-lib-named-master.sh works
-- reboot / reconnect fritz!box http://www.gtkdb.de/index_7_1302.html
 - fix syslogd and logrotate
 
 NOTES
 =====
 
+Things that might need doing.
+
 syslogd
-~~~~~~~
+-------
 
 See `this output<http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/>`_::
 
@@ -45,51 +51,12 @@ See `this output<http://www.linuxquestions.org/questions/linux-general-1/how-to-
     2 loaded units listed.
     To show all installed unit files use 'systemctl list-unit-files'.
 
-Login / Reboot Fritz!Box
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-- https://home.debian-hell.org/blog/2013/05/13/update-konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/
-- https://debianforum.de/forum/viewtopic.php?f=15&t=149338
-- https://www.symcon.de/forum/threads/20405-Funktionierende-Scripts-f%C3%BCr-FRITZ!OS-05-50-7390/page3
-- http://www.ip-phone-forum.de/showthread.php?t=196309&page=5
-- https://github.com/XIDA/windowstools/blob/master/tools/callsTray/callsTray.ahk
-- http://www.fritzmod.net/en/tools/curl/
-- https://packetstormsecurity.com/files/129834/AVM-Fritz-box-Auto-Exploiter.html
-- https://debianforum.de/forum/viewtopic.php?f=26&t=136977
-- http://board.gulli.com/thread/1754005-hilfe-fritzbox-ohne-internet-neustarten/
-- https://github.com/carlos22/fritzbox_api_php/blob/master/bin/fritzbox_reboot.php
-- http://www.delphipraxis.net/91808-fritzbox-reconnector-update-fritzbox-control-2-0-videos.html
-- http://www.winfuture-forum.de/index.php?showtopic=165894
-- http://www.wehavemorefun.de/fritzbox/Anrufliste_von_der_Box_holen
-
-- https://www.64k-tec.de/2010/01/fritzbox-tuning-part-1-enable-remote-access-over-ssh/
-- http://sourceforge.net/p/openpli/mailman/openpli-git-commits/?viewmonth=201304&viewday=28
-
-- http://192.168.71.1/system/reboot.lua?sid=5abed5e90f9c7e99&
-
-- Python library: https://github.com/valpo/fritzbox
-- sh sid md5 login: http://www.ip-phone-forum.de/showthread.php?t=264639
-- http://homematic-forum.de/forum/viewtopic.php?f=26&t=11645
-- sh sid md5 login download config: https://home.debian-hell.org/blog/2013/03/21/konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/
-- https://home.debian-hell.org/blog/2013/05/13/update-konfiguration-der-avm-fritzbox-7390-per-wgetcurl-script-sichern/
-
-- deze werkt! https://home.debian-hell.org/dokuwiki/scripts/fritzbox.backup.mit.curl.bash
-
-- http://superuser.com/questions/149329/what-is-the-curl-command-line-syntax-to-do-a-post-request
-- http://curl.haxx.se/docs/httpscripting.html#POST
-
-html form code::
-
-    <form action="/system/reboot.lua" method="POST">
-    <div id="btn_form_foot">
-    <input type="hidden" name="sid" value="5abed5e90f9c7e99">
-    <button type="submit" name="reboot">Restart</button>
-    </div>
-    </form>
+Needs investigation.
 
 Rest
+----
 
-``create-shellinabox-self-signed-certificate.sh``::
+Run ``create-shellinabox-self-signed-certificate.sh``::
 
     cd /var/lib/shellinabox
     openssl genrsa -des3 -out server.key 1024
@@ -99,7 +66,7 @@ Rest
     openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
     cat server.crt server.key > certificate.pem
 
-Wget/curl are the beste solution to update the ``root.hint``. See:
+Wget/curl are the best solution to update the ``root.hint``. See:
 
 - <http://lists.opensuse.org/opensuse/2008-05/msg01589.html> - use dig, maybe not good
 - <http://lists.opensuse.org/opensuse/2008-05/msg01746.html>
@@ -215,11 +182,6 @@ I had this in ``named_root_hint.cron``::
       rm -f $VarLibNamedNamedCache
     fi
 
-
-Table of Contents
-=================
-
-.. contents::
 
 headless install
 ================
@@ -612,6 +574,8 @@ The script is based on <https://github.com/mdmower/bash-no-ip-updater.git>.
 
 Create the below ``/etc/noip.com.install.sh`` script with ``chmod 700``, then run it to install.
 
+One of the things it does is move the config file outside the repository (`I've made a pull-request for that<https://github.com/mdmower/bash-no-ip-updater/pull/2>`_) as it contains credentials.
+
 Full source is at <https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3>::
 
     #! /bin/sh
@@ -870,10 +834,10 @@ Now do final checks::
 One day: `syncing between the Samba password and system password storage<https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418>`_ is setup
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-See `Use SMB Information for Linux Authentication<https://www.google.com/search?q="Use+SMB+Information+for+Linux+Authentication">`_`
+See `Use SMB Information for Linux Authentication<https://www.google.com/search?q="Use+SMB+Information+for+Linux+Authentication">`_.
 
 Fixing password synchronisation?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 .. sidebar::
 
@@ -1059,7 +1023,7 @@ Finally stop/start the named service::
     - `Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool<http://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/>`_
 
 Ensure that ``/var/lib/named/master`` gets synced to ``/etc/named/master``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------------------------------------------
 
 Based on these links, I've added a sync script.
 
@@ -1278,7 +1242,7 @@ Configuring apache2 for the first time
 
 
   Common problems when upgrading
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ------------------------------
 
   - Startup errors:
 
@@ -1304,6 +1268,18 @@ Simple steps from a non-root account::
     OPENSSL=./testssl.sh beginend.net
     OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh www.beginend.net
     OPENSSL=./testssl.sh www.beginend.net
+
+Login / Reboot Fritz!Box
+------------------------
+
+There is a bash script for Fritz!Box access at <https://github.com/jpluimers/bash-fritzclient>.
+
+Installation is simple:
+
+1. Go to ``/etc``
+2. ``git clone https://github.com/jpluimers/bash-fritzclient.git``
+3. Copy ``bash-fritzclient\bash-fritzclient.config.template`` to ``/etc/bash-fritzclient.template``
+4. Configure ``/etc/bash-fritzclient.template``.
 
 ----------------------------------------------------------------------------
 
