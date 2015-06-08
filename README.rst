@@ -1,12 +1,12 @@
-################################
-revue: getting Tumbleweed on it.
-################################
+###############################
+revue: getting Tumbleweed on it
+###############################
 
-This is a series of notes and articles about getting OpenSuSE [#opensuse]_ Tumbleweed [#tumbleweed]_ to run on a headless [#headless]_ (i.e. text-only, no GUI) server.
+This is a series of notes and articles about getting OpenSuSE [#opensuse_footnote]_ Tumbleweed [#tumbleweed_footnote]_ to run on a headless [#headless_footnote]_ (i.e. text-only, no GUI) server.
 
-The first machine I installed OpenSuSE Tumbleweed on is ``revue`` [#revue]_. It is a bit of a gimmic, as I already had machines called ``snip`` and ``snap``. Dutch people will know why.
+The first machine I installed OpenSuSE Tumbleweed on is ``revue`` [#revue_footnote]_. It is a bit of a gimmic, as I already had machines called ``snip`` and ``snap``. Dutch people will know why.
 
-``snip`` and ``snap`` run regular OpenSuSE releases. ``revue`` is my first machine running a `rolling<https://en.wikipedia.org/wiki/Rolling_release>`_ release.
+``snip`` and ``snap`` run regular OpenSuSE releases. ``revue`` is my first machine running a `rolling <https://en.wikipedia.org/wiki/Rolling_release>`_ release.
 
 Over time, there will be some documents indicating installation progress and problem solving.
 
@@ -37,7 +37,7 @@ Things that might need doing.
 syslogd
 -------
 
-See `this output<http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/>`_::
+See `this output <http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/>`_::
 
     revue:/etc/xinetd.d # systemctl --failed --all
       UNIT              LOAD   ACTIVE SUB    DESCRIPTION
@@ -73,9 +73,9 @@ Wget/curl are the best solution to update the ``root.hint``. See:
 - <http://lists.opensuse.org/opensuse/2008-05/msg01755.html> - how to post it so Security picks it up
 - <http://lists.opensuse.org/opensuse/2008-05/msg01658.html> - use ftp
 
-The change in root servers resulted in a `security bug fix<https://bugzilla.novell.com/show_bug.cgi?id=392173>`_, but that took a while.
+The change in root servers resulted in a `security bug fix <https://bugzilla.novell.com/show_bug.cgi?id=392173>`_, but that took a while.
 
-`This script<http://www.tldp.org/HOWTO/DNS-HOWTO-8.html>`_ gets it through dig too, but not the best solution.
+`This script <http://www.tldp.org/HOWTO/DNS-HOWTO-8.html>`_ gets it through dig too, but not the best solution.
 
 Neither ftp, nor http are really secure to get these files from <http://ftp.internic.net/domain/>:
 
@@ -86,7 +86,7 @@ Neither ftp, nor http are really secure to get these files from <http://ftp.inte
 - <http://www.internic.net/domain/named.cache>
 - <http://www.internic.net/domain/named.root>
 
-An alternative might be to get the ``.sig`` there in in a secure way, then `use gpg to verify the signatures<http://www.linuxquestions.org/questions/linux-newbie-8/md5-and-sig-537564/>`_ (as `gpg seems more secure than md5 signatures<http://stackoverflow.com/questions/15194779/md5-vs-gpg-signature/15195785#15195785>`_).
+An alternative might be to get the ``.sig`` there in in a secure way, then `use gpg to verify the signatures <http://www.linuxquestions.org/questions/linux-newbie-8/md5-and-sig-537564/>`_ (as `gpg seems more secure than md5 signatures <http://stackoverflow.com/questions/15194779/md5-vs-gpg-signature/15195785#15195785>`_).
 
 This is more difficult than it looks like, as you need their GPG public key with ID ``0BD07395``.
 
@@ -205,73 +205,73 @@ In about 20 gigabyte disk space, you can "Minimal server selection (text mode)" 
 
 These are the **patterns** I extended with:
 
-- `Enhanced Base System<https://software.opensuse.org/package/patterns-openSUSE-enhanced_base>`_
-- `Console Tools<https://www.google.com/search?q="Console+Tools"+site%3Aopensuse.org>`_
-- `File Server<https://www.google.com/search?q="File+Server"+site%3Aopensuse.org>`_
-- `Network Administration<https://www.google.com/search?q="Network+Administration"+site%3Aopensuse.org>`_
-- `Mail and News Server<https://www.google.com/search?q="Mail+and+News+Server"+site%3Aopensuse.org>`_
-- `Web and LAMP Server<https://www.google.com/search?q="Web+and+LAMP+Server"+site%3Aopensuse.org>`_
-- `Internet Gateway<https://www.google.com/search?q="Internet+Gateway"+site%3Aopensuse.org>`_
-- `DHCP and DNS Server<https://www.google.com/search?q="DHCP+and+DNS+Server"+site%3Aopensuse.org>`_
+- `Enhanced Base System <https://software.opensuse.org/package/patterns-openSUSE-enhanced_base>`_
+- `Console Tools <https://www.google.com/search?q="Console+Tools"+site%3Aopensuse.org>`_
+- `File Server <https://www.google.com/search?q="File+Server"+site%3Aopensuse.org>`_
+- `Network Administration <https://www.google.com/search?q="Network+Administration"+site%3Aopensuse.org>`_
+- `Mail and News Server <https://www.google.com/search?q="Mail+and+News+Server"+site%3Aopensuse.org>`_
+- `Web and LAMP Server <https://www.google.com/search?q="Web+and+LAMP+Server"+site%3Aopensuse.org>`_
+- `Internet Gateway <hhttps://www.google.com/search?q="Internet+Gateway"+site%3Aopensuse.org>`_
+- `DHCP and DNS Server <https://www.google.com/search?q="DHCP+and+DNS+Server"+site%3Aopensuse.org>`_
 
 After that I added some **packages** too:
 
-.. sidebar::
+.. note::
 
-  Note that some of these won't install just yet, see the `text-mode installation and conflicts<text-mode-installation-and-conflicts>`_ section.
+  Note that some of these won't install just yet, see the `text-mode installation and conflicts <text-mode-installation-and-conflicts>`_ section.
 
-- `etckeeper<https://software.opensuse.org/package/etckeeper>`_
-- `syslogd<https://software.opensuse.org/package/syslogd>`_
-- `emacs<https://software.opensuse.org/package/emacs>`_
-- `joe<https://software.opensuse.org/package/joe>`_
-- `nano<https://software.opensuse.org/package/nano>`_
-- `pico<https://software.opensuse.org/package/pico>`_
-- `vim<https://software.opensuse.org/package/vim>`_
-- `dovecot<https://software.opensuse.org/package/dovecot>`_
-- `mutt<https://software.opensuse.org/package/mutt>`_
-- `par<https://software.opensuse.org/package/par>`_
-- `make<https://software.opensuse.org/package/make>`_
-- `monit<https://software.opensuse.org/package/monit>`_
-- `mc<https://software.opensuse.org/package/mc>`_
-- `mirror<https://software.opensuse.org/package/mirror>`_
-- `p7zip<https://software.opensuse.org/package/p7zip>`_
-- `zip<https://software.opensuse.org/package/zip>`_
-- `zsync<https://software.opensuse.org/package/zsync>`_
-- `git<https://software.opensuse.org/package/git>`_
-- `mercurial<https://software.opensuse.org/package/mercurial>`_*
-- `perl<https://software.opensuse.org/package/perl>`_
-- `php<https://software.opensuse.org/package/php>`_*
-- `apache2-mod_php5<https://software.opensuse.org/package/apache2-mod_php5>`_*
-- `python<https://software.opensuse.org/package/python>`_*
-- `dropbox<https://software.opensuse.org/package/dropbox>`_*
-- `ca-certificates-cacert<https://software.opensuse.org/package/ca-certificates-cacert>`_
-- `bridge-utils<https://software.opensuse.org/package/bridge-utils>`_
-- `fping<https://software.opensuse.org/package/fping>`_
-- `ftp<https://software.opensuse.org/package/ftp>`_
-- `gftp<https://software.opensuse.org/package/gftp>`_
-- `icecast<https://software.opensuse.org/package/icecast>`_
-- `links<https://software.opensuse.org/package/links>`_
-- `iptraf-ng<https://software.opensuse.org/package/iptraf-ng>`_
-- `shellinabox<https://software.opensuse.org/package/shellinabox>`_
-- `kvirustotal<https://software.opensuse.org/package/kvirustotal>`_
-- `monit<https://software.opensuse.org/package/monit>`_
+- `etckeeper <https://software.opensuse.org/package/etckeeper>`_
+- `syslogd <https://software.opensuse.org/package/syslogd>`_
+- `emacs <https://software.opensuse.org/package/emacs>`_
+- `joe <https://software.opensuse.org/package/joe>`_
+- `nano <https://software.opensuse.org/package/nano>`_
+- `pico <https://software.opensuse.org/package/pico>`_
+- `vim <https://software.opensuse.org/package/vim>`_
+- `dovecot <https://software.opensuse.org/package/dovecot>`_
+- `mutt <https://software.opensuse.org/package/mutt>`_
+- `par <https://software.opensuse.org/package/par>`_
+- `make <https://software.opensuse.org/package/make>`_
+- `monit <https://software.opensuse.org/package/monit>`_
+- `mc <https://software.opensuse.org/package/mc>`_
+- `mirror <https://software.opensuse.org/package/mirror>`_
+- `p7zip <https://software.opensuse.org/package/p7zip>`_
+- `zip <https://software.opensuse.org/package/zip>`_
+- `zsync <https://software.opensuse.org/package/zsync>`_
+- `git <https://software.opensuse.org/package/git>`_
+- `mercurial <hhttps://software.opensuse.org/package/mercurial>`_\*
+- `perl <hhttps://software.opensuse.org/package/perl>`_
+- `php <https://software.opensuse.org/package/php>`_\*
+- `apache2-mod_php5 <https://software.opensuse.org/package/apache2-mod_php5>`_\*
+- `python <https://software.opensuse.org/package/python>`_\*
+- `dropbox <https://software.opensuse.org/package/dropbox>`_\*
+- `ca-certificates-cacert <https://software.opensuse.org/package/ca-certificates-cacert>`_
+- `bridge-utils <https://software.opensuse.org/package/bridge-utils>`_
+- `fping <https://software.opensuse.org/package/fping>`_
+- `ftp <https://software.opensuse.org/package/ftp>`_
+- `gftp <https://software.opensuse.org/package/gftp>`_
+- `icecast <https://software.opensuse.org/package/icecast>`_
+- `links <https://software.opensuse.org/package/links>`_
+- `iptraf-ng <https://software.opensuse.org/package/iptraf-ng>`_
+- `shellinabox <https://software.opensuse.org/package/shellinabox>`_
+- `kvirustotal <hhttps://software.opensuse.org/package/kvirustotal>`_
+- `monit <https://software.opensuse.org/package/monit>`_
 
 These packages were already installed:
 
-- `info<https://software.opensuse.org/package/info>`_
-- `man<https://software.opensuse.org/package/man>`_
-- `man-pages<https://software.opensuse.org/package/man-pages>`_
-- `mc<https://software.opensuse.org/package/mc>`_
-- `w3m<https://software.opensuse.org/package/w3m>`_
+- `info <https://software.opensuse.org/package/info>`_
+- `man <https://software.opensuse.org/package/man>`_
+- `man-pages <https://software.opensuse.org/package/man-pages>`_
+- `mc <https://software.opensuse.org/package/mc>`_
+- `w3m <https://software.opensuse.org/package/w3m>`_
 
 Didn't yet install:
 
-- `bash-doc<https://software.opensuse.org/package/bash-doc>`_*
-- `samba-doc<https://software.opensuse.org/package/samba-doc>`_*
+- `bash-doc <https://software.opensuse.org/package/bash-doc>`_\*
+- `samba-doc <https://software.opensuse.org/package/samba-doc>`_\*
 
-.. sidebar::
+.. note::
 
-  If you want to know `which package provides a certain file<http://unix.stackexchange.com/questions/158041/how-do-i-find-a-package-that-provides-a-given-file-in-opensuse>`_, then use this command::
+  If you want to know `which package provides a certain file <http://unix.stackexchange.com/questions/158041/how-do-i-find-a-package-that-provides-a-given-file-in-opensuse>`_, then use this command::
 
       zypper search --provides --match-exact hg
 
@@ -280,7 +280,7 @@ Didn't yet install:
 ``halt`` will fail, use ``halt -p`` to halt under ESXi 5.1
 ----------------------------------------------------------
 
-A long time ago, `I wrote that<http://wiert.me/2012/12/30/opensuse-12-x-a-plain-halt-will-not-shutdown-the-system-properly/>`_ ``halt`` fails, but ``halt -p`` succeeds when running under VMware ESXi 5.1 (I don't run physical boxes any more).
+A long time ago, `I wrote that <http://wiert.me/2012/12/30/opensuse-12-x-a-plain-halt-will-not-shutdown-the-system-properly/>`_ ``halt`` fails, but ``halt -p`` succeeds when running under VMware ESXi 5.1 (I don't run physical boxes any more).
 
 This still fails under OpenSuSE Tumbleweed 13.2.
 
@@ -289,18 +289,18 @@ text-mode installation and conflicts
 
 The easiest way to start a headless install is picking "Minimal server selection (text mode)" during installation.
 
-The problem however is that this indeed minimal. It is enforced by the  ``patterns-openSUSE-minimal_base-conflicts`` [#patterns-openSUSE-minimal_base-conflicts]_ pattern which is part of the minimal install.
+The problem however is that this indeed minimal. It is enforced by the ``patterns-openSUSE-minimal_base-conflicts`` [#patterns-openSUSE-minimal_base-conflicts]_ pattern which is part of the minimal install.
 
 It prevents some packages to install like ``mercurial``, ``php`` and ``python``.
 
-To prevent that, remove the ``patterns-openSUSE-minimal_base-conflicts`` package specific for the OpenSuSE version you use [#removeconflicts]_.
+To prevent that, remove the ``patterns-openSUSE-minimal_base-conflicts`` package specific for the OpenSuSE version you use [#removeconflicts_footnote]_.
 
 Do this **after** you've selected the patterns you want to install. Otherwise recommended packages can be installed potentially blowing your size.
 
 add git-extras
 --------------
 
-See the `git-extras Install documentation<>https://github.com/tj/git-extras/blob/master/Installation.md`_ for why/how.
+See the `git-extras Install documentation <https://github.com/tj/git-extras/blob/master/Installation.md>`_ for why/how.
 
 Just run this command::
 
@@ -312,7 +312,7 @@ configuration
 getting started with etckeeper
 ------------------------------
 
-A while ago ``etckeeper`` (which is `open source on GitHub<https://github.com/joeyh/etckeeper>`_) was `requested<http://joeyh.name/code/etckeeper/>`_ to be put into the factory repository, and now `is<https://software.opensuse.org/package/etckeeper>`_.
+A while ago ``etckeeper`` (which is `open source on GitHub <https://github.com/joeyh/etckeeper>`_) was `requested <http://joeyh.name/code/etckeeper/>`_ to be put into the factory repository, and now `is <https://software.opensuse.org/package/etckeeper>`_.
 
 This is how I got started:
 
@@ -331,9 +331,9 @@ This is how I got started:
     git push -u origin --all # pushes up the repo and its refs for the first time
     git push -u origin --tags # pushes up any tags
 
-.. sidebar::
+.. note::
 
-  `etckeeper<http://etckeeper.branchable.com/>`_ is a collection of tools to let ``/etc`` be stored in a git, mercurial, bazaar or darcs repository. This lets you use git to review or revert changes that were made to ``/etc``. Or even push the repository elsewhere for backups or cherry-picking configuration changes.
+  `etckeeper <http://etckeeper.branchable.com/>`__ is a collection of tools to let ``/etc`` be stored in a git, mercurial, bazaar or darcs repository. This lets you use git to review or revert changes that were made to ``/etc``. Or even push the repository elsewhere for backups or cherry-picking configuration changes.
 
   It hooks into package managers like apt to automatically commit changes made to ``/etc`` during package upgrades. It tracks file metadata that git does not normally support, but that is important for /etc, such as the permissions of ``/etc/shadow``.
 
@@ -342,7 +342,7 @@ This is how I got started:
 removing hardlinks from the ``etckeeper`` repository
 ----------------------------------------------------
 
-Inspired by `this answer<http://unix.stackexchange.com/questions/63627/excluding-files-in-etckeeper-with-gitignore-doesnt-work/63628#63628>`_ to get rid of these messages during `etckeeper commit<https://github.com/joeyh/etckeeper#what-etckeeper-does>`_ to delete many `hardlinked bootsplash files<http://lists.opensuse.org/opensuse-factory/2014-06/msg00115.html>`_::
+Inspired by `this answer <http://unix.stackexchange.com/questions/63627/excluding-files-in-etckeeper-with-gitignore-doesnt-work/63628#63628>`_ to get rid of these messages during `etckeeper commit <https://github.com/joeyh/etckeeper#what-etckeeper-does>`_ to delete many `hardlinked bootsplash files <http://lists.opensuse.org/opensuse-factory/2014-06/msg00115.html>`_::
 
     etckeeper warning: hardlinked files could cause problems with git:
     bootsplash/themes/openSUSE/bootloader/af.tr
@@ -404,16 +404,16 @@ This will generate ``/etc/sudoers.YaST2.save`` add a line to ``/etc/sudoers``::
 
     jeroenp	ALL = (ALL) NOPASSWD:ALL
 
-.. sidebar::
+.. note::
 
-  Note that `each ALL entry has a different meaning<http://superuser.com/questions/357467/what-do-the-alls-in-the-line-admin-all-all-all-in-ubuntus-etc-sudoers>`_.
+  Note that `each ALL entry has a different meaning <http://superuser.com/questions/357467/what-do-the-alls-in-the-line-admin-all-all-all-in-ubuntus-etc-sudoers>`_.
 
 configuring ssh
 ---------------
 
-Up until OpenSuSE 12.x, there was yast2-sshd. It is `still in the documentation<https://www.suse.com/documentation/opensuse114/book_security/data/sec_ssh_yast.html>`_, but it `has been orphaned<http://lists.opensuse.org/opensuse/2013-11/msg00751.html>`_ so you need to configure it manually. It isn't hard: below is the diff of the ``/etc/sshd_config`` file.
+Up until OpenSuSE 12.x, there was yast2-sshd. It is `still in the documentation <https://www.suse.com/documentation/opensuse114/book_security/data/sec_ssh_yast.html>`_, but it `has been orphaned <http://lists.opensuse.org/opensuse/2013-11/msg00751.html>`_ so you need to configure it manually. It isn't hard: below is the diff of the ``/etc/sshd_config`` file.
 
-Note that when manually changing sshd configuration options, you can test (``-t``) or test-extended (``-T``) `like this<https://www.ixsystems.com/whats-new/how-secure-can-secure-shell-ssh-be-basic-configuration-of-openssh/>`_::
+Note that when manually changing sshd configuration options, you can test (``-t``) or test-extended (``-T``) `like this <https://www.ixsystems.com/whats-new/how-secure-can-secure-shell-ssh-be-basic-configuration-of-openssh/>`_::
 
     sshd –t
     sshd -T
@@ -546,9 +546,9 @@ This is what the diff looks like::
     +Ciphers chacha20-poly1305@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
     +MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com
 
-.. sidebar::
+.. note::
 
-  In the diff are steps from `SSH Server Configuration rhel-lockdown<http://people.redhat.com/swells/mea/SECSCAN-FirstRun/sshd_config.htm>`_, `Hardening your SSH server (opensshd_config)<http://wp.kjro.se/2013/09/06/hardening-your-ssh-server-opensshd_config/>`_ and the script behind  `http://kacper.blog.redpill-linpro.com/archives/702<http://kacper.blog.redpill-linpro.com/archives/702>`_ from `gone/ssh at github · comotion/gone<https://github.com/comotion/gone/blob/github/modules/ssh>`_. Note that the ``sandbox`` value for ``UsePrivilegeSeparation`` is even `more secure<http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5?query=sshd_config&sec=5>`_ than the ``yes`` value.
+  In the diff are steps from `SSH Server Configuration rhel-lockdown <http://people.redhat.com/swells/mea/SECSCAN-FirstRun/sshd_config.htm>`_, `Hardening your SSH server (opensshd_config) <http://wp.kjro.se/2013/09/06/hardening-your-ssh-server-opensshd_config/>`_ and the script behind  `http://kacper.blog.redpill-linpro.com/archives/702 <http://kacper.blog.redpill-linpro.com/archives/702>`_ from `gone/ssh at github · comotion/gone <https://github.com/comotion/gone/blob/github/modules/ssh>`_. Note that the ``sandbox`` value for ``UsePrivilegeSeparation`` is even `more secure <http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5?query=sshd_config&sec=5>`_ than the ``yes`` value.
 
 Now ensure that the firewall allows for ssh:
 
@@ -574,7 +574,7 @@ The script is based on <https://github.com/mdmower/bash-no-ip-updater.git>.
 
 Create the below ``/etc/noip.com.install.sh`` script with ``chmod 700``, then run it to install.
 
-One of the things it does is move the config file outside the repository (`I've made a pull-request for that<https://github.com/mdmower/bash-no-ip-updater/pull/2>`_) as it contains credentials.
+One of the things it does is move the config file outside the repository (`I've made a pull-request for that <https://github.com/mdmower/bash-no-ip-updater/pull/2>`_) as it contains credentials.
 
 Full source is at <https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3>::
 
@@ -687,7 +687,7 @@ But first the firewall portion:
 
 5. Quit ``yast``
 
-An `ntpq<http://doc.ntp.org/4.2.8/ntpq.html>`_ verification shows the client portion works fine (you `could do this in the past from rcntpd status<http://linux.derkeiler.com/Mailing-Lists/SuSE/2013-02/msg00442.html>`_, see below)::
+An `ntpq <http://doc.ntp.org/4.2.8/ntpq.html>`_ verification shows the client portion works fine (you `could do this in the past from rcntpd status <http://linux.derkeiler.com/Mailing-Lists/SuSE/2013-02/msg00442.html>`_, see below)::
 
     revue:/etc # ntpq -p
          remote           refid      st t when poll reach   delay   offset  jitter
@@ -697,13 +697,13 @@ An `ntpq<http://doc.ntp.org/4.2.8/ntpq.html>`_ verification shows the client por
     +arethusa.tweake 193.190.230.65   2 u  131  128  377    2.795    0.047   0.066
     -srv.nl.margash. 113.133.43.202   3 u   58  128  377    3.371    0.919   0.390
 
-But it won't run as a server just yet, as the deprecated `ntpdc<http://doc.ntp.org/4.2.8/ntpdc.html>`_ shows::
+But it won't run as a server just yet, as the deprecated `ntpdc <http://doc.ntp.org/4.2.8/ntpdc.html>`_ shows::
 
     revue:/etc # ntpdc -p
     localhost: timed out, nothing received
     ***Request timed out
 
-This is also shown when running `rcntpd status` where you get message containing `"localhost: timed out, nothing received"<https://www.google.com/search?q="localhost%3A+timed+out%2C+nothing+received">`_::
+This is also shown when running `rcntpd status` where you get message containing `"localhost: timed out, nothing received" <https://www.google.com/search?q="localhost%3A+timed+out%2C+nothing+received">`_::
 
     revue:/etc # rcntpd status
     ● ntpd.service - NTP Server Daemon
@@ -729,11 +729,11 @@ This is also shown when running `rcntpd status` where you get message containing
                                                       quit
     May 26 20:45:59 revue systemd[1]: Started NTP Server Daemon.
 
-It took me quite a while to figure out why these two show failures. It's because ``ntpdc`` is deprecated, and it is `used by conf.start-ntpd<https://build.opensuse.org/package/view_file/openSUSE:Factory/ntp/conf.start-ntpd?expand=1>`_. Too bad it is so hard to get the actual source DVCS of OpenSuSE so I don't know the history of that file.
+It took me quite a while to figure out why these two show failures. It's because ``ntpdc`` is deprecated, and it is `used by conf.start-ntpd <https://build.opensuse.org/package/view_file/openSUSE:Factory/ntp/conf.start-ntpd?expand=1>`_. Too bad it is so hard to get the actual source DVCS of OpenSuSE so I don't know the history of that file.
 
-.. sidebar::
+.. note::
 
-  For the tests, I got inspired by `How to Install and Configure Linux NTP Server and Client.<http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/>`_
+  For the tests, I got inspired by `How to Install and Configure Linux NTP Server and Client <http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/>`_
 
 
 Configuring ``samba``
@@ -765,12 +765,12 @@ and add these configuration files:
 - ``/etc/systemd/system/multi-user.target.wants/nmb.service``
 - ``/etc/systemd/system/multi-user.target.wants/smb.service``
 
-Run these commands to `test if the basic configuration was successful<https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312>`_ with `testclient<https://www.samba.org/samba/docs/man/manpages/testparm.1.html>`_ and `https://www.samba.org/samba/docs/man/manpages/smbclient.1.html<>`_::
+Run these commands to `test if the basic configuration was successful <hhttps://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312>`_ with `testclient <https://www.samba.org/samba/docs/man/manpages/testparm.1.html>`_ and `https://www.samba.org/samba/docs/man/manpages/smbclient.1.html <h>`_::
 
     testparm /etc/samba/smb.conf
     smbclient -L `hostname`
 
-.. sidebar::
+.. note::
 
   During ``smbclient`` you will have to type your unix password.
 
@@ -784,12 +784,12 @@ Now it is time to test the smb connectivity as well::
   Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.2.1-3406-SUSE-oS13.2-x86_64]
   tree connect failed: NT_STATUS_ACCESS_DENIED
 
-.. sidebar::
+.. note::
 
-  Do **not** try to solve the `NT_STATUS_ACCESS_DENIED issue<https://forum.manjaro.org/index.php?topic=19252.0>`_ by enabling ``client lanman auth`` as this makes your system less secure (`LANMAN authentication can be cracked quite easily<https://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html#idp59214864>`_).
+  Do **not** try to solve the `NT_STATUS_ACCESS_DENIED issue <https://forum.manjaro.org/index.php?topic=19252.0>`_ by enabling ``client lanman auth`` as this makes your system less secure (`LANMAN authentication can be cracked quite easily <hhttps://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html#idp59214864>`_).
 
 The first think to check is the samba password database, as samba uses different authentication database than the standard linux one (hence the linux password above).
-Check it with `pdbedit<https://www.samba.org/samba/docs/man/manpages/pdbedit.8.html>`_ like this::
+Check it with `pdbedit <https://www.samba.org/samba/docs/man/manpages/pdbedit.8.html>`_ like this::
 
     pdbedit --list --verbose jeroenp
 
@@ -822,26 +822,26 @@ If it shows ``Username not found!`` then you need to add the user:
     Bad password count  : 0
     Logon hours         : FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 
-.. sidebar::
+.. note::
 
-  Do **not** use `smbpasswd<https://www.samba.org/samba/docs/man/manpages/smbpasswd.8.html>`_ to add the user as that only supports the ``smbpasswd`` database format, `whereas ``pdbedit`` supports any password backend<http://unix.stackexchange.com/questions/107032/deleting-a-samba-user-pbdedit-vs-smbpasswd-whats-the-difference/107033#107033>`_.
+  Do **not** use `smbpasswd <https://www.samba.org/samba/docs/man/manpages/smbpasswd.8.html>`_ to add the user as that only supports the ``smbpasswd`` database format, `whereas ``pdbedit`` supports any password backend <http://unix.stackexchange.com/questions/107032/deleting-a-samba-user-pbdedit-vs-smbpasswd-whats-the-difference/107033#107033>`_.
 
 Now do final checks::
 
     smbclient --list `hostname` --user jeroenp
     smbclient //`hostname`/jeroenp -U jeroenp
 
-One day: `syncing between the Samba password and system password storage<https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418>`_ is setup
--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+One day: `syncing between the Samba password and system password storage <https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418>`_ is setup
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-See `Use SMB Information for Linux Authentication<https://www.google.com/search?q="Use+SMB+Information+for+Linux+Authentication">`_.
+See `Use SMB Information for Linux Authentication <https://www.google.com/search?q="Use+SMB+Information+for+Linux+Authentication">`_.
 
 Fixing password synchronisation?
 --------------------------------
 
-.. sidebar::
+.. note::
 
-  Background reading (web-archive link as the site itself is down): `Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares.<http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html>`_.
+  Background reading (web-archive link as the site itself is down): `Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares <http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html>`_.
 
 configuring named/BIND
 ----------------------
@@ -1007,7 +1007,7 @@ Finally stop/start the named service::
     rcnamed start
     rcnamed status
 
-.. sidebar::
+.. note::
 
     Check if your zone files are correct by executing ``named-checkzone``.
 
@@ -1019,16 +1019,16 @@ Finally stop/start the named service::
 
     See:
 
-    - `Check BIND – DNS Server configuration file for errors with named-checkconf tools<http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html>`_
-    - `Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool<http://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/>`_
+    - `Check BIND – DNS Server configuration file for errors with named-checkconf tools <http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html>`_
+    - `Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool <hhttp://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/>`_
 
 Ensure that ``/var/lib/named/master`` gets synced to ``/etc/named/master``
 --------------------------------------------------------------------------
 
 Based on these links, I've added a sync script.
 
-- `etckeeper configuration documentation<https://github.com/joeyh/etckeeper#configuration>`_
-- `unix: using variables<http://www.tutorialspoint.com/unix/unix-using-variables.htm>`_
+- `etckeeper configuration documentation <https://github.com/joeyh/etckeeper#configuration>`_
+- `unix: using variables <http://www.tutorialspoint.com/unix/unix-using-variables.htm>`_
 
 I stored it in ``/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh``::
 
@@ -1062,13 +1062,13 @@ Add this to ``/etc/bash.bashrc.local``::
 Configuring ``monit`` monitoring service
 ----------------------------------------
 
-At first, `monit<https://software.opensuse.org/package/monit>`_ won't run::
+At first, `monit <https://software.opensuse.org/package/monit>`_ won't run::
 
     revue:~ # rcmonit restart
     redirecting to systemctl restart monit.service
     Failed to restart monit.service: Unit monit.service failed to load: No such file or directory.
 
-Even though it is an offical package, it is missing the `.service file<http://www.freedesktop.org/software/systemd/man/systemd.service.html>`_.
+Even though it is an offical package, it is missing the `.service file <http://www.freedesktop.org/software/systemd/man/systemd.service.html>`_.
 
 That is easy to fix by downloading and modifying the ``monit.service`` template https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in::
 
@@ -1104,7 +1104,7 @@ That is easy to fix by downloading and modifying the ``monit.service`` template 
     systemctl status monit.service
     systemctl start monit.service
 
-But it still doesn't start, as `journalctl<https://www.google.com/search?q=journalctl>`_ (the logging part part of `systemd<https://en.wikipedia.org/wiki/Systemd>`_) shows::
+But it still doesn't start, as `journalctl <https://www.google.com/search?q=journalctl>`_ (the logging part part of `systemd <https://en.wikipedia.org/wiki/Systemd>`_) shows::
 
     revue:/etc # journalctl _COMM=monit
     -- Logs begin at Sat 2015-06-06 10:05:54 CEST, end at Sat 2015-06-06 15:00:01 CEST. --
@@ -1119,14 +1119,14 @@ But it still doesn't start, as `journalctl<https://www.google.com/search?q=journ
     Jun 06 10:01:24 revue monit[1551]: No daemon process found
     Jun 06 10:01:24 revue monit[1551]: No daemon process found
 
-.. sidebar::
+.. note::
 
-  Note that `journalctl<>`_ can feel a bit complex for casual users, so to get ``/var/log/messages`` back you might want to install ``rsyslog`` as explained by `Whither /var/log/messages?<https://forums.opensuse.org/showthread.php/505084-Whither-var-log-messages>`_.
+  Note that `journalctl <https://www.google.com/search?q=journalctl>`_ can feel a bit complex for casual users, so to get ``/var/log/messages`` back you might want to install ``rsyslog`` as explained by `Whither /var/log/messages? <https://forums.opensuse.org/showthread.php/505084-Whither-var-log-messages>`_.
 
   For a comparison, read:
 
-  - `Why journalctl is cool and syslog will survive for another decade « Luc de Louw's Blog.<http://blog.delouw.ch/2013/07/24/why-journalctl-is-cool-and-syslog-will-survive-for-another-decade/>`_.
-  - `3.8 Configuring and Using System Logging<https://docs.oracle.com/cd/E52668_01/E54670/html/ol7-log-sec.html>`_.
+  - `Why journalctl is cool and syslog will survive for another decade « Luc de Louw's Blog <http://blog.delouw.ch/2013/07/24/why-journalctl-is-cool-and-syslog-will-survive-for-another-decade/>`_.
+  - `3.8 Configuring and Using System Logging <https://docs.oracle.com/cd/E52668_01/E54670/html/ol7-log-sec.html>`_.
 
 A quick look into ``/etc/monitrc`` reveals the initialisation of the ``monit`` package forgot to create ``/run/monit/.monit.id``::
 
@@ -1134,7 +1134,7 @@ A quick look into ``/etc/monitrc`` reveals the initialisation of the ``monit`` p
     ## default the file is placed in $HOME/.monit.id.
     set idfile /run/monit/.monit.id
 
-The cause is that the ``idfile`` must both exist (see the error message) `and have a unique id in it<https://mmonit.com/wiki/MMonit/FAQ#monitid>`_.
+The cause is that the ``idfile`` must both exist (see the error message) `and have a unique id in it <https://mmonit.com/wiki/MMonit/FAQ#monitid>`_.
 
 If it exists but does not have a valid id, then you get this error::
 
@@ -1164,7 +1164,7 @@ Both issues is easily fixed by creating and running this ``/etc/monit-create-idf
     echo y | monit --resetid
     cat $ID_FILE && echo
 
-Finally we caome to the last error: some more replacement needs to take place to prevent this error because ``monit`` cannot find its `pid<http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204>`_ file::
+Finally we caome to the last error: some more replacement needs to take place to prevent this error because ``monit`` cannot find its `pid <http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204>`_ file::
 
     Jun 06 16:20:48 revue monit[4760]: Error opening pidfile '@@PIDDIR@@/monit.pid' for writing -- No such file or directory
     Jun 06 16:20:48 revue monit[4760]: Monit daemon died
@@ -1185,10 +1185,10 @@ This is then fixed by creating and running this ``/etc/monitrc-fix.sh``::
     systemctl status monit.service
     systemctl start monit.service
 
-More ``monit`` configuration tips (including setting up `HTTPS<https://en.wikipedia.org/wiki/HTTPS>`_ with a `self-signed certificate<https://en.wikipedia.org/wiki/Self-signed_certificate>`_ - imporant as ``monit`` uses plain username/password `http basic authentication<https://en.wikipedia.org/wiki/Basic_access_authentication>`_) are at:
+More ``monit`` configuration tips (including setting up `HTTPs <https://en.wikipedia.org/wiki/HTTPS>`_ with a `self-signed certificate <https://en.wikipedia.org/wiki/Self-signed_certificate>`_ - imporant as ``monit`` uses plain username/password `http basic authentication <https://en.wikipedia.org/wiki/Basic_access_authentication>`_) are at:
 
-- `How to set up server monitoring system with Monit - Xmodulo<http://xmodulo.com/server-monitoring-system-monit.html>`_.
-- `Install Monit on openSUSE 13.2<http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html>`_.
+- `How to set up server monitoring system with Monit - Xmodulo <http://xmodulo.com/server-monitoring-system-monit.html>`_.
+- `Install Monit on openSUSE 13.2 <http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html>`_.
 
 Configuring apache2 for the first time
 --------------------------------------
@@ -1213,9 +1213,9 @@ Configuring apache2 for the first time
 
 .. sidebar:: Notes when updating (vhosts) configuration from Apache 2.2 to Apache 2.4:
 
-  Instead of using `mod_access_compat<http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html>`_ modify the configuration files to use the directives in `mod_authz_host<http://httpd.apache.org/docs/2.4/mod/mod_authz_host.html>`_.
+  Instead of using `mod_access_compat <http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html>`_ modify the configuration files to use the directives in `mod_authz_host <http://httpd.apache.org/docs/2.4/mod/mod_authz_host.html>`_.
 
-  See `Upgrading to 2.4 from 2.2<http://httpd.apache.org/docs/2.4/upgrading.html>`_
+  See `Upgrading to 2.4 from 2.2 <http://httpd.apache.org/docs/2.4/upgrading.html>`_
 
   Replace the lines::
 
@@ -1237,24 +1237,23 @@ Configuring apache2 for the first time
 
   More background info:
 
-  - Denying: `Apache 2.4 Upgrade and the “Invalid Command ‘Order'” Error<https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/#sthash.u4jTuZ7o.dpuf<https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/>`_
-  - Granting: `Upgrading to Apache 2.4 from Apache HTTP Server 2.2.x<http://brianflove.com/2014/04/23/upgrading-to-apache-2-4-from-apache-http-server-2-2-x/>`_
+  - Denying: `Apache 2.4 Upgrade and the "Invalid Command 'Order'" Error <https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/>`_
+  - Granting: `Upgrading to Apache 2.4 from Apache HTTP Server 2.2.x <http://brianflove.com/2014/04/23/upgrading-to-apache-2-4-from-apache-http-server-2-2-x/>`_
 
 
-  Common problems when upgrading
-  ------------------------------
+  **Common problems when upgrading**
 
   - Startup errors:
 
-    - ``Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration`` - load module `mod_unixd<http://httpd.apache.org/docs/2.4/mod/mod_unixd.html>`_
-    - ``Invalid command 'Require', perhaps misspelled or defined by a module not included in the server configuration``, or ``Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration`` - load module `mod_access_compat<http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html>`_, or update configuration to 2.4 authorization directives.
-    - ``Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf`` - remove `DefaultType<http://httpd.apache.org/docs/2.4/mod/core.html#defaulttype>`_ and replace with other configuration settings.
-    - ``Invalid command 'AddOutputFilterByType', perhaps misspelled or defined by a module not included in the server configuration`` - `AddOutputFilterByType<http://httpd.apache.org/docs/2.4/mod/mod_filter.html#addoutputfilterbytype>`_ has moved from the core to mod_filter, which must be loaded.
+    - ``Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration`` - load module `mod_unixd <http://httpd.apache.org/docs/2.4/mod/mod_unixd.html>`_
+    - ``Invalid command 'Require', perhaps misspelled or defined by a module not included in the server configuration``, or ``Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration`` - load module `mod_access_compat <http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html>`_, or update configuration to 2.4 authorization directives.
+    - ``Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf`` - remove `DefaultType <http://httpd.apache.org/docs/2.4/mod/core.html#defaulttype>`_ and replace with other configuration settings.
+    - ``Invalid command 'AddOutputFilterByType', perhaps misspelled or defined by a module not included in the server configuration`` - `AddOutputFilterByType <http://httpd.apache.org/docs/2.4/mod/mod_filter.html#addoutputfilterbytype>`_ has moved from the core to mod_filter, which must be loaded.
 
   - Errors serving requests:
 
-    - ``configuration error: couldn't check user: /path`` - load module `mod_authn_core<http://httpd.apache.org/docs/2.4/mod/mod_authn_core.html>`_.
-    - ``.htaccess files aren't being processed`` - Check for an appropriate `AllowOverride<http://httpd.apache.org/docs/2.4/mod/core.html#allowoverride>`_ directive; the default changed to ``None`` in 2.4.
+    - ``configuration error: couldn't check user: /path`` - load module `mod_authn_core <http://httpd.apache.org/docs/2.4/mod/mod_authn_core.html>`_.
+    - ``.htaccess files aren't being processed`` - Check for an appropriate `AllowOverride <http://httpd.apache.org/docs/2.4/mod/core.html#allowoverride>`_ directive; the default changed to ``None`` in 2.4.
 
 Getting and running ``testssl.sh``
 ----------------------------------
@@ -1283,14 +1282,14 @@ Installation is simple:
 
 ----------------------------------------------------------------------------
 
-.. [#opensuse] I keep using the old `SuSE <https://en.wikipedia.org/wiki/SUSE>`_ writing, I'm an old fart.
+.. [#opensuse_footnote] I keep using the old `SuSE <https://en.wikipedia.org/wiki/SUSE>`_ writing, I'm an old fart.
 
-.. [#tumbleweed] `Tumbleweed <https://en.opensuse.org/Portal:Tumbleweed>`_ is the rolling release of OpenSuSE.
+.. [#tumbleweed_footnote] `Tumbleweed <https://en.opensuse.org/Portal:Tumbleweed>`_ is the rolling release of OpenSuSE.
 
-.. [#revue] See `Snip en Snap revue<https://en.wikipedia.org/wiki/Snip_en_Snap>`_.
+.. [#revue_footnote] See `Snip en Snap revue <https://en.wikipedia.org/wiki/Snip_en_Snap>`_.
 
-.. [#headless] `Headless<https://en.wikipedia.org/wiki/Headless_software>`_ as in no GUI, not as in `Embedded System<https://en.wikipedia.org/wiki/Embedded_system>`_. So there is a text `console<https://en.wikipedia.org/wiki/System_console>`_, and remote `ssh<https://en.wikipedia.org/wiki/Secure_Shell>`_.
+.. [#headless_footnote] `Headless <https://en.wikipedia.org/wiki/Headless_software>`_ as in no GUI, not as in `Embedded System <https://en.wikipedia.org/wiki/Embedded_system>`_. So there is a text `console <https://en.wikipedia.org/wiki/System_console>`_, and remote `ssh <https://en.wikipedia.org/wiki/Secure_Shell>`_.
 
-.. [#patterns-openSUSE-minimal_base-conflicts] The `patterns-openSUSE-minimal_base-conflicts<https://www.google.com/search?q=patterns-openSUSE-minimal_base-conflicts>`_ is there to `prevent recommended packages to blow up a minimal installation<http://unix.stackexchange.com/questions/144438/missing-broken-dependancies-on-opensuse-normal/144583#144583>`_
+.. [#patterns-openSUSE-minimal_base-conflicts_footnote] The `patterns-openSUSE-minimal_base-conflicts <https://www.google.com/search?q=patterns-openSUSE-minimal_base-conflicts>`_ is there to `prevent recommended packages to blow up a minimal installation <http://unix.stackexchange.com/questions/144438/missing-broken-dependancies-on-opensuse-normal/144583#144583>`_
 
-.. [#removeconflicts] The `actual conflicts package<http://unix.stackexchange.com/questions/73427/cant-install-python-because-of-zypper-conflict>`_ contains the version number of the distribution you use.
+.. [#removeconflicts_footnote] The `actual conflicts package <http://unix.stackexchange.com/questions/73427/cant-install-python-because-of-zypper-conflict>`_ contains the version number of the distribution you use.

@@ -4,12 +4,48 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <title>revue: getting Tumbleweed on it.</title>
+  <title>revue: getting Tumbleweed on it</title>
   <style type="text/css">code{white-space: pre;}</style>
 </head>
 <body>
 <div id="header">
-<h1 class="title">revue: getting Tumbleweed on it.</h1>
+<h1 class="title">revue: getting Tumbleweed on it</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#table-of-contents">Table of Contents</a></li>
+<li><a href="#todo">TODO</a></li>
+<li><a href="#notes">NOTES</a><ul>
+<li><a href="#syslogd">syslogd</a></li>
+<li><a href="#rest">Rest</a></li>
+</ul></li>
+<li><a href="#headless-install">headless install</a><ul>
+<li><a href="#text-mode-console-will-break-line-drawing-after-first-boot">text-mode console will break line drawing after first boot</a></li>
+<li><a href="#start-with-minimal-server-selection-text-mode">Start with &quot;Minimal server selection (text mode)&quot;</a></li>
+<li><a href="#halt-will-fail-use-halt--p-to-halt-under-esxi-5.1"><code>halt</code> will fail, use <code>halt -p</code> to halt under ESXi 5.1</a></li>
+<li><a href="#text-mode-installation-and-conflicts">text-mode installation and conflicts</a></li>
+<li><a href="#add-git-extras">add git-extras</a></li>
+</ul></li>
+<li><a href="#configuration">configuration</a><ul>
+<li><a href="#getting-started-with-etckeeper">getting started with etckeeper</a></li>
+<li><a href="#removing-hardlinks-from-the-etckeeper-repository">removing hardlinks from the <code>etckeeper</code> repository</a></li>
+<li><a href="#configuring-sudo">configuring sudo</a></li>
+<li><a href="#configuring-ssh">configuring ssh</a></li>
+<li><a href="#install-and-configure-noip-dynamic-dns-update-script">install and configure noip dynamic DNS update script</a></li>
+<li><a href="#configuring-ntpd-firewall-and-jail-for-it">configuring ntpd, firewall and jail for it</a></li>
+<li><a href="#configuring-samba">Configuring <code>samba</code></a></li>
+<li><a href="#testing-and-fixing-so-clients-can-talk-to-our-samba-server">Testing and fixing so clients can talk to our Samba server</a></li>
+<li><a href="#one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup">One day: <a href="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418">syncing between the Samba password and system password storage</a> is setup</a></li>
+<li><a href="#fixing-password-synchronisation">Fixing password synchronisation?</a></li>
+<li><a href="#configuring-namedbind">configuring named/BIND</a></li>
+<li><a href="#ensure-that-varlibnamedmaster-gets-synced-to-etcnamedmaster">Ensure that <code>/var/lib/named/master</code> gets synced to <code>/etc/named/master</code></a></li>
+<li><a href="#adding-aliases-for-commands-removed-in-net-tools">Adding aliases for commands removed in <code>net-tools</code></a></li>
+<li><a href="#configuring-monit-monitoring-service">Configuring <code>monit</code> monitoring service</a></li>
+<li><a href="#configuring-apache2-for-the-first-time">Configuring apache2 for the first time</a></li>
+<li><a href="#getting-and-running-testssl.sh">Getting and running <code>testssl.sh</code></a></li>
+<li><a href="#login-reboot-fritzbox">Login / Reboot Fritz!Box</a></li>
+</ul></li>
+</ul>
 </div>
 <p>This is a series of notes and articles about getting OpenSuSE <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Tumbleweed <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> to run on a headless <a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> (i.e. text-only, no GUI) server.</p>
 <p>The first machine I installed OpenSuSE Tumbleweed on is <code>revue</code> <a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. It is a bit of a gimmic, as I already had machines called <code>snip</code> and <code>snap</code>. Dutch people will know why.</p>
@@ -159,12 +195,12 @@ fi</code></pre>
 <li><a href="https://www.google.com/search?q=&quot;Network+Administration&quot;+site%3Aopensuse.org">Network Administration</a></li>
 <li><a href="https://www.google.com/search?q=&quot;Mail+and+News+Server&quot;+site%3Aopensuse.org">Mail and News Server</a></li>
 <li><a href="https://www.google.com/search?q=&quot;Web+and+LAMP+Server&quot;+site%3Aopensuse.org">Web and LAMP Server</a></li>
-<li><a href="https://www.google.com/search?q=&quot;Internet+Gateway&quot;+site%3Aopensuse.org">Internet Gateway</a></li>
+<li><a href="hhttps://www.google.com/search?q=&quot;Internet+Gateway&quot;+site%3Aopensuse.org">Internet Gateway</a></li>
 <li><a href="https://www.google.com/search?q=&quot;DHCP+and+DNS+Server&quot;+site%3Aopensuse.org">DHCP and DNS Server</a></li>
 </ul>
 <p>After that I added some <strong>packages</strong> too:</p>
 <blockquote>
-<p><strong></strong></p>
+<p><strong>note</strong></p>
 <p>Note that some of these won't install just yet, see the <a href="text-mode-installation-and-conflicts">text-mode installation and conflicts</a> section.</p>
 </blockquote>
 <ul>
@@ -186,8 +222,8 @@ fi</code></pre>
 <li><a href="https://software.opensuse.org/package/zip">zip</a></li>
 <li><a href="https://software.opensuse.org/package/zsync">zsync</a></li>
 <li><a href="https://software.opensuse.org/package/git">git</a></li>
-<li><a href="https://software.opensuse.org/package/mercurial">mercurial</a>*</li>
-<li><a href="https://software.opensuse.org/package/perl">perl</a></li>
+<li><a href="hhttps://software.opensuse.org/package/mercurial">mercurial</a>*</li>
+<li><a href="hhttps://software.opensuse.org/package/perl">perl</a></li>
 <li><a href="https://software.opensuse.org/package/php">php</a>*</li>
 <li><a href="https://software.opensuse.org/package/apache2-mod_php5">apache2-mod_php5</a>*</li>
 <li><a href="https://software.opensuse.org/package/python">python</a>*</li>
@@ -201,7 +237,7 @@ fi</code></pre>
 <li><a href="https://software.opensuse.org/package/links">links</a></li>
 <li><a href="https://software.opensuse.org/package/iptraf-ng">iptraf-ng</a></li>
 <li><a href="https://software.opensuse.org/package/shellinabox">shellinabox</a></li>
-<li><a href="https://software.opensuse.org/package/kvirustotal">kvirustotal</a></li>
+<li><a href="hhttps://software.opensuse.org/package/kvirustotal">kvirustotal</a></li>
 <li><a href="https://software.opensuse.org/package/monit">monit</a></li>
 </ul>
 <p>These packages were already installed:</p>
@@ -218,7 +254,7 @@ fi</code></pre>
 <li><a href="https://software.opensuse.org/package/samba-doc">samba-doc</a>*</li>
 </ul>
 <blockquote>
-<p><strong></strong></p>
+<p><strong>note</strong></p>
 <p>If you want to know <a href="http://unix.stackexchange.com/questions/158041/how-do-i-find-a-package-that-provides-a-given-file-in-opensuse">which package provides a certain file</a>, then use this command:</p>
 <pre><code>zypper search --provides --match-exact hg</code></pre>
 <p>Where <code>hg</code> is the file you are looking for.</p>
@@ -228,12 +264,12 @@ fi</code></pre>
 <p>This still fails under OpenSuSE Tumbleweed 13.2.</p>
 <h2 id="text-mode-installation-and-conflicts">text-mode installation and conflicts</h2>
 <p>The easiest way to start a headless install is picking &quot;Minimal server selection (text mode)&quot; during installation.</p>
-<p>The problem however is that this indeed minimal. It is enforced by the <code>patterns-openSUSE-minimal_base-conflicts</code> <a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> pattern which is part of the minimal install.</p>
+<p>The problem however is that this indeed minimal. It is enforced by the <code>patterns-openSUSE-minimal_base-conflicts</code> [#patterns-openSUSE-minimal_base-conflicts]_ pattern which is part of the minimal install.</p>
 <p>It prevents some packages to install like <code>mercurial</code>, <code>php</code> and <code>python</code>.</p>
-<p>To prevent that, remove the <code>patterns-openSUSE-minimal_base-conflicts</code> package specific for the OpenSuSE version you use <a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a>.</p>
+<p>To prevent that, remove the <code>patterns-openSUSE-minimal_base-conflicts</code> package specific for the OpenSuSE version you use <a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>.</p>
 <p>Do this <strong>after</strong> you've selected the patterns you want to install. Otherwise recommended packages can be installed potentially blowing your size.</p>
 <h2 id="add-git-extras">add git-extras</h2>
-<p>See the git-extras Install documentation&lt;&gt;https://github.com/tj/git-extras/blob/master/Installation.md_ for why/how.</p>
+<p>See the <a href="https://github.com/tj/git-extras/blob/master/Installation.md">git-extras Install documentation</a> for why/how.</p>
 <p>Just run this command:</p>
 <pre><code>(cd /tmp &amp;&amp; git clone https://github.com/tj/git-extras.git &amp;&amp; cd git-extras &amp;&amp; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) &amp;&amp; sudo make install)</code></pre>
 <h1 id="configuration">configuration</h1>
@@ -255,7 +291,7 @@ git push -u origin --all # pushes up the repo and its refs for the first time
 git push -u origin --tags # pushes up any tags</code></pre></li>
 </ol>
 <blockquote>
-<p><strong></strong></p>
+<p><strong>note</strong></p>
 <p><a href="http://etckeeper.branchable.com/">etckeeper</a> is a collection of tools to let <code>/etc</code> be stored in a git, mercurial, bazaar or darcs repository. This lets you use git to review or revert changes that were made to <code>/etc</code>. Or even push the repository elsewhere for backups or cherry-picking configuration changes.</p>
 <p>It hooks into package managers like apt to automatically commit changes made to <code>/etc</code> during package upgrades. It tracks file metadata that git does not normally support, but that is important for /etc, such as the permissions of <code>/etc/shadow</code>.</p>
 <p>It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.</p>
@@ -323,7 +359,7 @@ git commit -m &quot;git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr a
 <p>This will generate <code>/etc/sudoers.YaST2.save</code> add a line to <code>/etc/sudoers</code>:</p>
 <pre><code>jeroenp ALL = (ALL) NOPASSWD:ALL</code></pre>
 <blockquote>
-<p><strong></strong></p>
+<p><strong>note</strong></p>
 <p>Note that <a href="http://superuser.com/questions/357467/what-do-the-alls-in-the-line-admin-all-all-all-in-ubuntus-etc-sudoers">each ALL entry has a different meaning</a>.</p>
 </blockquote>
 <h2 id="configuring-ssh">configuring ssh</h2>
@@ -454,7 +490,7 @@ git push</code></pre>
 +Ciphers chacha20-poly1305@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
 +MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com</code></pre>
 <blockquote>
-<p><strong></strong></p>
+<p><strong>note</strong></p>
 <p>In the diff are steps from <a href="http://people.redhat.com/swells/mea/SECSCAN-FirstRun/sshd_config.htm">SSH Server Configuration rhel-lockdown</a>, <a href="http://wp.kjro.se/2013/09/06/hardening-your-ssh-server-opensshd_config/">Hardening your SSH server (opensshd_config)</a> and the script behind <a href="http://kacper.blog.redpill-linpro.com/archives/702"><a href="http://kacper.blog.redpill-linpro.com/archives/702" class="uri">http://kacper.blog.redpill-linpro.com/archives/702</a></a> from <a href="https://github.com/comotion/gone/blob/github/modules/ssh">gone/ssh at github · comotion/gone</a>. Note that the <code>sandbox</code> value for <code>UsePrivilegeSeparation</code> is even <a href="http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5?query=sshd_config&amp;sec=5">more secure</a> than the <code>yes</code> value.</p>
 </blockquote>
 <p>Now ensure that the firewall allows for ssh:</p>
@@ -624,8 +660,8 @@ May 26 20:45:59 revue /usr/sbin/start-ntpd[2390]: runtime configuration: keyid 1
 May 26 20:45:59 revue systemd[1]: Started NTP Server Daemon.</code></pre>
 <p>It took me quite a while to figure out why these two show failures. It's because <code>ntpdc</code> is deprecated, and it is <a href="https://build.opensuse.org/package/view_file/openSUSE:Factory/ntp/conf.start-ntpd?expand=1">used by conf.start-ntpd</a>. Too bad it is so hard to get the actual source DVCS of OpenSuSE so I don't know the history of that file.</p>
 <blockquote>
-<p><strong></strong></p>
-<p>For the tests, I got inspired by <a href="http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/">How to Install and Configure Linux NTP Server and Client.</a></p>
+<p><strong>note</strong></p>
+<p>For the tests, I got inspired by <a href="http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/">How to Install and Configure Linux NTP Server and Client</a></p>
 </blockquote>
 <h2 id="configuring-samba">Configuring <code>samba</code></h2>
 <ol style="list-style-type: decimal">
@@ -659,11 +695,11 @@ May 26 20:45:59 revue systemd[1]: Started NTP Server Daemon.</code></pre>
 <li><code>/etc/systemd/system/multi-user.target.wants/nmb.service</code></li>
 <li><code>/etc/systemd/system/multi-user.target.wants/smb.service</code></li>
 </ul>
-<p>Run these commands to <a href="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312">test if the basic configuration was successful</a> with <a href="https://www.samba.org/samba/docs/man/manpages/testparm.1.html">testclient</a> and <a href=""><a href="https://www.samba.org/samba/docs/man/manpages/smbclient.1.html" class="uri">https://www.samba.org/samba/docs/man/manpages/smbclient.1.html</a></a>:</p>
+<p>Run these commands to <a href="hhttps://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312">test if the basic configuration was successful</a> with <a href="https://www.samba.org/samba/docs/man/manpages/testparm.1.html">testclient</a> and <a href="h"><a href="https://www.samba.org/samba/docs/man/manpages/smbclient.1.html" class="uri">https://www.samba.org/samba/docs/man/manpages/smbclient.1.html</a></a>:</p>
 <pre><code>testparm /etc/samba/smb.conf
 smbclient -L `hostname`</code></pre>
 <blockquote>
-<p><strong></strong></p>
+<p><strong>note</strong></p>
 <p>During <code>smbclient</code> you will have to type your unix password.</p>
 </blockquote>
 <h2 id="testing-and-fixing-so-clients-can-talk-to-our-samba-server">Testing and fixing so clients can talk to our Samba server</h2>
@@ -673,8 +709,8 @@ Enter jeroenp&#39;s password:
 Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.2.1-3406-SUSE-oS13.2-x86_64]
 tree connect failed: NT_STATUS_ACCESS_DENIED</code></pre>
 <blockquote>
-<p><strong></strong></p>
-<p>Do <strong>not</strong> try to solve the <a href="https://forum.manjaro.org/index.php?topic=19252.0">NT_STATUS_ACCESS_DENIED issue</a> by enabling <code>client lanman auth</code> as this makes your system less secure (<a href="https://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html#idp59214864">LANMAN authentication can be cracked quite easily</a>).</p>
+<p><strong>note</strong></p>
+<p>Do <strong>not</strong> try to solve the <a href="https://forum.manjaro.org/index.php?topic=19252.0">NT_STATUS_ACCESS_DENIED issue</a> by enabling <code>client lanman auth</code> as this makes your system less secure (<a href="hhttps://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html#idp59214864">LANMAN authentication can be cracked quite easily</a>).</p>
 </blockquote>
 <p>The first think to check is the samba password database, as samba uses different authentication database than the standard linux one (hence the linux password above). Check it with <a href="https://www.samba.org/samba/docs/man/manpages/pdbedit.8.html">pdbedit</a> like this:</p>
 <pre><code>pdbedit --list --verbose jeroenp</code></pre>
@@ -683,7 +719,7 @@ tree connect failed: NT_STATUS_ACCESS_DENIED</code></pre>
 <p>revue:/etc # pdbedit --create --user jeroenp new password: retype new password: Unix username: jeroenp NT username: Account Flags: [U ] User SID: S-1-5-21-539969646-619626457-384116915-1000 Primary Group SID: S-1-5-21-539969646-619626457-384116915-513 Full Name: Jeroen Pluimers Home Directory: \revuejeroenp.9xprofile HomeDir Drive: P: Logon Script: Profile Path: \revueprofiles.msprofile Domain: REVUE Account desc: Workstations: Munged dial: Logon time: 0 Logoff time: Wed, 06 Feb 2036 16:06:39 CET Kickoff time: Wed, 06 Feb 2036 16:06:39 CET Password last set: Wed, 27 May 2015 20:51:21 CEST Password can change: Wed, 27 May 2015 20:51:21 CEST Password must change: never Last bad password : 0 Bad password count : 0 Logon hours : FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</p>
 </blockquote>
 <blockquote>
-<p><strong></strong></p>
+<p><strong>note</strong></p>
 <p>Do <strong>not</strong> use <a href="https://www.samba.org/samba/docs/man/manpages/smbpasswd.8.html">smbpasswd</a> to add the user as that only supports the <code>smbpasswd</code> database format, whereas pdbedit<a href="http://unix.stackexchange.com/questions/107032/deleting-a-samba-user-pbdedit-vs-smbpasswd-whats-the-difference/107033#107033">supports any password backend</a>.</p>
 </blockquote>
 <p>Now do final checks:</p>
@@ -693,8 +729,8 @@ smbclient //`hostname`/jeroenp -U jeroenp</code></pre>
 <p>See <a href="https://www.google.com/search?q=&quot;Use+SMB+Information+for+Linux+Authentication&quot;">Use SMB Information for Linux Authentication</a>.</p>
 <h2 id="fixing-password-synchronisation">Fixing password synchronisation?</h2>
 <blockquote>
-<p><strong></strong></p>
-<p>Background reading (web-archive link as the site itself is down): <a href="http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html">Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares.</a>.</p>
+<p><strong>note</strong></p>
+<p>Background reading (web-archive link as the site itself is down): <a href="http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html">Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares</a>.</p>
 </blockquote>
 <h2 id="configuring-namedbind">configuring named/BIND</h2>
 <ol style="list-style-type: decimal">
@@ -848,7 +884,7 @@ snip                    IN      A       192.168.71.70</code></pre>
 rcnamed start
 rcnamed status</code></pre>
 <blockquote>
-<p><strong></strong></p>
+<p><strong>note</strong></p>
 <p>Check if your zone files are correct by executing <code>named-checkzone</code>.</p>
 <p>Check if your named configuration is correct by executing <code>named-checkconfig</code>.</p>
 <p>Check if <code>named</code> delivers the correct zone:</p>
@@ -856,7 +892,7 @@ rcnamed status</code></pre>
 <p>See:</p>
 <ul>
 <li><a href="http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html">Check BIND – DNS Server configuration file for errors with named-checkconf tools</a></li>
-<li><a href="http://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/">Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool</a></li>
+<li><a href="hhttp://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/">Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool</a></li>
 </ul>
 </blockquote>
 <h2 id="ensure-that-varlibnamedmaster-gets-synced-to-etcnamedmaster">Ensure that <code>/var/lib/named/master</code> gets synced to <code>/etc/named/master</code></h2>
@@ -937,11 +973,11 @@ Jun 06 10:01:24 revue monit[1551]: Error opening the idfile &#39;/run/monit/.mon
 Jun 06 10:01:24 revue monit[1551]: No daemon process found
 Jun 06 10:01:24 revue monit[1551]: No daemon process found</code></pre>
 <blockquote>
-<p><strong></strong></p>
-<p>Note that <a href="">journalctl</a> can feel a bit complex for casual users, so to get <code>/var/log/messages</code> back you might want to install <code>rsyslog</code> as explained by <a href="https://forums.opensuse.org/showthread.php/505084-Whither-var-log-messages">Whither /var/log/messages?</a>.</p>
+<p><strong>note</strong></p>
+<p>Note that <a href="https://www.google.com/search?q=journalctl">journalctl</a> can feel a bit complex for casual users, so to get <code>/var/log/messages</code> back you might want to install <code>rsyslog</code> as explained by <a href="https://forums.opensuse.org/showthread.php/505084-Whither-var-log-messages">Whither /var/log/messages?</a>.</p>
 <p>For a comparison, read:</p>
 <ul>
-<li><a href="http://blog.delouw.ch/2013/07/24/why-journalctl-is-cool-and-syslog-will-survive-for-another-decade/">Why journalctl is cool and syslog will survive for another decade « Luc de Louw's Blog.</a>.</li>
+<li><a href="http://blog.delouw.ch/2013/07/24/why-journalctl-is-cool-and-syslog-will-survive-for-another-decade/">Why journalctl is cool and syslog will survive for another decade « Luc de Louw's Blog</a>.</li>
 <li><a href="https://docs.oracle.com/cd/E52668_01/E54670/html/ol7-log-sec.html">3.8 Configuring and Using System Logging</a>.</li>
 </ul>
 </blockquote>
@@ -991,7 +1027,7 @@ echo new:
 sed -n &quot;/^set pidfile \/var\/run\/monit.pid$/ p&quot; $ETC_TARGET
 systemctl status monit.service
 systemctl start monit.service</code></pre>
-<p>More <code>monit</code> configuration tips (including setting up <a href="https://en.wikipedia.org/wiki/HTTPS">HTTPS</a> with a <a href="https://en.wikipedia.org/wiki/Self-signed_certificate">self-signed certificate</a> - imporant as <code>monit</code> uses plain username/password <a href="https://en.wikipedia.org/wiki/Basic_access_authentication">http basic authentication</a>) are at:</p>
+<p>More <code>monit</code> configuration tips (including setting up <a href="https://en.wikipedia.org/wiki/HTTPS">HTTPs</a> with a <a href="https://en.wikipedia.org/wiki/Self-signed_certificate">self-signed certificate</a> - imporant as <code>monit</code> uses plain username/password <a href="https://en.wikipedia.org/wiki/Basic_access_authentication">http basic authentication</a>) are at:</p>
 <ul>
 <li><a href="http://xmodulo.com/server-monitoring-system-monit.html">How to set up server monitoring system with Monit - Xmodulo</a>.</li>
 <li><a href="http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html">Install Monit on openSUSE 13.2</a>.</li>
@@ -1040,10 +1076,10 @@ Allow from all</code></pre>
 <pre><code>Require all granted</code></pre>
 <p>More background info:</p>
 <ul>
-<li>Denying: <a href="https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/#sthash.u4jTuZ7o.dpuf&lt;https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/">Apache 2.4 Upgrade and the “Invalid Command ‘Order'” Error</a></li>
+<li>Denying: <a href="https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/">Apache 2.4 Upgrade and the &quot;Invalid Command 'Order'&quot; Error</a></li>
 <li>Granting: <a href="http://brianflove.com/2014/04/23/upgrading-to-apache-2-4-from-apache-http-server-2-2-x/">Upgrading to Apache 2.4 from Apache HTTP Server 2.2.x</a></li>
 </ul>
-<h3 id="common-problems-when-upgrading">Common problems when upgrading</h3>
+<p><strong>Common problems when upgrading</strong></p>
 <ul>
 <li>Startup errors:
 <ul>
@@ -1085,8 +1121,7 @@ OPENSSL=./testssl.sh www.beginend.net</code></pre>
 <li id="fn2"><p><a href="https://en.opensuse.org/Portal:Tumbleweed">Tumbleweed</a> is the rolling release of OpenSuSE.<a href="#fnref2">↩</a></p></li>
 <li id="fn3"><p><a href="https://en.wikipedia.org/wiki/Headless_software">Headless</a> as in no GUI, not as in <a href="https://en.wikipedia.org/wiki/Embedded_system">Embedded System</a>. So there is a text <a href="https://en.wikipedia.org/wiki/System_console">console</a>, and remote <a href="https://en.wikipedia.org/wiki/Secure_Shell">ssh</a>.<a href="#fnref3">↩</a></p></li>
 <li id="fn4"><p>See <a href="https://en.wikipedia.org/wiki/Snip_en_Snap">Snip en Snap revue</a>.<a href="#fnref4">↩</a></p></li>
-<li id="fn5"><p>The <a href="https://www.google.com/search?q=patterns-openSUSE-minimal_base-conflicts">patterns-openSUSE-minimal_base-conflicts</a> is there to <a href="http://unix.stackexchange.com/questions/144438/missing-broken-dependancies-on-opensuse-normal/144583#144583">prevent recommended packages to blow up a minimal installation</a><a href="#fnref5">↩</a></p></li>
-<li id="fn6"><p>The <a href="http://unix.stackexchange.com/questions/73427/cant-install-python-because-of-zypper-conflict">actual conflicts package</a> contains the version number of the distribution you use.<a href="#fnref6">↩</a></p></li>
+<li id="fn5"><p>The <a href="http://unix.stackexchange.com/questions/73427/cant-install-python-because-of-zypper-conflict">actual conflicts package</a> contains the version number of the distribution you use.<a href="#fnref5">↩</a></p></li>
 </ol>
 </div>
 </body>
