@@ -1,59 +1,396 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="Content-Style-Type" content="text/css" />
-  <meta name="generator" content="pandoc" />
-  <title>revue: getting Tumbleweed on it</title>
-  <style type="text/css">code{white-space: pre;}</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title>revue: getting Tumbleweed on it</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7614 2013-02-21 15:55:51Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
 </head>
 <body>
-<div id="header">
+<div class="document" id="revue-getting-tumbleweed-on-it">
 <h1 class="title">revue: getting Tumbleweed on it</h1>
-</div>
-<div id="TOC">
-<ul>
-<li><a href="#table-of-contents">Table of Contents</a></li>
-<li><a href="#todo">TODO</a></li>
-<li><a href="#notes">NOTES</a><ul>
-<li><a href="#syslogd">syslogd</a></li>
-<li><a href="#rest">Rest</a></li>
-</ul></li>
-<li><a href="#headless-install">headless install</a><ul>
-<li><a href="#text-mode-console-will-break-line-drawing-after-first-boot">text-mode console will break line drawing after first boot</a></li>
-<li><a href="#start-with-minimal-server-selection-text-mode">Start with &quot;Minimal server selection (text mode)&quot;</a></li>
-<li><a href="#halt-will-fail-use-halt--p-to-halt-under-esxi-5.1"><code>halt</code> will fail, use <code>halt -p</code> to halt under ESXi 5.1</a></li>
-<li><a href="#text-mode-installation-and-conflicts">text-mode installation and conflicts</a></li>
-<li><a href="#add-git-extras">add git-extras</a></li>
-</ul></li>
-<li><a href="#configuration">configuration</a><ul>
-<li><a href="#getting-started-with-etckeeper">getting started with etckeeper</a></li>
-<li><a href="#removing-hardlinks-from-the-etckeeper-repository">removing hardlinks from the <code>etckeeper</code> repository</a></li>
-<li><a href="#configuring-sudo">configuring sudo</a></li>
-<li><a href="#configuring-ssh">configuring ssh</a></li>
-<li><a href="#install-and-configure-noip-dynamic-dns-update-script">install and configure noip dynamic DNS update script</a></li>
-<li><a href="#configuring-ntpd-firewall-and-jail-for-it">configuring ntpd, firewall and jail for it</a></li>
-<li><a href="#configuring-samba">Configuring <code>samba</code></a></li>
-<li><a href="#testing-and-fixing-so-clients-can-talk-to-our-samba-server">Testing and fixing so clients can talk to our Samba server</a></li>
-<li><a href="#one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup">One day: <a href="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418">syncing between the Samba password and system password storage</a> is setup</a></li>
-<li><a href="#fixing-password-synchronisation">Fixing password synchronisation?</a></li>
-<li><a href="#configuring-namedbind">configuring named/BIND</a></li>
-<li><a href="#ensure-that-varlibnamedmaster-gets-synced-to-etcnamedmaster">Ensure that <code>/var/lib/named/master</code> gets synced to <code>/etc/named/master</code></a></li>
-<li><a href="#adding-aliases-for-commands-removed-in-net-tools">Adding aliases for commands removed in <code>net-tools</code></a></li>
-<li><a href="#configuring-monit-monitoring-service">Configuring <code>monit</code> monitoring service</a></li>
-<li><a href="#configuring-apache2-for-the-first-time">Configuring apache2 for the first time</a></li>
-<li><a href="#getting-and-running-testssl.sh">Getting and running <code>testssl.sh</code></a></li>
-<li><a href="#login-reboot-fritzbox">Login / Reboot Fritz!Box</a></li>
-</ul></li>
+
+<p>This is a series of notes and articles about getting OpenSuSE <a class="footnote-reference" href="#opensuse-footnote" id="id1">[1]</a> Tumbleweed <a class="footnote-reference" href="#tumbleweed-footnote" id="id2">[2]</a> to run on a headless <a class="footnote-reference" href="#headless-footnote" id="id3">[4]</a> (i.e. text-only, no GUI) server.</p>
+<p>The first machine I installed OpenSuSE Tumbleweed on is <tt class="docutils literal">revue</tt> <a class="footnote-reference" href="#revue-footnote" id="id4">[3]</a>. It is a bit of a gimmic, as I already had machines called <tt class="docutils literal">snip</tt> and <tt class="docutils literal">snap</tt>. Dutch people will know why.</p>
+<p><tt class="docutils literal">snip</tt> and <tt class="docutils literal">snap</tt> run regular OpenSuSE releases. <tt class="docutils literal">revue</tt> is my first machine running a <a class="reference external" href="https://en.wikipedia.org/wiki/Rolling_release">rolling</a> release.</p>
+<p>Over time, there will be some documents indicating installation progress and problem solving.</p>
+<div class="section" id="table-of-contents">
+<h1><a class="toc-backref" href="#id14">Table of Contents</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#table-of-contents" id="id14">Table of Contents</a></li>
+<li><a class="reference internal" href="#todo" id="id15">TODO</a></li>
+<li><a class="reference internal" href="#notes" id="id16">NOTES</a><ul>
+<li><a class="reference internal" href="#syslogd" id="id17">syslogd</a></li>
+<li><a class="reference internal" href="#rest" id="id18">Rest</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#headless-install" id="id19">headless install</a><ul>
+<li><a class="reference internal" href="#text-mode-console-will-break-line-drawing-after-first-boot" id="id20">text-mode console will break line drawing after first boot</a></li>
+<li><a class="reference internal" href="#start-with-minimal-server-selection-text-mode" id="id21">Start with &quot;Minimal server selection (text mode)&quot;</a></li>
+<li><a class="reference internal" href="#halt-will-fail-use-halt-p-to-halt-under-esxi-5-1" id="id22"><tt class="docutils literal">halt</tt> will fail, use <tt class="docutils literal">halt <span class="pre">-p</span></tt> to halt under ESXi 5.1</a></li>
+<li><a class="reference internal" href="#id8" id="id23">text-mode installation and conflicts</a></li>
+<li><a class="reference internal" href="#add-git-extras" id="id24">add git-extras</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuration" id="id25">configuration</a><ul>
+<li><a class="reference internal" href="#getting-started-with-etckeeper" id="id26">getting started with etckeeper</a></li>
+<li><a class="reference internal" href="#removing-hardlinks-from-the-etckeeper-repository" id="id27">removing hardlinks from the <tt class="docutils literal">etckeeper</tt> repository</a></li>
+<li><a class="reference internal" href="#configuring-sudo" id="id28">configuring sudo</a></li>
+<li><a class="reference internal" href="#configuring-ssh" id="id29">configuring ssh</a></li>
+<li><a class="reference internal" href="#install-and-configure-noip-dynamic-dns-update-script" id="id30">install and configure <cite>noip</cite> dynamic DNS update script</a></li>
+<li><a class="reference internal" href="#configuring-ntpd-firewall-and-jail-for-it" id="id31">configuring ntpd, firewall and jail for it</a></li>
+<li><a class="reference internal" href="#configuring-samba" id="id32">Configuring <tt class="docutils literal">samba</tt></a></li>
+<li><a class="reference internal" href="#testing-and-fixing-so-clients-can-talk-to-our-samba-server" id="id33">Testing and fixing so clients can talk to our Samba server</a></li>
+<li><a class="reference internal" href="#one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup" id="id34">One day: syncing between the Samba password and system password storage is setup</a></li>
+<li><a class="reference internal" href="#fixing-password-synchronisation" id="id35">Fixing password synchronisation?</a></li>
+<li><a class="reference internal" href="#configuring-named-bind" id="id36">configuring named/BIND</a></li>
+<li><a class="reference internal" href="#ensure-that-var-lib-named-master-gets-synced-to-etc-named-master" id="id37">Ensure that <tt class="docutils literal">/var/lib/named/master</tt> gets synced to <tt class="docutils literal">/etc/named/master</tt></a></li>
+<li><a class="reference internal" href="#adding-aliases-for-commands-removed-in-net-tools" id="id38">Adding aliases for commands removed in <tt class="docutils literal"><span class="pre">net-tools</span></tt></a></li>
+<li><a class="reference internal" href="#configuring-monit-monitoring-service" id="id39">Configuring <tt class="docutils literal">monit</tt> monitoring service</a></li>
+<li><a class="reference internal" href="#configuring-apache2-for-the-first-time" id="id40">Configuring apache2 for the first time</a></li>
+<li><a class="reference internal" href="#getting-and-running-testssl-sh" id="id41">Getting and running <tt class="docutils literal">testssl.sh</tt></a></li>
+<li><a class="reference internal" href="#login-reboot-fritz-box" id="id42">Login / Reboot Fritz!Box</a></li>
+</ul>
+</li>
 </ul>
 </div>
-<p>This is a series of notes and articles about getting OpenSuSE <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Tumbleweed <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> to run on a headless <a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> (i.e. text-only, no GUI) server.</p>
-<p>The first machine I installed OpenSuSE Tumbleweed on is <code>revue</code> <a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. It is a bit of a gimmic, as I already had machines called <code>snip</code> and <code>snap</code>. Dutch people will know why.</p>
-<p><code>snip</code> and <code>snap</code> run regular OpenSuSE releases. <code>revue</code> is my first machine running a <a href="https://en.wikipedia.org/wiki/Rolling_release">rolling</a> release.</p>
-<p>Over time, there will be some documents indicating installation progress and problem solving.</p>
-<h1 id="table-of-contents">Table of Contents</h1>
-<h1 id="todo">TODO</h1>
-<ul>
+</div>
+<div class="section" id="todo">
+<h1><a class="toc-backref" href="#id15">TODO</a></h1>
+<ul class="simple">
 <li>web site (HTTP-HTTPS)</li>
 <li>pop3 (port 110)</li>
 <li>email (SMTP-SSMTP) 25/587</li>
@@ -61,15 +398,19 @@
 <li>modem reboot script (when either ipv4 or ipv6 are down)</li>
 <li>certificates for web and shellinabox</li>
 <li>update root zones through cron</li>
-<li>DNS security &lt;<a href="https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server" class="uri">https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server</a>--2&gt; and &lt;<a href="http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm" class="uri">http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm</a>&gt;</li>
+<li>DNS security &lt;<a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server--2">https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server--2</a>&gt; and &lt;<a class="reference external" href="http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm">http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm</a>&gt;</li>
 <li>ensure 10rsync-var-lib-named-master.sh works</li>
 <li>fix syslogd and logrotate</li>
 </ul>
-<h1 id="notes">NOTES</h1>
+</div>
+<div class="section" id="notes">
+<h1><a class="toc-backref" href="#id16">NOTES</a></h1>
 <p>Things that might need doing.</p>
-<h2 id="syslogd">syslogd</h2>
-<p>See <a href="http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/">this output</a>:</p>
-<pre><code>revue:/etc/xinetd.d # systemctl --failed --all
+<div class="section" id="syslogd">
+<h2><a class="toc-backref" href="#id17">syslogd</a></h2>
+<p>See <a class="reference external" href="http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/">this output</a>:</p>
+<pre class="literal-block">
+revue:/etc/xinetd.d # systemctl --failed --all
   UNIT              LOAD   ACTIVE SUB    DESCRIPTION
 ● logrotate.service loaded failed failed Rotate log files
 ● syslogd.service   loaded failed failed System Logging Service
@@ -79,63 +420,81 @@ ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
 SUB    = The low-level unit activation state, values depend on unit type.
 
 2 loaded units listed.
-To show all installed unit files use &#39;systemctl list-unit-files&#39;.</code></pre>
+To show all installed unit files use 'systemctl list-unit-files'.
+</pre>
 <p>Needs investigation.</p>
-<h2 id="rest">Rest</h2>
-<p>Run <code>create-shellinabox-self-signed-certificate.sh</code>:</p>
-<pre><code>cd /var/lib/shellinabox
+</div>
+<div class="section" id="rest">
+<h2><a class="toc-backref" href="#id18">Rest</a></h2>
+<p>Run <tt class="docutils literal"><span class="pre">create-shellinabox-self-signed-certificate.sh</span></tt>:</p>
+<pre class="literal-block">
+cd /var/lib/shellinabox
 openssl genrsa -des3 -out server.key 1024
 openssl req -new -key server.key -out server.csr
 cp server.key server.key.org
 openssl rsa -in server.key.org -out server.key
 openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
-cat server.crt server.key &gt; certificate.pem</code></pre>
-<p>Wget/curl are the best solution to update the <code>root.hint</code>. See:</p>
-<ul>
-<li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01589.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01589.html</a>&gt; - use dig, maybe not good</li>
-<li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01746.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01746.html</a>&gt;</li>
-<li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01755.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01755.html</a>&gt; - how to post it so Security picks it up</li>
-<li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01658.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01658.html</a>&gt; - use ftp</li>
+cat server.crt server.key &gt; certificate.pem
+</pre>
+<p>Wget/curl are the best solution to update the <tt class="docutils literal">root.hint</tt>. See:</p>
+<ul class="simple">
+<li>&lt;<a class="reference external" href="http://lists.opensuse.org/opensuse/2008-05/msg01589.html">http://lists.opensuse.org/opensuse/2008-05/msg01589.html</a>&gt; - use dig, maybe not good</li>
+<li>&lt;<a class="reference external" href="http://lists.opensuse.org/opensuse/2008-05/msg01746.html">http://lists.opensuse.org/opensuse/2008-05/msg01746.html</a>&gt;</li>
+<li>&lt;<a class="reference external" href="http://lists.opensuse.org/opensuse/2008-05/msg01755.html">http://lists.opensuse.org/opensuse/2008-05/msg01755.html</a>&gt; - how to post it so Security picks it up</li>
+<li>&lt;<a class="reference external" href="http://lists.opensuse.org/opensuse/2008-05/msg01658.html">http://lists.opensuse.org/opensuse/2008-05/msg01658.html</a>&gt; - use ftp</li>
 </ul>
-<p>The change in root servers resulted in a <a href="https://bugzilla.novell.com/show_bug.cgi?id=392173">security bug fix</a>, but that took a while.</p>
-<p><a href="http://www.tldp.org/HOWTO/DNS-HOWTO-8.html">This script</a> gets it through dig too, but not the best solution.</p>
-<p>Neither ftp, nor http are really secure to get these files from &lt;<a href="http://ftp.internic.net/domain/" class="uri">http://ftp.internic.net/domain/</a>&gt;:</p>
-<ul>
-<li>&lt;<a href="ftp://ftp.internic.net/domain/db.cache" class="uri">ftp://ftp.internic.net/domain/db.cache</a>&gt;</li>
-<li>&lt;<a href="ftp://ftp.internic.net/domain/named.cache" class="uri">ftp://ftp.internic.net/domain/named.cache</a>&gt;</li>
-<li>&lt;<a href="ftp://ftp.internic.net/domain/named.root" class="uri">ftp://ftp.internic.net/domain/named.root</a>&gt;</li>
-<li>&lt;<a href="http://www.internic.net/domain/db.cache" class="uri">http://www.internic.net/domain/db.cache</a>&gt;</li>
-<li>&lt;<a href="http://www.internic.net/domain/named.cache" class="uri">http://www.internic.net/domain/named.cache</a>&gt;</li>
-<li>&lt;<a href="http://www.internic.net/domain/named.root" class="uri">http://www.internic.net/domain/named.root</a>&gt;</li>
+<p>The change in root servers resulted in a <a class="reference external" href="https://bugzilla.novell.com/show_bug.cgi?id=392173">security bug fix</a>, but that took a while.</p>
+<p><a class="reference external" href="http://www.tldp.org/HOWTO/DNS-HOWTO-8.html">This script</a> gets it through dig too, but not the best solution.</p>
+<p>Neither ftp, nor http are really secure to get these files from &lt;<a class="reference external" href="http://ftp.internic.net/domain/">http://ftp.internic.net/domain/</a>&gt;:</p>
+<ul class="simple">
+<li>&lt;<a class="reference external" href="ftp://ftp.internic.net/domain/db.cache">ftp://ftp.internic.net/domain/db.cache</a>&gt;</li>
+<li>&lt;<a class="reference external" href="ftp://ftp.internic.net/domain/named.cache">ftp://ftp.internic.net/domain/named.cache</a>&gt;</li>
+<li>&lt;<a class="reference external" href="ftp://ftp.internic.net/domain/named.root">ftp://ftp.internic.net/domain/named.root</a>&gt;</li>
+<li>&lt;<a class="reference external" href="http://www.internic.net/domain/db.cache">http://www.internic.net/domain/db.cache</a>&gt;</li>
+<li>&lt;<a class="reference external" href="http://www.internic.net/domain/named.cache">http://www.internic.net/domain/named.cache</a>&gt;</li>
+<li>&lt;<a class="reference external" href="http://www.internic.net/domain/named.root">http://www.internic.net/domain/named.root</a>&gt;</li>
 </ul>
-<p>An alternative might be to get the <code>.sig</code> there in in a secure way, then <a href="http://www.linuxquestions.org/questions/linux-newbie-8/md5-and-sig-537564/">use gpg to verify the signatures</a> (as <a href="http://stackoverflow.com/questions/15194779/md5-vs-gpg-signature/15195785#15195785">gpg seems more secure than md5 signatures</a>).</p>
-<p>This is more difficult than it looks like, as you need their GPG public key with ID <code>0BD07395</code>.</p>
+<p>An alternative might be to get the <tt class="docutils literal">.sig</tt> there in in a secure way, then <a class="reference external" href="http://www.linuxquestions.org/questions/linux-newbie-8/md5-and-sig-537564/">use gpg to verify the signatures</a> (as <a class="reference external" href="http://stackoverflow.com/questions/15194779/md5-vs-gpg-signature/15195785#15195785">gpg seems more secure than md5 signatures</a>).</p>
+<p>This is more difficult than it looks like, as you need their GPG public key with ID <tt class="docutils literal">0BD07395</tt>.</p>
 <p>Some notes:</p>
 <blockquote>
-<p>## <a href="http://codenimbus.com/2010/08/02/override-robots-txt-with-wget/" class="uri">http://codenimbus.com/2010/08/02/override-robots-txt-with-wget/</a> wget -e robots=off --wait 1 <a href="http://your.site.here" class="uri">http://your.site.here</a></p>
-<p>## <a href="http://data.iana.org/root-anchors/draft-icann-dnssec-trust-anchor.html" class="uri">http://data.iana.org/root-anchors/draft-icann-dnssec-trust-anchor.html</a> wget -e robots=off -m -np <a href="http://data.iana.org/root-anchors" class="uri">http://data.iana.org/root-anchors</a></p>
-<p>wget -m -np <a href="http://www.internic.net/zones" class="uri">http://www.internic.net/zones</a></p>
-<p>## <a href="http://www.pgpi.org/doc/pgpintro/#p12" class="uri">http://www.pgpi.org/doc/pgpintro/#p12</a> gpg --verify named.root.sig named.root</p>
-<p>## <a href="http://www.links.org/?p=542" class="uri">http://www.links.org/?p=542</a> ## <a href="https://www.google.com/search?q=key+0BD07395" class="uri">https://www.google.com/search?q=key+0BD07395</a> ## <a href="http://xenotrope.blogspot.nl/2015/04/on-dnssec-part-2-i-actually-used-dnssec.html" class="uri">http://xenotrope.blogspot.nl/2015/04/on-dnssec-part-2-i-actually-used-dnssec.html</a></p>
-<p>## <a href="http://ivan.kanis.fr/verifying-a-gpg-signed-file.html" class="uri">http://ivan.kanis.fr/verifying-a-gpg-signed-file.html</a> ## <a href="https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html" class="uri">https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html</a></p>
-<p>## <a href="https://www.gnupg.org/gph/en/manual/x457.html" class="uri">https://www.gnupg.org/gph/en/manual/x457.html</a> ## <a href="http://superuser.com/questions/227991/where-to-upload-pgp-public-key-are-keyservers-still-surviving" class="uri">http://superuser.com/questions/227991/where-to-upload-pgp-public-key-are-keyservers-still-surviving</a> gpg --keyserver keys.gnupg.net --recv-key 0BD07395 gpg --verify named.root.sig named.root</p>
-<p>## <a href="http://security.stackexchange.com/questions/6841/ways-to-sign-gpg-public-key-so-it-is-trusted" class="uri">http://security.stackexchange.com/questions/6841/ways-to-sign-gpg-public-key-so-it-is-trusted</a> ## <a href="http://stackoverflow.com/questions/26217766/download-key-with-gpg-recv-key-and-simultaneously-check-fingerprint-in-a-scr" class="uri">http://stackoverflow.com/questions/26217766/download-key-with-gpg-recv-key-and-simultaneously-check-fingerprint-in-a-scr</a></p>
+<p>## <a class="reference external" href="http://codenimbus.com/2010/08/02/override-robots-txt-with-wget/">http://codenimbus.com/2010/08/02/override-robots-txt-with-wget/</a>
+wget -e robots=off --wait 1 <a class="reference external" href="http://your.site.here">http://your.site.here</a></p>
+<p>## <a class="reference external" href="http://data.iana.org/root-anchors/draft-icann-dnssec-trust-anchor.html">http://data.iana.org/root-anchors/draft-icann-dnssec-trust-anchor.html</a>
+wget -e robots=off -m -np <a class="reference external" href="http://data.iana.org/root-anchors">http://data.iana.org/root-anchors</a></p>
+<p>wget -m -np <a class="reference external" href="http://www.internic.net/zones">http://www.internic.net/zones</a></p>
+<p>## <a class="reference external" href="http://www.pgpi.org/doc/pgpintro/#p12">http://www.pgpi.org/doc/pgpintro/#p12</a>
+gpg --verify named.root.sig named.root</p>
+<p>## <a class="reference external" href="http://www.links.org/?p=542">http://www.links.org/?p=542</a>
+## <a class="reference external" href="https://www.google.com/search?q=key+0BD07395">https://www.google.com/search?q=key+0BD07395</a>
+## <a class="reference external" href="http://xenotrope.blogspot.nl/2015/04/on-dnssec-part-2-i-actually-used-dnssec.html">http://xenotrope.blogspot.nl/2015/04/on-dnssec-part-2-i-actually-used-dnssec.html</a></p>
+<p>## <a class="reference external" href="http://ivan.kanis.fr/verifying-a-gpg-signed-file.html">http://ivan.kanis.fr/verifying-a-gpg-signed-file.html</a>
+## <a class="reference external" href="https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html">https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html</a></p>
+<p>## <a class="reference external" href="https://www.gnupg.org/gph/en/manual/x457.html">https://www.gnupg.org/gph/en/manual/x457.html</a>
+## <a class="reference external" href="http://superuser.com/questions/227991/where-to-upload-pgp-public-key-are-keyservers-still-surviving">http://superuser.com/questions/227991/where-to-upload-pgp-public-key-are-keyservers-still-surviving</a>
+gpg --keyserver keys.gnupg.net --recv-key 0BD07395
+gpg --verify named.root.sig named.root</p>
+<p>## <a class="reference external" href="http://security.stackexchange.com/questions/6841/ways-to-sign-gpg-public-key-so-it-is-trusted">http://security.stackexchange.com/questions/6841/ways-to-sign-gpg-public-key-so-it-is-trusted</a>
+## <a class="reference external" href="http://stackoverflow.com/questions/26217766/download-key-with-gpg-recv-key-and-simultaneously-check-fingerprint-in-a-scr">http://stackoverflow.com/questions/26217766/download-key-with-gpg-recv-key-and-simultaneously-check-fingerprint-in-a-scr</a></p>
 </blockquote>
 <p>Some more:</p>
-<pre><code>snap:/tmp/www.internic.net/zones # gpg --verify named.root.sig named.root
+<pre class="literal-block">
+snap:/tmp/www.internic.net/zones # gpg --verify named.root.sig named.root
 gpg: Signature made Sat May 23 14:50:54 2015 CEST using DSA key ID 0BD07395
-gpg: Can&#39;t check signature: No public key
+gpg: Can't check signature: No public key
 
 gpg --keyserver keys.gnupg.net --recv-key 0BD07395
 
 gpg --verify named.root.sig named.root
 gpg: Signature made Sat May 23 14:50:54 2015 CEST using DSA key ID 0BD07395
-gpg: Good signature from &quot;Registry Administrator &lt;nstld@verisign-grs.com&gt;&quot;
+gpg: Good signature from &quot;Registry Administrator &lt;nstld&#64;verisign-grs.com&gt;&quot;
 gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
-Primary key fingerprint: 81F6 6E4A 1CE4 4531 08DB  6811 84FA 869E 0BD0 7395</code></pre>
-<p>I had this in <code>named_root_hint.cron</code>:</p>
-<pre><code>#! /bin/sh
+Primary key fingerprint: 81F6 6E4A 1CE4 4531 08DB  6811 84FA 869E 0BD0 7395
+</pre>
+<p>I had this in <tt class="docutils literal">named_root_hint.cron</tt>:</p>
+<pre class="literal-block">
+#! /bin/sh
 #
 
 RootHint=root.hint
@@ -178,127 +537,156 @@ if (test -e $VarLibNamedNamedCache) ; then
   fi
 
   rm -f $VarLibNamedNamedCache
-fi</code></pre>
-<h1 id="headless-install">headless install</h1>
-<h2 id="text-mode-console-will-break-line-drawing-after-first-boot">text-mode console will break line drawing after first boot</h2>
+fi
+</pre>
+</div>
+</div>
+<div class="section" id="headless-install">
+<h1><a class="toc-backref" href="#id19">headless install</a></h1>
+<div class="section" id="text-mode-console-will-break-line-drawing-after-first-boot">
+<h2><a class="toc-backref" href="#id20">text-mode console will break line drawing after first boot</a></h2>
 <p>A long standing bug, and I'm amazed not more people complain about this.</p>
-<p>I've queued a <a href="https://wiert.wordpress.com/?p=27755&quot;">blog entry</a> about this titled &quot;TUMBLEWEED: local console yast linedrawing characters garbage after first reboot&quot;.</p>
-<p>The workaround is simple: Call <code>/bin/unicode_start</code> on the command line before starting <code>yast</code>. It looks you need this only once per machine.</p>
-<h2 id="start-with-minimal-server-selection-text-mode">Start with &quot;Minimal server selection (text mode)&quot;</h2>
+<p>I've queued a <a class="reference external" href="https://wiert.wordpress.com/?p=27755&quot;">blog entry</a> about this titled &quot;TUMBLEWEED: local console yast linedrawing characters garbage after first reboot&quot;.</p>
+<p>The workaround is simple: Call <tt class="docutils literal">/bin/unicode_start</tt> on the command line
+before starting <tt class="docutils literal">yast</tt>. It looks you need this only once per machine.</p>
+</div>
+<div class="section" id="start-with-minimal-server-selection-text-mode">
+<h2><a class="toc-backref" href="#id21">Start with &quot;Minimal server selection (text mode)&quot;</a></h2>
 <p>The OpenSuSE way of a headless install starts with &quot;Minimal server selection (text mode)&quot;. On top of that you extend the installation.</p>
 <p>In about 20 gigabyte disk space, you can &quot;Minimal server selection (text mode)&quot; extended by a limited set of packages.</p>
 <p>These are the <strong>patterns</strong> I extended with:</p>
-<ul>
-<li><a href="https://software.opensuse.org/package/patterns-openSUSE-enhanced_base">Enhanced Base System</a></li>
-<li><a href="https://www.google.com/search?q=&quot;Console+Tools&quot;+site%3Aopensuse.org">Console Tools</a></li>
-<li><a href="https://www.google.com/search?q=&quot;File+Server&quot;+site%3Aopensuse.org">File Server</a></li>
-<li><a href="https://www.google.com/search?q=&quot;Network+Administration&quot;+site%3Aopensuse.org">Network Administration</a></li>
-<li><a href="https://www.google.com/search?q=&quot;Mail+and+News+Server&quot;+site%3Aopensuse.org">Mail and News Server</a></li>
-<li><a href="https://www.google.com/search?q=&quot;Web+and+LAMP+Server&quot;+site%3Aopensuse.org">Web and LAMP Server</a></li>
-<li><a href="hhttps://www.google.com/search?q=&quot;Internet+Gateway&quot;+site%3Aopensuse.org">Internet Gateway</a></li>
-<li><a href="https://www.google.com/search?q=&quot;DHCP+and+DNS+Server&quot;+site%3Aopensuse.org">DHCP and DNS Server</a></li>
+<ul class="simple">
+<li><a class="reference external" href="https://software.opensuse.org/package/patterns-openSUSE-enhanced_base">Enhanced Base System</a></li>
+<li><a class="reference external" href="https://www.google.com/search?q=&quot;Console+Tools&quot;+site%3Aopensuse.org">Console Tools</a></li>
+<li><a class="reference external" href="https://www.google.com/search?q=&quot;File+Server&quot;+site%3Aopensuse.org">File Server</a></li>
+<li><a class="reference external" href="https://www.google.com/search?q=&quot;Network+Administration&quot;+site%3Aopensuse.org">Network Administration</a></li>
+<li><a class="reference external" href="https://www.google.com/search?q=&quot;Mail+and+News+Server&quot;+site%3Aopensuse.org">Mail and News Server</a></li>
+<li><a class="reference external" href="https://www.google.com/search?q=&quot;Web+and+LAMP+Server&quot;+site%3Aopensuse.org">Web and LAMP Server</a></li>
+<li><a class="reference external" href="hhttps://www.google.com/search?q=&quot;Internet+Gateway&quot;+site%3Aopensuse.org">Internet Gateway</a></li>
+<li><a class="reference external" href="https://www.google.com/search?q=&quot;DHCP+and+DNS+Server&quot;+site%3Aopensuse.org">DHCP and DNS Server</a></li>
 </ul>
 <p>After that I added some <strong>packages</strong> too:</p>
-<blockquote>
-<p><strong>note</strong></p>
-<p>Note that some of these won't install just yet, see the <a href="text-mode-installation-and-conflicts">text-mode installation and conflicts</a> section.</p>
-</blockquote>
-<ul>
-<li><a href="https://software.opensuse.org/package/etckeeper">etckeeper</a></li>
-<li><a href="https://software.opensuse.org/package/syslogd">syslogd</a></li>
-<li><a href="https://software.opensuse.org/package/emacs">emacs</a></li>
-<li><a href="https://software.opensuse.org/package/joe">joe</a></li>
-<li><a href="https://software.opensuse.org/package/nano">nano</a></li>
-<li><a href="https://software.opensuse.org/package/pico">pico</a></li>
-<li><a href="https://software.opensuse.org/package/vim">vim</a></li>
-<li><a href="https://software.opensuse.org/package/dovecot">dovecot</a></li>
-<li><a href="https://software.opensuse.org/package/mutt">mutt</a></li>
-<li><a href="https://software.opensuse.org/package/par">par</a></li>
-<li><a href="https://software.opensuse.org/package/make">make</a></li>
-<li><a href="https://software.opensuse.org/package/monit">monit</a></li>
-<li><a href="https://software.opensuse.org/package/mc">mc</a></li>
-<li><a href="https://software.opensuse.org/package/mirror">mirror</a></li>
-<li><a href="https://software.opensuse.org/package/p7zip">p7zip</a></li>
-<li><a href="https://software.opensuse.org/package/zip">zip</a></li>
-<li><a href="https://software.opensuse.org/package/zsync">zsync</a></li>
-<li><a href="https://software.opensuse.org/package/git">git</a></li>
-<li><a href="hhttps://software.opensuse.org/package/mercurial">mercurial</a>*</li>
-<li><a href="hhttps://software.opensuse.org/package/perl">perl</a></li>
-<li><a href="https://software.opensuse.org/package/php">php</a>*</li>
-<li><a href="https://software.opensuse.org/package/apache2-mod_php5">apache2-mod_php5</a>*</li>
-<li><a href="https://software.opensuse.org/package/python">python</a>*</li>
-<li><a href="https://software.opensuse.org/package/dropbox">dropbox</a>*</li>
-<li><a href="https://software.opensuse.org/package/ca-certificates-cacert">ca-certificates-cacert</a></li>
-<li><a href="https://software.opensuse.org/package/bridge-utils">bridge-utils</a></li>
-<li><a href="https://software.opensuse.org/package/fping">fping</a></li>
-<li><a href="https://software.opensuse.org/package/ftp">ftp</a></li>
-<li><a href="https://software.opensuse.org/package/gftp">gftp</a></li>
-<li><a href="https://software.opensuse.org/package/icecast">icecast</a></li>
-<li><a href="https://software.opensuse.org/package/links">links</a></li>
-<li><a href="https://software.opensuse.org/package/iptraf-ng">iptraf-ng</a></li>
-<li><a href="https://software.opensuse.org/package/shellinabox">shellinabox</a></li>
-<li><a href="hhttps://software.opensuse.org/package/kvirustotal">kvirustotal</a></li>
-<li><a href="https://software.opensuse.org/package/monit">monit</a></li>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that some of these won't install just yet, see the <a class="reference external" href="text-mode-installation-and-conflicts">text-mode installation and conflicts</a> section.</p>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="https://software.opensuse.org/package/etckeeper">etckeeper</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/syslogd">syslogd</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/emacs">emacs</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/joe">joe</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/nano">nano</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/pico">pico</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/vim">vim</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/dovecot">dovecot</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/mutt">mutt</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/par">par</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/make">make</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/monit">monit</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/mc">mc</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/mirror">mirror</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/p7zip">p7zip</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/zip">zip</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/zsync">zsync</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/git">git</a></li>
+<li><a class="reference external" href="hhttps://software.opensuse.org/package/mercurial">mercurial</a>*</li>
+<li><a class="reference external" href="hhttps://software.opensuse.org/package/perl">perl</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/php">php</a>*</li>
+<li><a class="reference external" href="https://software.opensuse.org/package/apache2-mod_php5">apache2-mod_php5</a>*</li>
+<li><a class="reference external" href="https://software.opensuse.org/package/python">python</a>*</li>
+<li><a class="reference external" href="https://software.opensuse.org/package/dropbox">dropbox</a>*</li>
+<li><a class="reference external" href="https://software.opensuse.org/package/ca-certificates-cacert">ca-certificates-cacert</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/bridge-utils">bridge-utils</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/fping">fping</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/ftp">ftp</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/gftp">gftp</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/icecast">icecast</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/links">links</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/iptraf-ng">iptraf-ng</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/shellinabox">shellinabox</a></li>
+<li><a class="reference external" href="hhttps://software.opensuse.org/package/kvirustotal">kvirustotal</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/monit">monit</a></li>
 </ul>
 <p>These packages were already installed:</p>
-<ul>
-<li><a href="https://software.opensuse.org/package/info">info</a></li>
-<li><a href="https://software.opensuse.org/package/man">man</a></li>
-<li><a href="https://software.opensuse.org/package/man-pages">man-pages</a></li>
-<li><a href="https://software.opensuse.org/package/mc">mc</a></li>
-<li><a href="https://software.opensuse.org/package/w3m">w3m</a></li>
+<ul class="simple">
+<li><a class="reference external" href="https://software.opensuse.org/package/info">info</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/man">man</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/man-pages">man-pages</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/mc">mc</a></li>
+<li><a class="reference external" href="https://software.opensuse.org/package/w3m">w3m</a></li>
 </ul>
 <p>Didn't yet install:</p>
-<ul>
-<li><a href="https://software.opensuse.org/package/bash-doc">bash-doc</a>*</li>
-<li><a href="https://software.opensuse.org/package/samba-doc">samba-doc</a>*</li>
+<ul class="simple">
+<li><a class="reference external" href="https://software.opensuse.org/package/bash-doc">bash-doc</a>*</li>
+<li><a class="reference external" href="https://software.opensuse.org/package/samba-doc">samba-doc</a>*</li>
 </ul>
-<blockquote>
-<p><strong>note</strong></p>
-<p>If you want to know <a href="http://unix.stackexchange.com/questions/158041/how-do-i-find-a-package-that-provides-a-given-file-in-opensuse">which package provides a certain file</a>, then use this command:</p>
-<pre><code>zypper search --provides --match-exact hg</code></pre>
-<p>Where <code>hg</code> is the file you are looking for.</p>
-</blockquote>
-<h2 id="halt-will-fail-use-halt--p-to-halt-under-esxi-5.1"><code>halt</code> will fail, use <code>halt -p</code> to halt under ESXi 5.1</h2>
-<p>A long time ago, <a href="http://wiert.me/2012/12/30/opensuse-12-x-a-plain-halt-will-not-shutdown-the-system-properly/">I wrote that</a> <code>halt</code> fails, but <code>halt -p</code> succeeds when running under VMware ESXi 5.1 (I don't run physical boxes any more).</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>If you want to know <a class="reference external" href="http://unix.stackexchange.com/questions/158041/how-do-i-find-a-package-that-provides-a-given-file-in-opensuse">which package provides a certain file</a>, then use this command:</p>
+<pre class="literal-block">
+zypper search --provides --match-exact hg
+</pre>
+<p class="last">Where <tt class="docutils literal">hg</tt> is the file you are looking for.</p>
+</div>
+</div>
+<div class="section" id="halt-will-fail-use-halt-p-to-halt-under-esxi-5-1">
+<h2><a class="toc-backref" href="#id22"><tt class="docutils literal">halt</tt> will fail, use <tt class="docutils literal">halt <span class="pre">-p</span></tt> to halt under ESXi 5.1</a></h2>
+<p>A long time ago, <a class="reference external" href="http://wiert.me/2012/12/30/opensuse-12-x-a-plain-halt-will-not-shutdown-the-system-properly/">I wrote that</a> <tt class="docutils literal">halt</tt> fails, but <tt class="docutils literal">halt <span class="pre">-p</span></tt> succeeds when running under VMware ESXi 5.1 (I don't run physical boxes any more).</p>
 <p>This still fails under OpenSuSE Tumbleweed 13.2.</p>
-<h2 id="text-mode-installation-and-conflicts">text-mode installation and conflicts</h2>
+</div>
+<div class="section" id="id8">
+<h2><a class="toc-backref" href="#id23">text-mode installation and conflicts</a></h2>
 <p>The easiest way to start a headless install is picking &quot;Minimal server selection (text mode)&quot; during installation.</p>
-<p>The problem however is that this indeed minimal. It is enforced by the <code>patterns-openSUSE-minimal_base-conflicts</code> [#patterns-openSUSE-minimal_base-conflicts]_ pattern which is part of the minimal install.</p>
-<p>It prevents some packages to install like <code>mercurial</code>, <code>php</code> and <code>python</code>.</p>
-<p>To prevent that, remove the <code>patterns-openSUSE-minimal_base-conflicts</code> package specific for the OpenSuSE version you use <a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>.</p>
+<p>The problem however is that this indeed minimal. It is enforced by the <tt class="docutils literal"><span class="pre">patterns-openSUSE-minimal_base-conflicts</span></tt> <a class="footnote-reference" href="#patterns-opensuse-minimal-base-conflicts-footnote" id="id9">[5]</a> pattern which is part of the minimal install.</p>
+<p>It prevents some packages to install like <tt class="docutils literal">mercurial</tt>, <tt class="docutils literal">php</tt> and <tt class="docutils literal">python</tt>.</p>
+<p>To prevent that, remove the <tt class="docutils literal"><span class="pre">patterns-openSUSE-minimal_base-conflicts</span></tt> package specific for the OpenSuSE version you use <a class="footnote-reference" href="#removeconflicts-footnote" id="id10">[6]</a>.</p>
 <p>Do this <strong>after</strong> you've selected the patterns you want to install. Otherwise recommended packages can be installed potentially blowing your size.</p>
-<h2 id="add-git-extras">add git-extras</h2>
-<p>See the <a href="https://github.com/tj/git-extras/blob/master/Installation.md">git-extras Install documentation</a> for why/how.</p>
+</div>
+<div class="section" id="add-git-extras">
+<h2><a class="toc-backref" href="#id24">add git-extras</a></h2>
+<p>See the <a class="reference external" href="https://github.com/tj/git-extras/blob/master/Installation.md">git-extras Install documentation</a> for why/how.</p>
 <p>Just run this command:</p>
-<pre><code>(cd /tmp &amp;&amp; git clone https://github.com/tj/git-extras.git &amp;&amp; cd git-extras &amp;&amp; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) &amp;&amp; sudo make install)</code></pre>
-<h1 id="configuration">configuration</h1>
-<h2 id="getting-started-with-etckeeper">getting started with etckeeper</h2>
-<p>A while ago <code>etckeeper</code> (which is <a href="https://github.com/joeyh/etckeeper">open source on GitHub</a>) was <a href="http://joeyh.name/code/etckeeper/">requested</a> to be put into the factory repository, and now <a href="https://software.opensuse.org/package/etckeeper">is</a>.</p>
+<pre class="literal-block">
+(cd /tmp &amp;&amp; git clone https://github.com/tj/git-extras.git &amp;&amp; cd git-extras &amp;&amp; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) &amp;&amp; sudo make install)
+</pre>
+</div>
+</div>
+<div class="section" id="configuration">
+<h1><a class="toc-backref" href="#id25">configuration</a></h1>
+<div class="section" id="getting-started-with-etckeeper">
+<h2><a class="toc-backref" href="#id26">getting started with etckeeper</a></h2>
+<p>A while ago <tt class="docutils literal">etckeeper</tt> (which is <a class="reference external" href="https://github.com/joeyh/etckeeper">open source on GitHub</a>) was <a class="reference external" href="http://joeyh.name/code/etckeeper/">requested</a> to be put into the factory repository, and now <a class="reference external" href="https://software.opensuse.org/package/etckeeper">is</a>.</p>
 <p>This is how I got started:</p>
-<ol style="list-style-type: decimal">
-<li>I created a new private repository on bitbucket called <a href="https://bitbucket.org/jeroenp/etckeeper.revue" class="uri">https://bitbucket.org/jeroenp/etckeeper.revue</a></li>
-<li><p>I ran these commands locally:</p>
-<pre><code>etckeeper init
+<ol class="arabic">
+<li><p class="first">I created a new private repository on bitbucket called <a class="reference external" href="https://bitbucket.org/jeroenp/etckeeper.revue">https://bitbucket.org/jeroenp/etckeeper.revue</a></p>
+</li>
+<li><p class="first">I ran these commands locally:</p>
+<pre class="literal-block">
+etckeeper init
 cd /etc
 git status
 git commit -m &quot;initial checkin&quot;
 git gc # pack git repo to save a lot of space
 
 cd /path/to/my/repo
-git remote add origin https://jeroenp@bitbucket.org/jeroenp/etckeeper.revue.git
+git remote add origin https://jeroenp&#64;bitbucket.org/jeroenp/etckeeper.revue.git
 git push -u origin --all # pushes up the repo and its refs for the first time
-git push -u origin --tags # pushes up any tags</code></pre></li>
+git push -u origin --tags # pushes up any tags
+</pre>
+</li>
 </ol>
-<blockquote>
-<p><strong>note</strong></p>
-<p><a href="http://etckeeper.branchable.com/">etckeeper</a> is a collection of tools to let <code>/etc</code> be stored in a git, mercurial, bazaar or darcs repository. This lets you use git to review or revert changes that were made to <code>/etc</code>. Or even push the repository elsewhere for backups or cherry-picking configuration changes.</p>
-<p>It hooks into package managers like apt to automatically commit changes made to <code>/etc</code> during package upgrades. It tracks file metadata that git does not normally support, but that is important for /etc, such as the permissions of <code>/etc/shadow</code>.</p>
-<p>It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.</p>
-</blockquote>
-<h2 id="removing-hardlinks-from-the-etckeeper-repository">removing hardlinks from the <code>etckeeper</code> repository</h2>
-<p>Inspired by <a href="http://unix.stackexchange.com/questions/63627/excluding-files-in-etckeeper-with-gitignore-doesnt-work/63628#63628">this answer</a> to get rid of these messages during <a href="https://github.com/joeyh/etckeeper#what-etckeeper-does">etckeeper commit</a> to delete many <a href="http://lists.opensuse.org/opensuse-factory/2014-06/msg00115.html">hardlinked bootsplash files</a>:</p>
-<pre><code>etckeeper warning: hardlinked files could cause problems with git:
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p><a class="reference external" href="http://etckeeper.branchable.com/">etckeeper</a> is a collection of tools to let <tt class="docutils literal">/etc</tt> be stored in a git, mercurial, bazaar or darcs repository. This lets you use git to review or revert changes that were made to <tt class="docutils literal">/etc</tt>. Or even push the repository elsewhere for backups or cherry-picking configuration changes.</p>
+<p>It hooks into package managers like apt to automatically commit changes made to <tt class="docutils literal">/etc</tt> during package upgrades. It tracks file metadata that git does not normally support, but that is important for /etc, such as the permissions of <tt class="docutils literal">/etc/shadow</tt>.</p>
+<p class="last">It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.</p>
+</div>
+</div>
+<div class="section" id="removing-hardlinks-from-the-etckeeper-repository">
+<h2><a class="toc-backref" href="#id27">removing hardlinks from the <tt class="docutils literal">etckeeper</tt> repository</a></h2>
+<p>Inspired by <a class="reference external" href="http://unix.stackexchange.com/questions/63627/excluding-files-in-etckeeper-with-gitignore-doesnt-work/63628#63628">this answer</a> to get rid of these messages during <a class="reference external" href="https://github.com/joeyh/etckeeper#what-etckeeper-does">etckeeper commit</a> to delete many <a class="reference external" href="http://lists.opensuse.org/opensuse-factory/2014-06/msg00115.html">hardlinked bootsplash files</a>:</p>
+<pre class="literal-block">
+etckeeper warning: hardlinked files could cause problems with git:
 bootsplash/themes/openSUSE/bootloader/af.tr
 ...
 bootsplash/themes/openSUSE/bootloader/pt.tr
@@ -318,67 +706,83 @@ bootsplash/themes/openSUSE/cdrom/ro.tr
 bootsplash/themes/openSUSE/cdrom/xh.tr
 bootsplash/themes/openSUSE/cdrom/zh_CN.tr
 bootsplash/themes/openSUSE/cdrom/zh_TW.tr
-bootsplash/themes/openSUSE/cdrom/zu.tr</code></pre>
-<p>Add these two lines to <code>/etc/.gitignore</code></p>
+bootsplash/themes/openSUSE/cdrom/zu.tr
+</pre>
+<p>Add these two lines to <tt class="docutils literal"><span class="pre">/etc/.gitignore</span></tt></p>
 <blockquote>
-<p>bootsplash/themes/openSUSE/bootloader/<em>.tr bootsplash/themes/openSUSE/cdrom/</em>.tr</p>
-</blockquote>
-<p>Note the <code>--cache</code> part in the command to delete, as then the files will not be deleted locally, only in the repository:</p>
-<pre><code>git add .gitignore
+bootsplash/themes/openSUSE/bootloader/<em>.tr
+bootsplash/themes/openSUSE/cdrom/</em>.tr</blockquote>
+<p>Note the <tt class="docutils literal"><span class="pre">--cache</span></tt> part in the command to delete, as then the files will not be deleted locally, only in the repository:</p>
+<pre class="literal-block">
+git add .gitignore
 git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr
 git rm --cached bootsplash/themes/openSUSE/cdrom/*.tr
-git commit -m &quot;git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr and bootsplash/themes/openSUSE/cdrom/*.tr&quot;</code></pre>
-<h2 id="configuring-sudo">configuring sudo</h2>
-<ol style="list-style-type: decimal">
-<li>Start <code>yast</code></li>
-<li>Open <code>Security and Users</code>, then <code>Sudo</code></li>
-<li>Click <code>Add</code></li>
+git commit -m &quot;git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr and bootsplash/themes/openSUSE/cdrom/*.tr&quot;
+</pre>
+</div>
+<div class="section" id="configuring-sudo">
+<h2><a class="toc-backref" href="#id28">configuring sudo</a></h2>
+<ol class="arabic simple">
+<li>Start <tt class="docutils literal">yast</tt></li>
+<li>Open <tt class="docutils literal">Security and Users</tt>, then <tt class="docutils literal">Sudo</tt></li>
+<li>Click <tt class="docutils literal">Add</tt></li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li>Select a <code>User</code> (in my case <code>jeroenp</code>)</li>
-<li>Select a <code>Host</code> (in my case <code>ALL</code>)</li>
-<li>At <code>RunAs</code> type <code>ALL</code> (this will get translated to <code>(ALL)</code>)</li>
-<li>Ensure that <code>No Password</code> has a checkmark</li>
-<li>Click <code>Add</code></li>
+<ol class="arabic simple">
+<li>Select a <tt class="docutils literal">User</tt> (in my case <tt class="docutils literal">jeroenp</tt>)</li>
+<li>Select a <tt class="docutils literal">Host</tt> (in my case <tt class="docutils literal">ALL</tt>)</li>
+<li>At <tt class="docutils literal">RunAs</tt> type <tt class="docutils literal">ALL</tt> (this will get translated to <tt class="docutils literal">(ALL)</tt>)</li>
+<li>Ensure that <tt class="docutils literal">No Password</tt> has a checkmark</li>
+<li>Click <tt class="docutils literal">Add</tt></li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li>Select a <code>Command</code> (in my case <code>ALL</code>)</li>
-<li>Press <code>OK</code></li>
+<ol class="arabic simple">
+<li>Select a <tt class="docutils literal">Command</tt> (in my case <tt class="docutils literal">ALL</tt>)</li>
+<li>Press <tt class="docutils literal">OK</tt></li>
 </ol>
 </blockquote>
-<ol start="5" style="list-style-type: decimal">
-<li>Press <code>OK</code></li>
+<ol class="arabic simple" start="5">
+<li>Press <tt class="docutils literal">OK</tt></li>
 </ol>
 </blockquote>
-<ol start="4" style="list-style-type: decimal">
-<li>Press <code>OK</code></li>
-<li>Quit <code>yast</code></li>
+<ol class="arabic simple" start="4">
+<li>Press <tt class="docutils literal">OK</tt></li>
+<li>Quit <tt class="docutils literal">yast</tt></li>
 </ol>
-<p>This will generate <code>/etc/sudoers.YaST2.save</code> add a line to <code>/etc/sudoers</code>:</p>
-<pre><code>jeroenp ALL = (ALL) NOPASSWD:ALL</code></pre>
-<blockquote>
-<p><strong>note</strong></p>
-<p>Note that <a href="http://superuser.com/questions/357467/what-do-the-alls-in-the-line-admin-all-all-all-in-ubuntus-etc-sudoers">each ALL entry has a different meaning</a>.</p>
-</blockquote>
-<h2 id="configuring-ssh">configuring ssh</h2>
-<p>Up until OpenSuSE 12.x, there was yast2-sshd. It is <a href="https://www.suse.com/documentation/opensuse114/book_security/data/sec_ssh_yast.html">still in the documentation</a>, but it <a href="http://lists.opensuse.org/opensuse/2013-11/msg00751.html">has been orphaned</a> so you need to configure it manually. It isn't hard: below is the diff of the <code>/etc/sshd_config</code> file.</p>
-<p>Note that when manually changing sshd configuration options, you can test (<code>-t</code>) or test-extended (<code>-T</code>) <a href="https://www.ixsystems.com/whats-new/how-secure-can-secure-shell-ssh-be-basic-configuration-of-openssh/">like this</a>:</p>
-<pre><code>sshd –t
-sshd -T</code></pre>
-<p>Part of the hardening is executing this from <code>/etc/ssh</code>:</p>
-<pre><code>wget https://github.com/comotion/gone/blob/github/modules/ssh
+<p>This will generate <tt class="docutils literal">/etc/sudoers.YaST2.save</tt> add a line to <tt class="docutils literal">/etc/sudoers</tt>:</p>
+<pre class="literal-block">
+jeroenp     ALL = (ALL) NOPASSWD:ALL
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that <a class="reference external" href="http://superuser.com/questions/357467/what-do-the-alls-in-the-line-admin-all-all-all-in-ubuntus-etc-sudoers">each ALL entry has a different meaning</a>.</p>
+</div>
+</div>
+<div class="section" id="configuring-ssh">
+<h2><a class="toc-backref" href="#id29">configuring ssh</a></h2>
+<p>Up until OpenSuSE 12.x, there was yast2-sshd. It is <a class="reference external" href="https://www.suse.com/documentation/opensuse114/book_security/data/sec_ssh_yast.html">still in the documentation</a>, but it <a class="reference external" href="http://lists.opensuse.org/opensuse/2013-11/msg00751.html">has been orphaned</a> so you need to configure it manually. It isn't hard: below is the diff of the <tt class="docutils literal">/etc/sshd_config</tt> file.</p>
+<p>Note that when manually changing sshd configuration options, you can test (<tt class="docutils literal"><span class="pre">-t</span></tt>) or test-extended (<tt class="docutils literal"><span class="pre">-T</span></tt>) <a class="reference external" href="https://www.ixsystems.com/whats-new/how-secure-can-secure-shell-ssh-be-basic-configuration-of-openssh/">like this</a>:</p>
+<pre class="literal-block">
+sshd –t
+sshd -T
+</pre>
+<p>Part of the hardening is executing this from <tt class="docutils literal">/etc/ssh</tt>:</p>
+<pre class="literal-block">
+wget https://github.com/comotion/gone/blob/github/modules/ssh
 chmod 700 ssh
 ./ssh
-rm ./ssh</code></pre>
-<p>I finally saved the changes using <code>etckeeper</code>:</p>
-<pre><code>etckeeper commit -m &quot;sshd and hardening&quot;
-git push</code></pre>
+rm ./ssh
+</pre>
+<p>I finally saved the changes using <tt class="docutils literal">etckeeper</tt>:</p>
+<pre class="literal-block">
+etckeeper commit -m &quot;sshd and hardening&quot;
+git push
+</pre>
 <p>This is what the diff looks like:</p>
-<pre><code>--- a/ssh/sshd_config
+<pre class="literal-block">
+--- a/ssh/sshd_config
 +++ b/ssh/sshd_config
-@@ -10,7 +10,13 @@
+&#64;&#64; -10,7 +10,13 &#64;&#64;
  # possible, but leave them commented.  Uncommented options override the
  # default value.
 
@@ -393,7 +797,7 @@ git push</code></pre>
  #AddressFamily any
  #ListenAddress 0.0.0.0
  #ListenAddress ::
-@@ -35,15 +41,15 @@
+&#64;&#64; -35,15 +41,15 &#64;&#64;
 
  # Logging
  # obsoletes QuietMode and FascistLogging
@@ -414,16 +818,16 @@ git push</code></pre>
  #MaxSessions 10
 
  #RSAAuthentication yes
-@@ -61,28 +67,28 @@ AuthorizedKeysFile  .ssh/authorized_keys
+&#64;&#64; -61,28 +67,28 &#64;&#64; AuthorizedKeysFile      .ssh/authorized_keys
  # For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
  #RhostsRSAAuthentication no
  # similar for protocol version 2
 -#HostbasedAuthentication no
 +HostbasedAuthentication no
- # Change to yes if you don&#39;t trust ~/.ssh/known_hosts for
+ # Change to yes if you don't trust ~/.ssh/known_hosts for
  # RhostsRSAAuthentication and HostbasedAuthentication
  #IgnoreUserKnownHosts no
- # Don&#39;t read the user&#39;s ~/.rhosts and ~/.shosts files
+ # Don't read the user's ~/.rhosts and ~/.shosts files
 -#IgnoreRhosts yes
 +IgnoreRhosts yes
 
@@ -449,7 +853,7 @@ git push</code></pre>
  #GSSAPICleanupCredentials yes
  #GSSAPIStrictAcceptorCheck yes
  #GSSAPIKeyExchange no
-@@ -107,17 +113,17 @@ UsePAM yes
+&#64;&#64; -107,17 +113,17 &#64;&#64; UsePAM yes
 
  #AllowAgentForwarding yes
  #AllowTcpForwarding yes
@@ -467,13 +871,13 @@ git push</code></pre>
 +PrintLastLog yes
 +TCPKeepAlive yes
  #UseLogin no
- UsePrivilegeSeparation sandbox     # Default for new installations.
+ UsePrivilegeSeparation sandbox             # Default for new installations.
 -#PermitUserEnvironment no
 +PermitUserEnvironment no
  #Compression delayed
  #ClientAliveInterval 0
  #ClientAliveCountMax 3
-@@ -129,7 +135,7 @@ UsePrivilegeSeparation sandbox      # Default for new installations.
+&#64;&#64; -129,7 +135,7 &#64;&#64; UsePrivilegeSeparation sandbox          # Default for new installations.
  #VersionAddendum none
 
  # no default banner path
@@ -482,42 +886,48 @@ git push</code></pre>
 
  # override default of no subsystems
  Subsystem  sftp    /usr/lib/ssh/sftp-server
-@@ -145,3 +151,6 @@ AcceptEnv LC_IDENTIFICATION LC_ALL
+&#64;&#64; -145,3 +151,6 &#64;&#64; AcceptEnv LC_IDENTIFICATION LC_ALL
  #  AllowTcpForwarding no
  #  PermitTTY no
  #  ForceCommand cvs server
-+KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
-+Ciphers chacha20-poly1305@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com</code></pre>
-<blockquote>
-<p><strong>note</strong></p>
-<p>In the diff are steps from <a href="http://people.redhat.com/swells/mea/SECSCAN-FirstRun/sshd_config.htm">SSH Server Configuration rhel-lockdown</a>, <a href="http://wp.kjro.se/2013/09/06/hardening-your-ssh-server-opensshd_config/">Hardening your SSH server (opensshd_config)</a> and the script behind <a href="http://kacper.blog.redpill-linpro.com/archives/702"><a href="http://kacper.blog.redpill-linpro.com/archives/702" class="uri">http://kacper.blog.redpill-linpro.com/archives/702</a></a> from <a href="https://github.com/comotion/gone/blob/github/modules/ssh">gone/ssh at github · comotion/gone</a>. Note that the <code>sandbox</code> value for <code>UsePrivilegeSeparation</code> is even <a href="http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5?query=sshd_config&amp;sec=5">more secure</a> than the <code>yes</code> value.</p>
-</blockquote>
++KexAlgorithms curve25519-sha256&#64;libssh.org,diffie-hellman-group-exchange-sha256
++Ciphers chacha20-poly1305&#64;openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
++MACs hmac-sha2-512-etm&#64;openssh.com,hmac-sha2-256-etm&#64;openssh.com,hmac-ripemd160-etm&#64;openssh.com,umac-128-etm&#64;openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128&#64;openssh.com
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the diff are steps from <a class="reference external" href="http://people.redhat.com/swells/mea/SECSCAN-FirstRun/sshd_config.htm">SSH Server Configuration rhel-lockdown</a>, <a class="reference external" href="http://wp.kjro.se/2013/09/06/hardening-your-ssh-server-opensshd_config/">Hardening your SSH server (opensshd_config)</a> and the script behind  <a class="reference external" href="http://kacper.blog.redpill-linpro.com/archives/702">http://kacper.blog.redpill-linpro.com/archives/702</a> from <a class="reference external" href="https://github.com/comotion/gone/blob/github/modules/ssh">gone/ssh at github · comotion/gone</a>. Note that the <tt class="docutils literal">sandbox</tt> value for <tt class="docutils literal">UsePrivilegeSeparation</tt> is even <a class="reference external" href="http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5?query=sshd_config&amp;sec=5">more secure</a> than the <tt class="docutils literal">yes</tt> value.</p>
+</div>
 <p>Now ensure that the firewall allows for ssh:</p>
-<ol style="list-style-type: decimal">
-<li>Start <code>yast</code></li>
-<li>Go to <code>Security and Users</code>, <code>Firewall</code></li>
-<li>Go to <code>Allowed Services</code></li>
-<li>Ensure <code>Secure Shell Server</code> is in the list, when not:</li>
+<ol class="arabic simple">
+<li>Start <tt class="docutils literal">yast</tt></li>
+<li>Go to <tt class="docutils literal">Security and Users</tt>, <tt class="docutils literal">Firewall</tt></li>
+<li>Go to <tt class="docutils literal">Allowed Services</tt></li>
+<li>Ensure <tt class="docutils literal">Secure Shell Server</tt> is in the list, when not:</li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li>Add <code>Secure Shell Server</code> to the list</li>
-<li>Press <code>Next</code> followed by <code>Finish</code> to apply the changes</li>
+<ol class="arabic simple">
+<li>Add <tt class="docutils literal">Secure Shell Server</tt> to the list</li>
+<li>Press <tt class="docutils literal">Next</tt> followed by <tt class="docutils literal">Finish</tt> to apply the changes</li>
 </ol>
 </blockquote>
-<ol start="5" style="list-style-type: decimal">
-<li>Quit <code>yast</code></li>
+<ol class="arabic simple" start="5">
+<li>Quit <tt class="docutils literal">yast</tt></li>
 </ol>
-<p>Finally start <code>sshd</code>:</p>
-<pre><code>rcsshd start
-rcsshd status</code></pre>
-<h2 id="install-and-configure-noip-dynamic-dns-update-script">install and configure noip dynamic DNS update script</h2>
-<p>The script is based on &lt;<a href="https://github.com/mdmower/bash-no-ip-updater.git" class="uri">https://github.com/mdmower/bash-no-ip-updater.git</a>&gt;.</p>
-<p>Create the below <code>/etc/noip.com.install.sh</code> script with <code>chmod 700</code>, then run it to install.</p>
-<p>One of the things it does is move the config file outside the repository (<a href="https://github.com/mdmower/bash-no-ip-updater/pull/2">I've made a pull-request for that</a>) as it contains credentials.</p>
-<p>Full source is at &lt;<a href="https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3" class="uri">https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3</a>&gt;:</p>
-<pre><code>#! /bin/sh
+<p>Finally start <tt class="docutils literal">sshd</tt>:</p>
+<pre class="literal-block">
+rcsshd start
+rcsshd status
+</pre>
+</div>
+<div class="section" id="install-and-configure-noip-dynamic-dns-update-script">
+<h2><a class="toc-backref" href="#id30">install and configure <cite>noip</cite> dynamic DNS update script</a></h2>
+<p>The script is based on &lt;<a class="reference external" href="https://github.com/mdmower/bash-no-ip-updater.git">https://github.com/mdmower/bash-no-ip-updater.git</a>&gt;.</p>
+<p>Create the below <tt class="docutils literal">/etc/noip.com.install.sh</tt> script with <tt class="docutils literal">chmod 700</tt>, then run it to install.</p>
+<p>One of the things it does is move the config file outside the repository (<a class="reference external" href="https://github.com/mdmower/bash-no-ip-updater/pull/2">I've made a pull-request for that</a>) as it contains credentials.</p>
+<p>Full source is at &lt;<a class="reference external" href="https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3">https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3</a>&gt;:</p>
+<pre class="literal-block">
+#! /bin/sh
 #
 # creates /etc/NoIP directory
 # clones https://github.com/mdmower/bash-no-ip-updater.git
@@ -546,7 +956,7 @@ mkdir -p $LOG_TARGET
 # escape slashes in arguments: http://www.grymoire.com/Unix/Sed.html#uh-62
 echo old:
 sed -n &quot;/^LOGDIR=\&quot;\$HOME\/logs\&quot;$/ p&quot; $CONFIG_TARGET
-LOG_TARGET_EXPANDED=`echo &quot;$LOG_TARGET&quot; | sed &#39;s:[]\[\^\$\.\*\/]:\\\\&amp;:g&#39;`
+LOG_TARGET_EXPANDED=`echo &quot;$LOG_TARGET&quot; | sed 's:[]\[\^\$\.\*\/]:\\\\&amp;:g'`
 #echo &quot;/^LOGDIR=\&quot;\$HOME\/logs\&quot;$/ s/\&quot;\$HOME\/logs\&quot;$/\&quot;${LOG_TARGET}\&quot;/&quot;
 #echo &quot;/^LOGDIR=\&quot;\$HOME\/logs\&quot;$/ s/\&quot;\$HOME\/logs\&quot;$/\&quot;${LOG_TARGET_EXPANDED}\&quot;/&quot;
 sed -e &quot;/^LOGDIR=\&quot;\$HOME\/logs\&quot;$/ s/\&quot;\$HOME\/logs\&quot;$/\&quot;${LOG_TARGET_EXPANDED}\&quot;/&quot; $CONFIG_TARGET &gt; $CONFIG_TARGET.tmp &amp;&amp; mv $CONFIG_TARGET.tmp $CONFIG_TARGET
@@ -560,12 +970,12 @@ pushd $CONFIG_BASE
 ## CONFIGFILE=&quot;$( cd &quot;$( dirname &quot;$0&quot; )&quot; &amp;&amp; pwd ).config&quot;
 # in-place sed: http://stackoverflow.com/questions/5171901/sed-command-find-and-replace-in-file-and-overwrite-file-doesnt-work-it-empties/5174368#5174368
 # set tips: http://www.grymoire.com/Unix/Sed.html
-## sed -e &#39;script script&#39; index.html &gt; index.html.tmp &amp;&amp; mv index.html.tmp index.html
+## sed -e 'script script' index.html &gt; index.html.tmp &amp;&amp; mv index.html.tmp index.html
 echo &quot;old:&quot;
-sed -n &#39;/^CONFIGFILE\=.*\/config&quot;$/ p&#39; $SCRIPT_TARGET
-sed -e &#39;/^CONFIGFILE\=.*\/config&quot;$/ s/\/config&quot;$/.config&quot;/&#39; $SCRIPT_TARGET &gt; $SCRIPT_TARGET.tmp &amp;&amp; mv $SCRIPT_TARGET.tmp $SCRIPT_TARGET
+sed -n '/^CONFIGFILE\=.*\/config&quot;$/ p' $SCRIPT_TARGET
+sed -e '/^CONFIGFILE\=.*\/config&quot;$/ s/\/config&quot;$/.config&quot;/' $SCRIPT_TARGET &gt; $SCRIPT_TARGET.tmp &amp;&amp; mv $SCRIPT_TARGET.tmp $SCRIPT_TARGET
 echo &quot;new:&quot;
-sed -n &#39;/^CONFIGFILE\=.*\.config&quot;$/ p&#39; $SCRIPT_TARGET
+sed -n '/^CONFIGFILE\=.*\.config&quot;$/ p' $SCRIPT_TARGET
 chmod 755 $SCRIPT_TARGET
 popd
 
@@ -585,57 +995,72 @@ EOL
 
 echo Hourly crontab entry in $CRON_HOURLY_TARGET
 chmod 755 $CRON_HOURLY_TARGET
-cat $CRON_HOURLY_TARGET</code></pre>
-<p>Now modify the <code>/etc/noip.com/bash-no-ip-updater.config</code> file; alter these entries:</p>
-<pre><code>USERNAME=&quot;email@address.com&quot;
+cat $CRON_HOURLY_TARGET
+</pre>
+<p>Now modify the <tt class="docutils literal"><span class="pre">/etc/noip.com/bash-no-ip-updater.config</span></tt> file; alter these entries:</p>
+<pre class="literal-block">
+USERNAME=&quot;email&#64;address.com&quot;
 PASSWORD=&quot;password&quot;
-HOST=&quot;host.domain.com&quot;</code></pre>
-<p>Finally run <code>/etc/noip.com/bash-no-ip-updater/noipupdater.sh</code> ones and look at the log file <code>/var/log/noip.com/noip.log</code> to see the result and check <code>/var/log/noip.com/last_ip</code> if the IP-address is indeed correct.</p>
-<h2 id="configuring-ntpd-firewall-and-jail-for-it">configuring ntpd, firewall and jail for it</h2>
-<p>By default, OpenSuSE Tumbleweed 13.2 has <code>ntdp</code> enabled and configured as client and server, even though some of the tools mislead into thinking the server is not working correctly.</p>
+HOST=&quot;host.domain.com&quot;
+</pre>
+<!-- sidebar:
+
+I could just use my account name (email was not needed). Other people seem to need their email. Try both. -->
+<p>Finally run <tt class="docutils literal"><span class="pre">/etc/noip.com/bash-no-ip-updater/noipupdater.sh</span></tt> ones and look at the log file <tt class="docutils literal">/var/log/noip.com/noip.log</tt> to see the result and check <tt class="docutils literal">/var/log/noip.com/last_ip</tt> if the IP-address is indeed correct.</p>
+</div>
+<div class="section" id="configuring-ntpd-firewall-and-jail-for-it">
+<h2><a class="toc-backref" href="#id31">configuring ntpd, firewall and jail for it</a></h2>
+<p>By default, OpenSuSE Tumbleweed 13.2 has <tt class="docutils literal">ntdp</tt> enabled and configured as client and server, even though some of the tools mislead into thinking the server is not working correctly.</p>
 <p>But first the firewall portion:</p>
-<ol style="list-style-type: decimal">
-<li>Start <code>yast</code></li>
-<li>Open <code>Security and Users</code>, then <code>Firewall</code></li>
-<li>Go to <code>Allowed Services</code></li>
-<li>Ensure <code>xntp Server</code> is in the list, when not:</li>
+<ol class="arabic simple">
+<li>Start <tt class="docutils literal">yast</tt></li>
+<li>Open <tt class="docutils literal">Security and Users</tt>, then <tt class="docutils literal">Firewall</tt></li>
+<li>Go to <tt class="docutils literal">Allowed Services</tt></li>
+<li>Ensure <tt class="docutils literal">xntp Server</tt> is in the list, when not:</li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li>Add <code>xntp Server</code> to the list</li>
-<li>Press <code>Next</code> followed by <code>Finish</code> to apply the changes</li>
+<ol class="arabic simple">
+<li>Add <tt class="docutils literal">xntp Server</tt> to the list</li>
+<li>Press <tt class="docutils literal">Next</tt> followed by <tt class="docutils literal">Finish</tt> to apply the changes</li>
 </ol>
 </blockquote>
-<ol start="5" style="list-style-type: decimal">
-<li>Quit <code>yast</code></li>
-<li>Start <code>yast</code></li>
-<li>Open <code>Network Services</code>, then <code>NTP Configuration</code></li>
-<li>Go to <code>Security Settings</code></li>
-<li>Ensure <code>Run NTP Daemon in Chroot Jail</code> is in the checked, when not:</li>
+<ol class="arabic simple" start="5">
+<li>Quit <tt class="docutils literal">yast</tt></li>
+</ol>
+<ol class="arabic simple">
+<li>Start <tt class="docutils literal">yast</tt></li>
+<li>Open <tt class="docutils literal">Network Services</tt>, then <tt class="docutils literal">NTP Configuration</tt></li>
+<li>Go to <tt class="docutils literal">Security Settings</tt></li>
+<li>Ensure <tt class="docutils literal">Run NTP Daemon in Chroot Jail</tt> is in the checked, when not:</li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li>Check <code>Run NTP Daemon in Chroot Jail</code></li>
-<li>Press <code>OK</code></li>
+<ol class="arabic simple">
+<li>Check <tt class="docutils literal">Run NTP Daemon in Chroot Jail</tt></li>
+<li>Press <tt class="docutils literal">OK</tt></li>
 </ol>
 </blockquote>
-<ol start="5" style="list-style-type: decimal">
-<li>Quit <code>yast</code></li>
+<ol class="arabic simple" start="5">
+<li>Quit <tt class="docutils literal">yast</tt></li>
 </ol>
-<p>An <a href="http://doc.ntp.org/4.2.8/ntpq.html">ntpq</a> verification shows the client portion works fine (you <a href="http://linux.derkeiler.com/Mailing-Lists/SuSE/2013-02/msg00442.html">could do this in the past from rcntpd status</a>, see below):</p>
-<pre><code>revue:/etc # ntpq -p
+<p>An <a class="reference external" href="http://doc.ntp.org/4.2.8/ntpq.html">ntpq</a> verification shows the client portion works fine (you <a class="reference external" href="http://linux.derkeiler.com/Mailing-Lists/SuSE/2013-02/msg00442.html">could do this in the past from rcntpd status</a>, see below):</p>
+<pre class="literal-block">
+revue:/etc # ntpq -p
      remote           refid      st t when poll reach   delay   offset  jitter
 ==============================================================================
 +vps.vdven.org   193.79.237.14    2 u  132  128  377    3.839    0.102   0.130
 *metronoom.dmz.c .PPS.            1 u   64  128  377    4.520   -0.079   0.096
 +arethusa.tweake 193.190.230.65   2 u  131  128  377    2.795    0.047   0.066
--srv.nl.margash. 113.133.43.202   3 u   58  128  377    3.371    0.919   0.390</code></pre>
-<p>But it won't run as a server just yet, as the deprecated <a href="http://doc.ntp.org/4.2.8/ntpdc.html">ntpdc</a> shows:</p>
-<pre><code>revue:/etc # ntpdc -p
+-srv.nl.margash. 113.133.43.202   3 u   58  128  377    3.371    0.919   0.390
+</pre>
+<p>But it won't run as a server just yet, as the deprecated <a class="reference external" href="http://doc.ntp.org/4.2.8/ntpdc.html">ntpdc</a> shows:</p>
+<pre class="literal-block">
+revue:/etc # ntpdc -p
 localhost: timed out, nothing received
-***Request timed out</code></pre>
-<p>This is also shown when running rcntpd status where you get message containing <a href="https://www.google.com/search?q=&quot;localhost%3A+timed+out%2C+nothing+received&quot;">&quot;localhost: timed out, nothing received&quot;</a>:</p>
-<pre><code>revue:/etc # rcntpd status
+***Request timed out
+</pre>
+<p>This is also shown when running <cite>rcntpd status</cite> where you get message containing <a class="reference external" href="https://www.google.com/search?q=&quot;localhost%3A+timed+out%2C+nothing+received&quot;">&quot;localhost: timed out, nothing received&quot;</a>:</p>
+<pre class="literal-block">
+revue:/etc # rcntpd status
 ● ntpd.service - NTP Server Daemon
    Loaded: loaded (/usr/lib/systemd/system/ntpd.service; enabled; vendor preset: disabled)
    Active: active (running) since Tue 2015-05-26 20:45:59 CEST; 44min ago
@@ -645,7 +1070,7 @@ localhost: timed out, nothing received
    CGroup: /system.slice/ntpd.service
            └─2383 /usr/sbin/ntpd -p /var/run/ntp/ntpd.pid -g -u ntp:ntp -i /var/lib/ntp -c /etc/ntp.conf
 
-May 26 20:45:54 revue start-ntpd[2371]: Starting network time protocol daemon (NTPD)sntp 4.2.8p2@1.3265-o Wed Apr 22 00:47:12 UTC 2015 (1)
+May 26 20:45:54 revue start-ntpd[2371]: Starting network time protocol daemon (NTPD)sntp 4.2.8p2&#64;1.3265-o Wed Apr 22 00:47:12 UTC 2015 (1)
 May 26 20:45:54 revue start-ntpd[2371]: kod_init_kod_db(): Cannot open KoD db file /var/db/ntp-kod: No such file or directory
 May 26 20:45:54 revue sntp[2384]: 2015-05-26 20:45:54.222429 (-0100) -0.00246 +/- 0.012134 192.168.71.1 s2 no-leap
 May 26 20:45:54 revue start-ntpd[2371]: 2015-05-26 20:45:54.222429 (-0100) -0.00246 +/- 0.012134 192.168.71.1 s2 no-leap
@@ -657,114 +1082,159 @@ May 26 20:45:59 revue /usr/sbin/start-ntpd[2390]: runtime configuration: keyid 1
                                                   passwd 3a84bf3
                                                   addserver 192.168.71.1
                                                   quit
-May 26 20:45:59 revue systemd[1]: Started NTP Server Daemon.</code></pre>
-<p>It took me quite a while to figure out why these two show failures. It's because <code>ntpdc</code> is deprecated, and it is <a href="https://build.opensuse.org/package/view_file/openSUSE:Factory/ntp/conf.start-ntpd?expand=1">used by conf.start-ntpd</a>. Too bad it is so hard to get the actual source DVCS of OpenSuSE so I don't know the history of that file.</p>
-<blockquote>
-<p><strong>note</strong></p>
-<p>For the tests, I got inspired by <a href="http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/">How to Install and Configure Linux NTP Server and Client</a></p>
-</blockquote>
-<h2 id="configuring-samba">Configuring <code>samba</code></h2>
-<ol style="list-style-type: decimal">
-<li>Start <code>yast</code></li>
-<li>Open <code>Network Services</code>, then <code>Samba Server</code></li>
-<li>Fill in the <code>Workgroup or Domain Name</code> (I kept it at <code>WORKGROUP</code> as my domain-less Windows machines are configured like that)</li>
-<li>Press <code>Next</code></li>
-<li>Choose the <code>Server type</code> (I kept it at <code>Not a Domain Controller</code> as don't run a domain)</li>
-<li>Press <code>Next</code></li>
-<li>In the <code>Samba Configuration</code> screen:</li>
+May 26 20:45:59 revue systemd[1]: Started NTP Server Daemon.
+</pre>
+<p>It took me quite a while to figure out why these two show failures. It's because <tt class="docutils literal">ntpdc</tt> is deprecated, and it is <a class="reference external" href="https://build.opensuse.org/package/view_file/openSUSE:Factory/ntp/conf.start-ntpd?expand=1">used by conf.start-ntpd</a>. Too bad it is so hard to get the actual source DVCS of OpenSuSE so I don't know the history of that file.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">For the tests, I got inspired by <a class="reference external" href="http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/">How to Install and Configure Linux NTP Server and Client</a></p>
+</div>
+</div>
+<div class="section" id="configuring-samba">
+<h2><a class="toc-backref" href="#id32">Configuring <tt class="docutils literal">samba</tt></a></h2>
+<ol class="arabic simple">
+<li>Start <tt class="docutils literal">yast</tt></li>
+<li>Open <tt class="docutils literal">Network Services</tt>, then <tt class="docutils literal">Samba Server</tt></li>
+<li>Fill in the <tt class="docutils literal">Workgroup or Domain Name</tt> (I kept it at <tt class="docutils literal">WORKGROUP</tt> as my domain-less Windows machines are configured like that)</li>
+<li>Press <tt class="docutils literal">Next</tt></li>
+<li>Choose the <tt class="docutils literal">Server type</tt> (I kept it at <tt class="docutils literal">Not a Domain Controller</tt> as don't run a domain)</li>
+<li>Press <tt class="docutils literal">Next</tt></li>
+<li>In the <tt class="docutils literal">Samba Configuration</tt> screen:</li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li>Ensure <code>Service Start</code> is set to <code>During Boot</code>.</li>
-<li>Ensure <code>Open Port in Firewall</code> is checked.</li>
-<li>Press <code>OK</code></li>
+<ol class="arabic simple">
+<li>Ensure <tt class="docutils literal">Service Start</tt> is set to <tt class="docutils literal">During Boot</tt>.</li>
+<li>Ensure <tt class="docutils literal">Open Port in Firewall</tt> is checked.</li>
+<li>Press <tt class="docutils literal">OK</tt></li>
 </ol>
 </blockquote>
-<ol start="8" style="list-style-type: decimal">
-<li>Quit <code>yast</code></li>
+<ol class="arabic simple" start="8">
+<li>Quit <tt class="docutils literal">yast</tt></li>
 </ol>
 <p>This will modify these files:</p>
-<ul>
-<li><code>/etc/apparmor.d/local/usr.sbin.smbd-shares</code> (upon Samba start)</li>
-<li><code>/etc/samba/smb.conf</code></li>
-<li><code>/etc/sysconfig/SuSEfirewall2</code></li>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">/etc/apparmor.d/local/usr.sbin.smbd-shares</span></tt> (upon Samba start)</li>
+<li><tt class="docutils literal">/etc/samba/smb.conf</tt></li>
+<li><tt class="docutils literal">/etc/sysconfig/SuSEfirewall2</tt></li>
 </ul>
 <p>and add these configuration files:</p>
-<ul>
-<li><code>/etc/printcap</code> (which will be auto-generated from <code>/etc/cups/printers.conf</code> if it exists)</li>
-<li><code>/etc/systemd/system/multi-user.target.wants/nmb.service</code></li>
-<li><code>/etc/systemd/system/multi-user.target.wants/smb.service</code></li>
+<ul class="simple">
+<li><tt class="docutils literal">/etc/printcap</tt> (which will be auto-generated from <tt class="docutils literal">/etc/cups/printers.conf</tt> if it exists)</li>
+<li><tt class="docutils literal"><span class="pre">/etc/systemd/system/multi-user.target.wants/nmb.service</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">/etc/systemd/system/multi-user.target.wants/smb.service</span></tt></li>
 </ul>
-<p>Run these commands to <a href="hhttps://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312">test if the basic configuration was successful</a> with <a href="https://www.samba.org/samba/docs/man/manpages/testparm.1.html">testclient</a> and <a href="h"><a href="https://www.samba.org/samba/docs/man/manpages/smbclient.1.html" class="uri">https://www.samba.org/samba/docs/man/manpages/smbclient.1.html</a></a>:</p>
-<pre><code>testparm /etc/samba/smb.conf
-smbclient -L `hostname`</code></pre>
-<blockquote>
-<p><strong>note</strong></p>
-<p>During <code>smbclient</code> you will have to type your unix password.</p>
-</blockquote>
-<h2 id="testing-and-fixing-so-clients-can-talk-to-our-samba-server">Testing and fixing so clients can talk to our Samba server</h2>
+<p>Run these commands to <a class="reference external" href="hhttps://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312">test if the basic configuration was successful</a> with <a class="reference external" href="https://www.samba.org/samba/docs/man/manpages/testparm.1.html">testclient</a> and <a class="reference external" href="h">https://www.samba.org/samba/docs/man/manpages/smbclient.1.html</a>:</p>
+<pre class="literal-block">
+testparm /etc/samba/smb.conf
+smbclient -L `hostname`
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">During <tt class="docutils literal">smbclient</tt> you will have to type your unix password.</p>
+</div>
+</div>
+<div class="section" id="testing-and-fixing-so-clients-can-talk-to-our-samba-server">
+<h2><a class="toc-backref" href="#id33">Testing and fixing so clients can talk to our Samba server</a></h2>
 <p>Now it is time to test the smb connectivity as well:</p>
-<pre><code>smbclient //`hostname`/profiles -U jeroenp
-Enter jeroenp&#39;s password:
+<pre class="literal-block">
+smbclient //`hostname`/profiles -U jeroenp
+Enter jeroenp's password:
 Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.2.1-3406-SUSE-oS13.2-x86_64]
-tree connect failed: NT_STATUS_ACCESS_DENIED</code></pre>
+tree connect failed: NT_STATUS_ACCESS_DENIED
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do <strong>not</strong> try to solve the <a class="reference external" href="https://forum.manjaro.org/index.php?topic=19252.0">NT_STATUS_ACCESS_DENIED issue</a> by enabling <tt class="docutils literal">client lanman auth</tt> as this makes your system less secure (<a class="reference external" href="hhttps://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html#idp59214864">LANMAN authentication can be cracked quite easily</a>).</p>
+</div>
+<p>The first think to check is the samba password database, as samba uses different authentication database than the standard linux one (hence the linux password above).
+Check it with <a class="reference external" href="https://www.samba.org/samba/docs/man/manpages/pdbedit.8.html">pdbedit</a> like this:</p>
+<pre class="literal-block">
+pdbedit --list --verbose jeroenp
+</pre>
+<p>If it shows <tt class="docutils literal">Username not found!</tt> then you need to add the user:</p>
 <blockquote>
-<p><strong>note</strong></p>
-<p>Do <strong>not</strong> try to solve the <a href="https://forum.manjaro.org/index.php?topic=19252.0">NT_STATUS_ACCESS_DENIED issue</a> by enabling <code>client lanman auth</code> as this makes your system less secure (<a href="hhttps://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html#idp59214864">LANMAN authentication can be cracked quite easily</a>).</p>
-</blockquote>
-<p>The first think to check is the samba password database, as samba uses different authentication database than the standard linux one (hence the linux password above). Check it with <a href="https://www.samba.org/samba/docs/man/manpages/pdbedit.8.html">pdbedit</a> like this:</p>
-<pre><code>pdbedit --list --verbose jeroenp</code></pre>
-<p>If it shows <code>Username not found!</code> then you need to add the user:</p>
-<blockquote>
-<p>revue:/etc # pdbedit --create --user jeroenp new password: retype new password: Unix username: jeroenp NT username: Account Flags: [U ] User SID: S-1-5-21-539969646-619626457-384116915-1000 Primary Group SID: S-1-5-21-539969646-619626457-384116915-513 Full Name: Jeroen Pluimers Home Directory: \revuejeroenp.9xprofile HomeDir Drive: P: Logon Script: Profile Path: \revueprofiles.msprofile Domain: REVUE Account desc: Workstations: Munged dial: Logon time: 0 Logoff time: Wed, 06 Feb 2036 16:06:39 CET Kickoff time: Wed, 06 Feb 2036 16:06:39 CET Password last set: Wed, 27 May 2015 20:51:21 CEST Password can change: Wed, 27 May 2015 20:51:21 CEST Password must change: never Last bad password : 0 Bad password count : 0 Logon hours : FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</p>
-</blockquote>
-<blockquote>
-<p><strong>note</strong></p>
-<p>Do <strong>not</strong> use <a href="https://www.samba.org/samba/docs/man/manpages/smbpasswd.8.html">smbpasswd</a> to add the user as that only supports the <code>smbpasswd</code> database format, whereas pdbedit<a href="http://unix.stackexchange.com/questions/107032/deleting-a-samba-user-pbdedit-vs-smbpasswd-whats-the-difference/107033#107033">supports any password backend</a>.</p>
-</blockquote>
+revue:/etc # pdbedit --create --user jeroenp
+new password:
+retype new password:
+Unix username:        jeroenp
+NT username:
+Account Flags:        [U          ]
+User SID:             S-1-5-21-539969646-619626457-384116915-1000
+Primary Group SID:    S-1-5-21-539969646-619626457-384116915-513
+Full Name:            Jeroen Pluimers
+Home Directory:       \revuejeroenp.9xprofile
+HomeDir Drive:        P:
+Logon Script:
+Profile Path:         \revueprofiles.msprofile
+Domain:               REVUE
+Account desc:
+Workstations:
+Munged dial:
+Logon time:           0
+Logoff time:          Wed, 06 Feb 2036 16:06:39 CET
+Kickoff time:         Wed, 06 Feb 2036 16:06:39 CET
+Password last set:    Wed, 27 May 2015 20:51:21 CEST
+Password can change:  Wed, 27 May 2015 20:51:21 CEST
+Password must change: never
+Last bad password   : 0
+Bad password count  : 0
+Logon hours         : FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</blockquote>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do <strong>not</strong> use <a class="reference external" href="https://www.samba.org/samba/docs/man/manpages/smbpasswd.8.html">smbpasswd</a> to add the user as that only supports the <tt class="docutils literal">smbpasswd</tt> database format, <cite>whereas ``pdbedit`</cite> supports any password backend &lt;<a class="reference external" href="http://unix.stackexchange.com/questions/107032/deleting-a-samba-user-pbdedit-vs-smbpasswd-whats-the-difference/107033#107033">http://unix.stackexchange.com/questions/107032/deleting-a-samba-user-pbdedit-vs-smbpasswd-whats-the-difference/107033#107033</a>&gt;`_.</p>
+</div>
 <p>Now do final checks:</p>
-<pre><code>smbclient --list `hostname` --user jeroenp
-smbclient //`hostname`/jeroenp -U jeroenp</code></pre>
-<h2 id="one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup">One day: <a href="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418">syncing between the Samba password and system password storage</a> is setup</h2>
-<p>See <a href="https://www.google.com/search?q=&quot;Use+SMB+Information+for+Linux+Authentication&quot;">Use SMB Information for Linux Authentication</a>.</p>
-<h2 id="fixing-password-synchronisation">Fixing password synchronisation?</h2>
-<blockquote>
-<p><strong>note</strong></p>
-<p>Background reading (web-archive link as the site itself is down): <a href="http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html">Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares</a>.</p>
-</blockquote>
-<h2 id="configuring-namedbind">configuring named/BIND</h2>
-<ol style="list-style-type: decimal">
-<li>Start <code>yast</code></li>
-<li>Open <code>System</code>, then <code>/etc/sysconfig Editor</code></li>
-<li>In <code>Configuration Options</code>, open these tree nodes: <code>Network</code>; <code>DNS</code>; <code>Name Server</code></li>
+<pre class="literal-block">
+smbclient --list `hostname` --user jeroenp
+smbclient //`hostname`/jeroenp -U jeroenp
+</pre>
+</div>
+<div class="section" id="one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup">
+<h2>One day: <a class="reference external" href="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418">syncing between the Samba password and system password storage</a> is setup</h2>
+<p>See <a class="reference external" href="https://www.google.com/search?q=&quot;Use+SMB+Information+for+Linux+Authentication&quot;">Use SMB Information for Linux Authentication</a>.</p>
+</div>
+<div class="section" id="fixing-password-synchronisation">
+<h2><a class="toc-backref" href="#id35">Fixing password synchronisation?</a></h2>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Background reading (web-archive link as the site itself is down): <a class="reference external" href="http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html">Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares</a>.</p>
+</div>
+</div>
+<div class="section" id="configuring-named-bind">
+<h2><a class="toc-backref" href="#id36">configuring named/BIND</a></h2>
+<ol class="arabic simple">
+<li>Start <tt class="docutils literal">yast</tt></li>
+<li>Open <tt class="docutils literal">System</tt>, then <tt class="docutils literal">/etc/sysconfig Editor</tt></li>
+<li>In <tt class="docutils literal">Configuration Options</tt>, open these tree nodes: <tt class="docutils literal">Network</tt>; <tt class="docutils literal">DNS</tt>; <tt class="docutils literal">Name Server</tt></li>
 <li>Ensure the below entries have the correct values:</li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li><code>NAMED_RUN_CHROOTED</code> has no value</li>
-<li><code>NAMED_ARGS</code> has no value</li>
-<li><code>NAMED_CONF_INCLUDE_FILES</code> has value <code>options logging master slaves rnd-access.conf</code></li>
-<li><code>NAMED_INITIALIZE_SCRIPTS</code> has value <code>createNamedConfInclude</code> (this is the default value)</li>
+<ol class="arabic simple">
+<li><tt class="docutils literal">NAMED_RUN_CHROOTED</tt> has no value</li>
+<li><tt class="docutils literal">NAMED_ARGS</tt> has no value</li>
+<li><tt class="docutils literal">NAMED_CONF_INCLUDE_FILES</tt> has value <tt class="docutils literal">options logging master slaves <span class="pre">rnd-access.conf</span></tt></li>
+<li><tt class="docutils literal">NAMED_INITIALIZE_SCRIPTS</tt> has value <tt class="docutils literal">createNamedConfInclude</tt> (this is the default value)</li>
 </ol>
 </blockquote>
-<ol start="5" style="list-style-type: decimal">
-<li>If any value needed to be changed, then press <code>Finish</code> and confirm the changes.</li>
-<li>Open <code>Security and Users</code>, then <code>Firewall</code></li>
-<li>Go to <code>Allowed Services</code></li>
-<li>Ensure <code>bind DNS server</code> is in the list, when not:</li>
+<ol class="arabic simple" start="5">
+<li>If any value needed to be changed, then press <tt class="docutils literal">Finish</tt> and confirm the changes.</li>
+<li>Open <tt class="docutils literal">Security and Users</tt>, then <tt class="docutils literal">Firewall</tt></li>
+<li>Go to <tt class="docutils literal">Allowed Services</tt></li>
+<li>Ensure <tt class="docutils literal">bind DNS server</tt> is in the list, when not:</li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li>Add <code>bind DNS server</code> to the list</li>
-<li>Press <code>Next</code> followed by <code>Finish</code> to apply the changes</li>
+<ol class="arabic simple">
+<li>Add <tt class="docutils literal">bind DNS server</tt> to the list</li>
+<li>Press <tt class="docutils literal">Next</tt> followed by <tt class="docutils literal">Finish</tt> to apply the changes</li>
 </ol>
 </blockquote>
-<ol start="9" style="list-style-type: decimal">
-<li>Quit <code>yast</code></li>
+<ol class="arabic simple" start="9">
+<li>Quit <tt class="docutils literal">yast</tt></li>
 </ol>
-<p>Add an empty <code>/etc/named.d/forwarders.conf</code>.</p>
-<p>Add <code>/etc/named.d/master</code>:</p>
-<pre><code>zone &quot;4delphi.com&quot; {
+<p>Add an empty <tt class="docutils literal">/etc/named.d/forwarders.conf</tt>.</p>
+<p>Add <tt class="docutils literal">/etc/named.d/master</tt>:</p>
+<pre class="literal-block">
+zone &quot;4delphi.com&quot; {
         type master;
         file &quot;master/4delphi.com&quot;;
 };
@@ -796,60 +1266,68 @@ zone &quot;171.168.192.IN-ADDR.ARPA&quot; {
         notify no;
         allow-query     { internals; };
         allow-transfer  { internals; };
-};</code></pre>
-<p>Add <code>/etc/named.d/options</code>:</p>
-<pre><code>acl internals {
-        127.0.0.1/24;
+};
+</pre>
+<p>Add <tt class="docutils literal">/etc/named.d/options</tt>:</p>
+<pre class="literal-block">
+acl internals {
+            127.0.0.1/24;
                 192.168.71.0/16;
                 192.168.171.0/16;
           };
 
 acl externals {
-        82.161.131.169; // jeroen - ADSL xs4all
-        80.100.143.119; // jeroen - fiber xs4all
-        37.153.243.241; // jeroen - fiber helden van nu 1 - router
-        37.153.243.242; // jeroen - fiber helden van nu 2 - server DNS 1
-        37.153.243.243; // jeroen - fiber helden van nu 3 - server
-        37.153.243.244; // jeroen - fiber helden van nu 4 - server
-        37.153.243.245; // jeroen - fiber helden van nu 5 - server
-        37.153.243.246; // jeroen - fiber helden van nu 6 - server DNS 2
-          62.195.34.14; // jeroen - Cable UPC (tijdelijk)
-         136.243.21.95; // remco/cor - Hetzner host - ziggy.domainnetwerk.info
-         83.163.69.172; // martijn - mwpg.xs4all.nl
+            82.161.131.169; // jeroen - ADSL xs4all
+            80.100.143.119; // jeroen - fiber xs4all
+            37.153.243.241; // jeroen - fiber helden van nu 1 - router
+            37.153.243.242; // jeroen - fiber helden van nu 2 - server DNS 1
+            37.153.243.243; // jeroen - fiber helden van nu 3 - server
+            37.153.243.244; // jeroen - fiber helden van nu 4 - server
+            37.153.243.245; // jeroen - fiber helden van nu 5 - server
+            37.153.243.246; // jeroen - fiber helden van nu 6 - server DNS 2
+              62.195.34.14; // jeroen - Cable UPC (tijdelijk)
+             136.243.21.95; // remco/cor - Hetzner host - ziggy.domainnetwerk.info
+             83.163.69.172; // martijn - mwpg.xs4all.nl
                    109.70.6.22; // jaco - Dynasol
-        };</code></pre>
+        };
+</pre>
 <p>Ensure these files exist:</p>
-<p><code>/var/lib/named/master/192.168.171</code>:</p>
-<pre><code>$TTL 1H
-@               IN      SOA     ns.pluimers.localnet.   root.4delphi.com. (
+<p><tt class="docutils literal">/var/lib/named/master/192.168.171</tt>:</p>
+<pre class="literal-block">
+$TTL 1H
+&#64;               IN      SOA     ns.pluimers.localnet.   root.4delphi.com. (
                         2005011803 ; serial
                         1H         ; refresh
                         900        ; retry
                         3W         ; expire
                         2H         ; default_ttl
                         )
-@               IN      NS      ns.pluimers.localnet.
+&#64;               IN      NS      ns.pluimers.localnet.
 80             IN      PTR     jp1.pluimers.localnet.
 80             IN      PTR     snap.pluimers.localnet.
 80             IN      PTR     ns.pluimers.localnet.
-70             IN      PTR     snip.pluimers.localnet.</code></pre>
-<p><code>/var/lib/named/master/192.168.71</code>:</p>
-<pre><code>$TTL 1H
-@               IN      SOA     ns.pluimers.localnet.   root.4delphi.com. (
+70             IN      PTR     snip.pluimers.localnet.
+</pre>
+<p><tt class="docutils literal">/var/lib/named/master/192.168.71</tt>:</p>
+<pre class="literal-block">
+$TTL 1H
+&#64;               IN      SOA     ns.pluimers.localnet.   root.4delphi.com. (
                         2005011803 ; serial
                         1H         ; refresh
                         900        ; retry
                         3W         ; expire
                         2H         ; default_ttl
                         )
-@               IN      NS      ns.pluimers.localnet.
+&#64;               IN      NS      ns.pluimers.localnet.
 80             IN      PTR     jp1.pluimers.localnet.
 80             IN      PTR     snap.pluimers.localnet.
 80             IN      PTR     ns.pluimers.localnet.
-70             IN      PTR     snip.pluimers.localnet.</code></pre>
-<p><code>/var/lib/named/master/named.local</code>:</p>
-<pre><code>$TTL 2H
-@               IN      SOA     localhost.      root.localhost. (
+70             IN      PTR     snip.pluimers.localnet.
+</pre>
+<p><tt class="docutils literal">/var/lib/named/master/named.local</tt>:</p>
+<pre class="literal-block">
+$TTL 2H
+&#64;               IN      SOA     localhost.      root.localhost. (
                         2004111611 ; serial
                         1H         ; refresh
                         900        ; retry
@@ -857,78 +1335,104 @@ acl externals {
                         2H         ; default_ttl
                         )
 1               IN      PTR     localhost.
-@               IN      NS      localhost.</code></pre>
-<p><code>/var/lib/named/master/pluimers.localnet</code>:</p>
-<pre><code>$TTL 2H
-@               IN      SOA     ns.pluimers.localnet.    root.4delphi.com. (
+&#64;               IN      NS      localhost.
+</pre>
+<p><tt class="docutils literal">/var/lib/named/master/pluimers.localnet</tt>:</p>
+<pre class="literal-block">
+$TTL 2H
+&#64;               IN      SOA     ns.pluimers.localnet.    root.4delphi.com. (
                         2004111615 ; serial
                         1H         ; refresh
                         900        ; retry
                         3W         ; expire
                         2H         ; default_ttl
                         )
-@                       IN      MX      5       mail.pluimers.com.
-@                       IN      NS      ns.pluimers.localnet.
-@                       IN      A       192.168.71.80
+&#64;                       IN      MX      5       mail.pluimers.com.
+&#64;                       IN      NS      ns.pluimers.localnet.
+&#64;                       IN      A       192.168.71.80
 localhost               IN      A       127.0.0.1
 jp1                     IN      A       192.168.71.80
 ns                      IN      A       192.168.71.80
 snap                    IN      A       192.168.71.80
-snip                    IN      A       192.168.71.70</code></pre>
-<p><code>/var/lib/named/master/pluimers.com</code>:</p>
-<pre><code>to fill in later</code></pre>
-<p><code>/var/lib/named/master/4delphi.com</code>:</p>
-<pre><code>to fill in later</code></pre>
+snip                    IN      A       192.168.71.70
+</pre>
+<p><tt class="docutils literal">/var/lib/named/master/pluimers.com</tt>:</p>
+<pre class="literal-block">
+to fill in later
+</pre>
+<p><tt class="docutils literal">/var/lib/named/master/4delphi.com</tt>:</p>
+<pre class="literal-block">
+to fill in later
+</pre>
 <p>Finally stop/start the named service:</p>
-<pre><code>rcnamed stop
+<pre class="literal-block">
+rcnamed stop
 rcnamed start
-rcnamed status</code></pre>
-<blockquote>
-<p><strong>note</strong></p>
-<p>Check if your zone files are correct by executing <code>named-checkzone</code>.</p>
-<p>Check if your named configuration is correct by executing <code>named-checkconfig</code>.</p>
-<p>Check if <code>named</code> delivers the correct zone:</p>
-<pre><code>dig @localhost axfr pluimers.com</code></pre>
+rcnamed status
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>Check if your zone files are correct by executing <tt class="docutils literal"><span class="pre">named-checkzone</span></tt>.</p>
+<p>Check if your named configuration is correct by executing <tt class="docutils literal"><span class="pre">named-checkconfig</span></tt>.</p>
+<p>Check if <tt class="docutils literal">named</tt> delivers the correct zone:</p>
+<pre class="literal-block">
+dig &#64;localhost axfr pluimers.com
+</pre>
 <p>See:</p>
-<ul>
-<li><a href="http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html">Check BIND – DNS Server configuration file for errors with named-checkconf tools</a></li>
-<li><a href="hhttp://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/">Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool</a></li>
+<ul class="last simple">
+<li><a class="reference external" href="http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html">Check BIND – DNS Server configuration file for errors with named-checkconf tools</a></li>
+<li><a class="reference external" href="hhttp://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/">Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool</a></li>
 </ul>
-</blockquote>
-<h2 id="ensure-that-varlibnamedmaster-gets-synced-to-etcnamedmaster">Ensure that <code>/var/lib/named/master</code> gets synced to <code>/etc/named/master</code></h2>
+</div>
+</div>
+<div class="section" id="ensure-that-var-lib-named-master-gets-synced-to-etc-named-master">
+<h2><a class="toc-backref" href="#id37">Ensure that <tt class="docutils literal">/var/lib/named/master</tt> gets synced to <tt class="docutils literal">/etc/named/master</tt></a></h2>
 <p>Based on these links, I've added a sync script.</p>
-<ul>
-<li><a href="https://github.com/joeyh/etckeeper#configuration">etckeeper configuration documentation</a></li>
-<li><a href="http://www.tutorialspoint.com/unix/unix-using-variables.htm">unix: using variables</a></li>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/joeyh/etckeeper#configuration">etckeeper configuration documentation</a></li>
+<li><a class="reference external" href="http://www.tutorialspoint.com/unix/unix-using-variables.htm">unix: using variables</a></li>
 </ul>
-<p>I stored it in <code>/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh</code>:</p>
-<pre><code>#! /bin/sh
+<p>I stored it in <tt class="docutils literal"><span class="pre">/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh</span></tt>:</p>
+<pre class="literal-block">
+#! /bin/sh
 ## http://www.tutorialspoint.com/unix/unix-using-variables.htm
 TARGET=/etc/named/master
 mkdir -p $TARGET
-rsync -avloz /var/lib/named/master/ $TARGET/</code></pre>
-<p>You need to give this script the right permissons, otherwise <code>etckeeper</code> wil skip it:</p>
-<pre><code>chmod 755 /etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh</code></pre>
-<h2 id="adding-aliases-for-commands-removed-in-net-tools">Adding aliases for commands removed in <code>net-tools</code></h2>
-<p>Add this to <code>/etc/bash.bashrc.local</code>:</p>
-<pre><code># stuff removed from net-tools
+rsync -avloz /var/lib/named/master/ $TARGET/
+</pre>
+<p>You need to give this script the right permissons, otherwise <tt class="docutils literal">etckeeper</tt> wil skip it:</p>
+<pre class="literal-block">
+chmod 755 /etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh
+</pre>
+</div>
+<div class="section" id="adding-aliases-for-commands-removed-in-net-tools">
+<h2><a class="toc-backref" href="#id38">Adding aliases for commands removed in <tt class="docutils literal"><span class="pre">net-tools</span></tt></a></h2>
+<p>Add this to <tt class="docutils literal">/etc/bash.bashrc.local</tt>:</p>
+<pre class="literal-block">
+# stuff removed from net-tools
 # see https://features.opensuse.org/317197 and https://build.opensuse.org/package/view_file/network:utilities/net-tools/net-tools.changes
 ## Because of changes on Thu Apr 10 12:33:41 UTC 2014
-alias &quot;arp=echo &#39;use \&quot;ip neigh\&quot; or \&quot;ip -r neight\&quot;&#39; &amp;&amp; ip neigh&quot;
-alias &quot;ifconfig=echo &#39;use \&quot;ip a\&quot;&#39; &amp;&amp; ip a&quot;
-alias &quot;netstat= echo &#39;use \&quot;ss\&quot; or \&quot;ss -r\&quot;&#39; &amp;&amp; ss&quot;
-alias &quot;route=echo &#39;use \&quot;ip r\&quot;&#39; &amp;&amp; ip r&quot;
+alias &quot;arp=echo 'use \&quot;ip neigh\&quot; or \&quot;ip -r neight\&quot;' &amp;&amp; ip neigh&quot;
+alias &quot;ifconfig=echo 'use \&quot;ip a\&quot;' &amp;&amp; ip a&quot;
+alias &quot;netstat= echo 'use \&quot;ss\&quot; or \&quot;ss -r\&quot;' &amp;&amp; ss&quot;
+alias &quot;route=echo 'use \&quot;ip r\&quot;' &amp;&amp; ip r&quot;
 ## Because of changes on Sun Mar 29 00:41:21 UTC 2015
-alias &quot;ipmaddr=echo &#39;use \&quot;ip maddr\&quot;&#39; &amp;&amp; ip maddr&quot;
-alias &quot;iptunnel=echo &#39;use \&quot;ip tunnel\&quot;&#39; &amp;&amp; ip tunnel&quot;</code></pre>
-<h2 id="configuring-monit-monitoring-service">Configuring <code>monit</code> monitoring service</h2>
-<p>At first, <a href="https://software.opensuse.org/package/monit">monit</a> won't run:</p>
-<pre><code>revue:~ # rcmonit restart
+alias &quot;ipmaddr=echo 'use \&quot;ip maddr\&quot;' &amp;&amp; ip maddr&quot;
+alias &quot;iptunnel=echo 'use \&quot;ip tunnel\&quot;' &amp;&amp; ip tunnel&quot;
+</pre>
+</div>
+<div class="section" id="configuring-monit-monitoring-service">
+<h2><a class="toc-backref" href="#id39">Configuring <tt class="docutils literal">monit</tt> monitoring service</a></h2>
+<p>At first, <a class="reference external" href="https://software.opensuse.org/package/monit">monit</a> won't run:</p>
+<pre class="literal-block">
+revue:~ # rcmonit restart
 redirecting to systemctl restart monit.service
-Failed to restart monit.service: Unit monit.service failed to load: No such file or directory.</code></pre>
-<p>Even though it is an offical package, it is missing the <a href="http://www.freedesktop.org/software/systemd/man/systemd.service.html">.service file</a>.</p>
-<p>That is easy to fix by downloading and modifying the <code>monit.service</code> template <a href="https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in" class="uri">https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in</a>:</p>
-<pre><code>#! /bin/sh
+Failed to restart monit.service: Unit monit.service failed to load: No such file or directory.
+</pre>
+<p>Even though it is an offical package, it is missing the <a class="reference external" href="http://www.freedesktop.org/software/systemd/man/systemd.service.html">.service file</a>.</p>
+<p>That is easy to fix by downloading and modifying the <tt class="docutils literal">monit.service</tt> template <a class="reference external" href="https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in">https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in</a>:</p>
+<pre class="literal-block">
+#! /bin/sh
 #
 # Fixes this error:
 #    revue:~ # rcmonit restart
@@ -941,16 +1445,16 @@ curl https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.serv
 # escape slashes in arguments: http://www.grymoire.com/Unix/Sed.html#uh-62
 ## might need to get rid of the backtick and replace \\ by \, see:
 # http://unix.stackexchange.com/questions/5778/whats-the-difference-between-stuff-and-stuff/5782#5782
-MONIT_EXPANDED=`echo &quot;$(which monit)&quot; | sed &#39;s:[]\[\^\$\.\*\/]:\\\\&amp;:g&#39;`
+MONIT_EXPANDED=`echo &quot;$(which monit)&quot; | sed 's:[]\[\^\$\.\*\/]:\\\\&amp;:g'`
 echo SERVICE_TARGET=$SERVICE_TARGET
 echo MONIT_EXPANDED=$MONIT_EXPANDED
 
 echo old:
-sed -n &quot;/@prefix@\/bin\/monit/ p&quot; $SERVICE_TARGET
-# replace @prefix@ with the directory where monit resides
-# replace @sysconfigdir@ with etc
-sed -e &quot;/@prefix@\/bin\/monit/ s/@prefix@\/bin\/monit/${MONIT_EXPANDED}/&quot; $SERVICE_TARGET &gt; $SERVICE_TARGET.tmp &amp;&amp; mv $SERVICE_TARGET.tmp $SERVICE_TARGET
-sed -e &quot;/@sysconfdir@/ s/@sysconfdir@/etc/&quot; $SERVICE_TARGET &gt; $SERVICE_TARGET.tmp &amp;&amp; mv $SERVICE_TARGET.tmp $SERVICE_TARGET
+sed -n &quot;/&#64;prefix&#64;\/bin\/monit/ p&quot; $SERVICE_TARGET
+# replace &#64;prefix&#64; with the directory where monit resides
+# replace &#64;sysconfigdir&#64; with etc
+sed -e &quot;/&#64;prefix&#64;\/bin\/monit/ s/&#64;prefix&#64;\/bin\/monit/${MONIT_EXPANDED}/&quot; $SERVICE_TARGET &gt; $SERVICE_TARGET.tmp &amp;&amp; mv $SERVICE_TARGET.tmp $SERVICE_TARGET
+sed -e &quot;/&#64;sysconfdir&#64;/ s/&#64;sysconfdir&#64;/etc/&quot; $SERVICE_TARGET &gt; $SERVICE_TARGET.tmp &amp;&amp; mv $SERVICE_TARGET.tmp $SERVICE_TARGET
 echo new:
 sed -n &quot;/monitrc/ p&quot; $SERVICE_TARGET
 
@@ -958,42 +1462,50 @@ chmod 755 $SERVICE_TARGET
 popd
 systemctl enable monit.service
 systemctl status monit.service
-systemctl start monit.service</code></pre>
-<p>But it still doesn't start, as <a href="https://www.google.com/search?q=journalctl">journalctl</a> (the logging part part of <a href="https://en.wikipedia.org/wiki/Systemd">systemd</a>) shows:</p>
-<pre><code>revue:/etc # journalctl _COMM=monit
+systemctl start monit.service
+</pre>
+<p>But it still doesn't start, as <a class="reference external" href="https://www.google.com/search?q=journalctl">journalctl</a> (the logging part part of <a class="reference external" href="https://en.wikipedia.org/wiki/Systemd">systemd</a>) shows:</p>
+<pre class="literal-block">
+revue:/etc # journalctl _COMM=monit
 -- Logs begin at Sat 2015-06-06 10:05:54 CEST, end at Sat 2015-06-06 15:00:01 CEST. --
-Jun 06 10:01:24 revue monit[1496]: Error opening the idfile &#39;/run/monit/.monit.id&#39; -- No such file or directory
-Jun 06 10:01:24 revue monit[1496]: Error opening the idfile &#39;/run/monit/.monit.id&#39; -- No such file or directory
+Jun 06 10:01:24 revue monit[1496]: Error opening the idfile '/run/monit/.monit.id' -- No such file or directory
+Jun 06 10:01:24 revue monit[1496]: Error opening the idfile '/run/monit/.monit.id' -- No such file or directory
 Jun 06 10:01:24 revue monit[1496]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
-Jun 06 10:01:24 revue monit[1496]: Error opening pidfile &#39;@@PIDDIR@@/monit.pid&#39; for writing -- No such file or directory
+Jun 06 10:01:24 revue monit[1496]: Error opening pidfile '&#64;&#64;PIDDIR&#64;&#64;/monit.pid' for writing -- No such file or directory
 Jun 06 10:01:24 revue monit[1496]: Monit daemon died
 Jun 06 10:01:24 revue monit[1496]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
-Jun 06 10:01:24 revue monit[1551]: Error opening the idfile &#39;/run/monit/.monit.id&#39; -- No such file or directory
-Jun 06 10:01:24 revue monit[1551]: Error opening the idfile &#39;/run/monit/.monit.id&#39; -- No such file or directory
+Jun 06 10:01:24 revue monit[1551]: Error opening the idfile '/run/monit/.monit.id' -- No such file or directory
+Jun 06 10:01:24 revue monit[1551]: Error opening the idfile '/run/monit/.monit.id' -- No such file or directory
 Jun 06 10:01:24 revue monit[1551]: No daemon process found
-Jun 06 10:01:24 revue monit[1551]: No daemon process found</code></pre>
-<blockquote>
-<p><strong>note</strong></p>
-<p>Note that <a href="https://www.google.com/search?q=journalctl">journalctl</a> can feel a bit complex for casual users, so to get <code>/var/log/messages</code> back you might want to install <code>rsyslog</code> as explained by <a href="https://forums.opensuse.org/showthread.php/505084-Whither-var-log-messages">Whither /var/log/messages?</a>.</p>
+Jun 06 10:01:24 revue monit[1551]: No daemon process found
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>Note that <a class="reference external" href="https://www.google.com/search?q=journalctl">journalctl</a> can feel a bit complex for casual users, so to get <tt class="docutils literal">/var/log/messages</tt> back you might want to install <tt class="docutils literal">rsyslog</tt> as explained by <a class="reference external" href="https://forums.opensuse.org/showthread.php/505084-Whither-var-log-messages">Whither /var/log/messages?</a>.</p>
 <p>For a comparison, read:</p>
-<ul>
-<li><a href="http://blog.delouw.ch/2013/07/24/why-journalctl-is-cool-and-syslog-will-survive-for-another-decade/">Why journalctl is cool and syslog will survive for another decade « Luc de Louw's Blog</a>.</li>
-<li><a href="https://docs.oracle.com/cd/E52668_01/E54670/html/ol7-log-sec.html">3.8 Configuring and Using System Logging</a>.</li>
+<ul class="last simple">
+<li><a class="reference external" href="http://blog.delouw.ch/2013/07/24/why-journalctl-is-cool-and-syslog-will-survive-for-another-decade/">Why journalctl is cool and syslog will survive for another decade « Luc de Louw's Blog</a>.</li>
+<li><a class="reference external" href="https://docs.oracle.com/cd/E52668_01/E54670/html/ol7-log-sec.html">3.8 Configuring and Using System Logging</a>.</li>
 </ul>
-</blockquote>
-<p>A quick look into <code>/etc/monitrc</code> reveals the initialisation of the <code>monit</code> package forgot to create <code>/run/monit/.monit.id</code>:</p>
-<pre><code>revue:/etc # grep &quot;\.monit\.id&quot; /etc/monitrc
+</div>
+<p>A quick look into <tt class="docutils literal">/etc/monitrc</tt> reveals the initialisation of the <tt class="docutils literal">monit</tt> package forgot to create <tt class="docutils literal"><span class="pre">/run/monit/.monit.id</span></tt>:</p>
+<pre class="literal-block">
+revue:/etc # grep &quot;\.monit\.id&quot; /etc/monitrc
 ## default the file is placed in $HOME/.monit.id.
-set idfile /run/monit/.monit.id</code></pre>
-<p>The cause is that the <code>idfile</code> must both exist (see the error message) <a href="https://mmonit.com/wiki/MMonit/FAQ#monitid">and have a unique id in it</a>.</p>
+set idfile /run/monit/.monit.id
+</pre>
+<p>The cause is that the <tt class="docutils literal">idfile</tt> must both exist (see the error message) <a class="reference external" href="https://mmonit.com/wiki/MMonit/FAQ#monitid">and have a unique id in it</a>.</p>
 <p>If it exists but does not have a valid id, then you get this error:</p>
-<pre><code>Jun 06 15:34:13 revue systemd[1]: Starting Pro-active monitoring utility for unix systems...
-Jun 06 15:34:13 revue monit[4404]: Error reading id from file &#39;/run/monit/.monit.id&#39;
-Jun 06 15:34:13 revue monit[4404]: Error reading id from file &#39;/run/monit/.monit.id&#39;
+<pre class="literal-block">
+Jun 06 15:34:13 revue systemd[1]: Starting Pro-active monitoring utility for unix systems...
+Jun 06 15:34:13 revue monit[4404]: Error reading id from file '/run/monit/.monit.id'
+Jun 06 15:34:13 revue monit[4404]: Error reading id from file '/run/monit/.monit.id'
 Jun 06 15:34:13 revue monit[4404]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
-Jun 06 15:34:13 revue systemd[1]: monit.service: main process exited, code=exited, status=1/FAILURE</code></pre>
-<p>Both issues is easily fixed by creating and running this <code>/etc/monit-create-idfile.sh</code> script:</p>
-<pre><code>#! /bin/sh
+Jun 06 15:34:13 revue systemd[1]: monit.service: main process exited, code=exited, status=1/FAILURE
+</pre>
+<p>Both issues is easily fixed by creating and running this <tt class="docutils literal"><span class="pre">/etc/monit-create-idfile.sh</span></tt> script:</p>
+<pre class="literal-block">
+#! /bin/sh
 #
 # creates idfile from configuration in in /etc/monitrc
 ETC_TARGET=/etc/monitrc
@@ -1009,12 +1521,16 @@ mkdir -p $ID_FILE_DIRECTORY
 touch $ID_FILE
 ls -al $ID_FILE
 echo y | monit --resetid
-cat $ID_FILE &amp;&amp; echo</code></pre>
-<p>Finally we caome to the last error: some more replacement needs to take place to prevent this error because <code>monit</code> cannot find its <a href="http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204">pid</a> file:</p>
-<pre><code>Jun 06 16:20:48 revue monit[4760]: Error opening pidfile &#39;@@PIDDIR@@/monit.pid&#39; for writing -- No such file or directory
-Jun 06 16:20:48 revue monit[4760]: Monit daemon died</code></pre>
-<p>This is then fixed by creating and running this <code>/etc/monitrc-fix.sh</code>:</p>
-<pre><code>#! /bin/sh
+cat $ID_FILE &amp;&amp; echo
+</pre>
+<p>Finally we caome to the last error: some more replacement needs to take place to prevent this error because <tt class="docutils literal">monit</tt> cannot find its <a class="reference external" href="http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204">pid</a> file:</p>
+<pre class="literal-block">
+Jun 06 16:20:48 revue monit[4760]: Error opening pidfile '&#64;&#64;PIDDIR&#64;&#64;/monit.pid' for writing -- No such file or directory
+Jun 06 16:20:48 revue monit[4760]: Monit daemon died
+</pre>
+<p>This is then fixed by creating and running this <tt class="docutils literal"><span class="pre">/etc/monitrc-fix.sh</span></tt>:</p>
+<pre class="literal-block">
+#! /bin/sh
 #
 # fixes the pidfile in /etc/monitrc
 ETC_TARGET=/etc/monitrc
@@ -1026,103 +1542,149 @@ sed -e &quot;/^# set pidfile \/var\/run\/monit.pid$/ s/^# //&quot; $ETC_TARGET &
 echo new:
 sed -n &quot;/^set pidfile \/var\/run\/monit.pid$/ p&quot; $ETC_TARGET
 systemctl status monit.service
-systemctl start monit.service</code></pre>
-<p>More <code>monit</code> configuration tips (including setting up <a href="https://en.wikipedia.org/wiki/HTTPS">HTTPs</a> with a <a href="https://en.wikipedia.org/wiki/Self-signed_certificate">self-signed certificate</a> - imporant as <code>monit</code> uses plain username/password <a href="https://en.wikipedia.org/wiki/Basic_access_authentication">http basic authentication</a>) are at:</p>
-<ul>
-<li><a href="http://xmodulo.com/server-monitoring-system-monit.html">How to set up server monitoring system with Monit - Xmodulo</a>.</li>
-<li><a href="http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html">Install Monit on openSUSE 13.2</a>.</li>
+systemctl start monit.service
+</pre>
+<p>More <tt class="docutils literal">monit</tt> configuration tips (including setting up <a class="reference external" href="https://en.wikipedia.org/wiki/HTTPS">HTTPs</a> with a <a class="reference external" href="https://en.wikipedia.org/wiki/Self-signed_certificate">self-signed certificate</a> - imporant as <tt class="docutils literal">monit</tt> uses plain username/password <a class="reference external" href="https://en.wikipedia.org/wiki/Basic_access_authentication">http basic authentication</a>) are at:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://xmodulo.com/server-monitoring-system-monit.html">How to set up server monitoring system with Monit - Xmodulo</a>.</li>
+<li><a class="reference external" href="http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html">Install Monit on openSUSE 13.2</a>.</li>
 </ul>
-<h2 id="configuring-apache2-for-the-first-time">Configuring apache2 for the first time</h2>
-<ol style="list-style-type: decimal">
-<li>Start <code>yast</code></li>
-<li>Open <code>Security and Users</code>, then <code>Sudo</code></li>
-<li>Click <code>Add</code></li>
+</div>
+<div class="section" id="configuring-apache2-for-the-first-time">
+<h2><a class="toc-backref" href="#id40">Configuring apache2 for the first time</a></h2>
+<ol class="arabic simple">
+<li>Start <tt class="docutils literal">yast</tt></li>
+<li>Open <tt class="docutils literal">Security and Users</tt>, then <tt class="docutils literal">Sudo</tt></li>
+<li>Click <tt class="docutils literal">Add</tt></li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li>Select a <code>User</code> (in my case <code>jeroenp</code>)</li>
-<li>Select a <code>Host</code> (in my case <code>ALL</code>)</li>
-<li>At <code>RunAs</code> type <code>ALL</code> (this will get translated to <code>(ALL)</code>)</li>
-<li>Ensure that <code>No Password</code> has a checkmark</li>
-<li>Click <code>Add</code></li>
+<ol class="arabic simple">
+<li>Select a <tt class="docutils literal">User</tt> (in my case <tt class="docutils literal">jeroenp</tt>)</li>
+<li>Select a <tt class="docutils literal">Host</tt> (in my case <tt class="docutils literal">ALL</tt>)</li>
+<li>At <tt class="docutils literal">RunAs</tt> type <tt class="docutils literal">ALL</tt> (this will get translated to <tt class="docutils literal">(ALL)</tt>)</li>
+<li>Ensure that <tt class="docutils literal">No Password</tt> has a checkmark</li>
+<li>Click <tt class="docutils literal">Add</tt></li>
 </ol>
 <blockquote>
-<ol style="list-style-type: decimal">
-<li>Select a <code>Command</code> (in my case <code>ALL</code>)</li>
-<li>Press <code>OK</code></li>
+<ol class="arabic simple">
+<li>Select a <tt class="docutils literal">Command</tt> (in my case <tt class="docutils literal">ALL</tt>)</li>
+<li>Press <tt class="docutils literal">OK</tt></li>
 </ol>
 </blockquote>
-<ol start="5" style="list-style-type: decimal">
-<li>Press <code>OK</code></li>
+<ol class="arabic simple" start="5">
+<li>Press <tt class="docutils literal">OK</tt></li>
 </ol>
 </blockquote>
-<ol start="4" style="list-style-type: decimal">
-<li>Press <code>OK</code></li>
-<li>Quit <code>yast</code></li>
+<ol class="arabic simple" start="4">
+<li>Press <tt class="docutils literal">OK</tt></li>
+<li>Quit <tt class="docutils literal">yast</tt></li>
 </ol>
-<blockquote>
-<p><strong>Notes when updating (vhosts) configuration from Apache 2.2 to Apache 2.4:</strong></p>
-<p>Instead of using <a href="http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html">mod_access_compat</a> modify the configuration files to use the directives in <a href="http://httpd.apache.org/docs/2.4/mod/mod_authz_host.html">mod_authz_host</a>.</p>
-<p>See <a href="http://httpd.apache.org/docs/2.4/upgrading.html">Upgrading to 2.4 from 2.2</a></p>
+<div class="sidebar">
+<p class="first sidebar-title">Notes when updating (vhosts) configuration from Apache 2.2 to Apache 2.4:</p>
+<p>Instead of using <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html">mod_access_compat</a> modify the configuration files to use the directives in <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/mod_authz_host.html">mod_authz_host</a>.</p>
+<p>See <a class="reference external" href="http://httpd.apache.org/docs/2.4/upgrading.html">Upgrading to 2.4 from 2.2</a></p>
 <p>Replace the lines:</p>
-<pre><code>Order deny,allow
-Deny from all</code></pre>
+<pre class="literal-block">
+Order deny,allow
+Deny from all
+</pre>
 <p>with:</p>
-<pre><code>Require all denied</code></pre>
+<pre class="literal-block">
+Require all denied
+</pre>
 <p>Replace the lines:</p>
-<pre><code>Order allow,deny
-Allow from all</code></pre>
+<pre class="literal-block">
+Order allow,deny
+Allow from all
+</pre>
 <p>with:</p>
-<pre><code>Require all granted</code></pre>
+<pre class="literal-block">
+Require all granted
+</pre>
 <p>More background info:</p>
-<ul>
-<li>Denying: <a href="https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/">Apache 2.4 Upgrade and the &quot;Invalid Command 'Order'&quot; Error</a></li>
-<li>Granting: <a href="http://brianflove.com/2014/04/23/upgrading-to-apache-2-4-from-apache-http-server-2-2-x/">Upgrading to Apache 2.4 from Apache HTTP Server 2.2.x</a></li>
+<ul class="simple">
+<li>Denying: <a class="reference external" href="https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/">Apache 2.4 Upgrade and the &quot;Invalid Command 'Order'&quot; Error</a></li>
+<li>Granting: <a class="reference external" href="http://brianflove.com/2014/04/23/upgrading-to-apache-2-4-from-apache-http-server-2-2-x/">Upgrading to Apache 2.4 from Apache HTTP Server 2.2.x</a></li>
 </ul>
 <p><strong>Common problems when upgrading</strong></p>
-<ul>
-<li>Startup errors:
-<ul>
-<li><code>Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration</code> - load module <a href="http://httpd.apache.org/docs/2.4/mod/mod_unixd.html">mod_unixd</a></li>
-<li><code>Invalid command 'Require', perhaps misspelled or defined by a module not included in the server configuration</code>, or <code>Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration</code> - load module <a href="http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html">mod_access_compat</a>, or update configuration to 2.4 authorization directives.</li>
-<li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remove <a href="http://httpd.apache.org/docs/2.4/mod/core.html#defaulttype">DefaultType</a> and replace with other configuration settings.</li>
-<li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled or defined by a module not included in the server configuration</code> - <a href="http://httpd.apache.org/docs/2.4/mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a> has moved from the core to mod_filter, which must be loaded.</li>
-</ul></li>
-<li>Errors serving requests:
-<ul>
-<li><code>configuration error: couldn't check user: /path</code> - load module <a href="http://httpd.apache.org/docs/2.4/mod/mod_authn_core.html">mod_authn_core</a>.</li>
-<li><code>.htaccess files aren't being processed</code> - Check for an appropriate <a href="http://httpd.apache.org/docs/2.4/mod/core.html#allowoverride">AllowOverride</a> directive; the default changed to <code>None</code> in 2.4.</li>
-</ul></li>
+<ul class="last simple">
+<li>Startup errors:<ul>
+<li><tt class="docutils literal">Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration</tt> - load module <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/mod_unixd.html">mod_unixd</a></li>
+<li><tt class="docutils literal">Invalid command 'Require', perhaps misspelled or defined by a module not included in the server configuration</tt>, or <tt class="docutils literal">Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration</tt> - load module <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html">mod_access_compat</a>, or update configuration to 2.4 authorization directives.</li>
+<li><tt class="docutils literal">Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</tt> - remove <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/core.html#defaulttype">DefaultType</a> and replace with other configuration settings.</li>
+<li><tt class="docutils literal">Invalid command 'AddOutputFilterByType', perhaps misspelled or defined by a module not included in the server configuration</tt> - <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a> has moved from the core to mod_filter, which must be loaded.</li>
 </ul>
-</blockquote>
-<h2 id="getting-and-running-testssl.sh">Getting and running <code>testssl.sh</code></h2>
+</li>
+<li>Errors serving requests:<ul>
+<li><tt class="docutils literal">configuration error: couldn't check user: /path</tt> - load module <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/mod_authn_core.html">mod_authn_core</a>.</li>
+<li><tt class="docutils literal">.htaccess files aren't being processed</tt> - Check for an appropriate <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/core.html#allowoverride">AllowOverride</a> directive; the default changed to <tt class="docutils literal">None</tt> in 2.4.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="getting-and-running-testssl-sh">
+<h2><a class="toc-backref" href="#id41">Getting and running <tt class="docutils literal">testssl.sh</tt></a></h2>
 <p>Simple steps from a non-root account:</p>
-<pre><code>git clone https://github.com/drwetter/testssl.sh.git
+<pre class="literal-block">
+git clone https://github.com/drwetter/testssl.sh.git
 cd testssl.sh
 
 OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh beginend.net
 OPENSSL=./testssl.sh beginend.net
 OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh www.beginend.net
-OPENSSL=./testssl.sh www.beginend.net</code></pre>
-<h2 id="login-reboot-fritzbox">Login / Reboot Fritz!Box</h2>
-<p>There is a bash script for Fritz!Box access at &lt;<a href="https://github.com/jpluimers/bash-fritzclient" class="uri">https://github.com/jpluimers/bash-fritzclient</a>&gt;.</p>
+OPENSSL=./testssl.sh www.beginend.net
+</pre>
+</div>
+<div class="section" id="login-reboot-fritz-box">
+<h2><a class="toc-backref" href="#id42">Login / Reboot Fritz!Box</a></h2>
+<p>There is a bash script for Fritz!Box access at &lt;<a class="reference external" href="https://github.com/jpluimers/bash-fritzclient">https://github.com/jpluimers/bash-fritzclient</a>&gt;.</p>
 <p>Installation is simple:</p>
-<ol style="list-style-type: decimal">
-<li>Go to <code>/etc</code></li>
-<li><code>git clone https://github.com/jpluimers/bash-fritzclient.git</code></li>
-<li>Copy <code>bash-fritzclient\bash-fritzclient.config.template</code> to <code>/etc/bash-fritzclient.template</code></li>
-<li>Configure <code>/etc/bash-fritzclient.template</code>.</li>
+<ol class="arabic simple">
+<li>Go to <tt class="docutils literal">/etc</tt></li>
+<li><tt class="docutils literal">git clone <span class="pre">https://github.com/jpluimers/bash-fritzclient.git</span></tt></li>
+<li>Copy <tt class="docutils literal"><span class="pre">bash-fritzclient\bash-fritzclient.config.template</span></tt> to <tt class="docutils literal"><span class="pre">/etc/bash-fritzclient.template</span></tt></li>
+<li>Configure <tt class="docutils literal"><span class="pre">/etc/bash-fritzclient.template</span></tt>.</li>
 </ol>
-<hr />
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>I keep using the old <a href="https://en.wikipedia.org/wiki/SUSE">SuSE</a> writing, I'm an old fart.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p><a href="https://en.opensuse.org/Portal:Tumbleweed">Tumbleweed</a> is the rolling release of OpenSuSE.<a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p><a href="https://en.wikipedia.org/wiki/Headless_software">Headless</a> as in no GUI, not as in <a href="https://en.wikipedia.org/wiki/Embedded_system">Embedded System</a>. So there is a text <a href="https://en.wikipedia.org/wiki/System_console">console</a>, and remote <a href="https://en.wikipedia.org/wiki/Secure_Shell">ssh</a>.<a href="#fnref3">↩</a></p></li>
-<li id="fn4"><p>See <a href="https://en.wikipedia.org/wiki/Snip_en_Snap">Snip en Snap revue</a>.<a href="#fnref4">↩</a></p></li>
-<li id="fn5"><p>The <a href="http://unix.stackexchange.com/questions/73427/cant-install-python-because-of-zypper-conflict">actual conflicts package</a> contains the version number of the distribution you use.<a href="#fnref5">↩</a></p></li>
-</ol>
+<hr class="docutils" />
+<table class="docutils footnote" frame="void" id="opensuse-footnote" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>I keep using the old <a class="reference external" href="https://en.wikipedia.org/wiki/SUSE">SuSE</a> writing, I'm an old fart.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="tumbleweed-footnote" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td><a class="reference external" href="https://en.opensuse.org/Portal:Tumbleweed">Tumbleweed</a> is the rolling release of OpenSuSE.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="revue-footnote" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[3]</a></td><td>See <a class="reference external" href="https://en.wikipedia.org/wiki/Snip_en_Snap">Snip en Snap revue</a>.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="headless-footnote" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[4]</a></td><td><a class="reference external" href="https://en.wikipedia.org/wiki/Headless_software">Headless</a> as in no GUI, not as in <a class="reference external" href="https://en.wikipedia.org/wiki/Embedded_system">Embedded System</a>. So there is a text <a class="reference external" href="https://en.wikipedia.org/wiki/System_console">console</a>, and remote <a class="reference external" href="https://en.wikipedia.org/wiki/Secure_Shell">ssh</a>.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="patterns-opensuse-minimal-base-conflicts-footnote" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id9">[5]</a></td><td>The <a class="reference external" href="https://www.google.com/search?q=patterns-openSUSE-minimal_base-conflicts">patterns-openSUSE-minimal_base-conflicts</a> is there to <a class="reference external" href="http://unix.stackexchange.com/questions/144438/missing-broken-dependancies-on-opensuse-normal/144583#144583">prevent recommended packages to blow up a minimal installation</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="removeconflicts-footnote" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id10">[6]</a></td><td>The <a class="reference external" href="http://unix.stackexchange.com/questions/73427/cant-install-python-because-of-zypper-conflict">actual conflicts package</a> contains the version number of the distribution you use.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </body>
 </html>

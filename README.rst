@@ -289,7 +289,7 @@ text-mode installation and conflicts
 
 The easiest way to start a headless install is picking "Minimal server selection (text mode)" during installation.
 
-The problem however is that this indeed minimal. It is enforced by the ``patterns-openSUSE-minimal_base-conflicts`` [#patterns-openSUSE-minimal_base-conflicts]_ pattern which is part of the minimal install.
+The problem however is that this indeed minimal. It is enforced by the ``patterns-openSUSE-minimal_base-conflicts`` [#patterns-openSUSE-minimal_base-conflicts_footnote]_ pattern which is part of the minimal install.
 
 It prevents some packages to install like ``mercurial``, ``php`` and ``python``.
 
