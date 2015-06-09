@@ -56,16 +56,6 @@ Needs investigation.
 Rest
 ----
 
-Run ``create-shellinabox-self-signed-certificate.sh``::
-
-    cd /var/lib/shellinabox
-    openssl genrsa -des3 -out server.key 1024
-    openssl req -new -key server.key -out server.csr
-    cp server.key server.key.org
-    openssl rsa -in server.key.org -out server.key
-    openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
-    cat server.crt server.key > certificate.pem
-
 Wget/curl are the best solution to update the ``root.hint``. See:
 
 - <http://lists.opensuse.org/opensuse/2008-05/msg01589.html> - use dig, maybe not good
@@ -1279,6 +1269,122 @@ Installation is simple:
 2. ``git clone https://github.com/jpluimers/bash-fritzclient.git``
 3. Copy ``bash-fritzclient\bash-fritzclient.config.template`` to ``/etc/bash-fritzclient.template``
 4. Configure ``/etc/bash-fritzclient.template``.
+
+configuring and running shellinabox with ssh
+--------------------------------------------
+
+A great tool for configuring your machine over a connection not allowing ssh is `shellinabox <http://shellinabox.com>`__.
+
+Certificates are in ``/etc/shellinabox/certs``.
+
+After installation, it isn't running::
+
+    revue:/etc/shellinabox/certs # systemctl status shellinabox.service
+    ● shellinabox.service - LSB: shellinabox
+       Loaded: loaded (/etc/init.d/shellinabox)
+       Active: inactive (dead)
+         Docs: man:systemd-sysv-generator(8)
+
+    revue:/etc/shellinabox/certs # systemctl enable shellinabox.service
+    shellinabox.service is not a native service, redirecting to /sbin/chkconfig.
+    Executing /sbin/chkconfig shellinabox on
+    revue:/etc/shellinabox/certs # systemctl start shellinabox.service
+    revue:/etc/shellinabox/certs # systemctl status shellinabox.service
+    ● shellinabox.service - LSB: shellinabox
+       Loaded: loaded (/etc/init.d/shellinabox)
+       Active: active (running) since Tue 2015-06-09 19:56:21 CEST; 20s ago
+         Docs: man:systemd-sysv-generator(8)
+      Process: 4997 ExecStart=/etc/init.d/shellinabox start (code=exited, status=0/SUCCESS)
+       CGroup: /system.slice/shellinabox.service
+               ├─5030 /usr/bin/shellinaboxd --background=/var/run/shellinaboxd.pid -u shellinabox -s /:SSH -c /etc/shellinabox/certs
+               └─5031 /usr/bin/shellinaboxd --background=/var/run/shellinaboxd.pid -u shellinabox -s /:SSH -c /etc/shellinabox/certs
+
+    Jun 09 19:56:20 revue shellinabox[4997]: No shellinabox certificate found, creating one now...
+    Jun 09 19:56:20 revue shellinabox[4997]: Generating a 2048 bit RSA private key
+    Jun 09 19:56:20 revue shellinabox[4997]: .................................+++
+    Jun 09 19:56:21 revue shellinabox[4997]: .............................................................+++
+    Jun 09 19:56:21 revue shellinabox[4997]: unable to write 'random state'
+    Jun 09 19:56:21 revue shellinabox[4997]: writing new private key to '/tmp/create-ssl-key-7GwyL'
+    Jun 09 19:56:21 revue shellinabox[4997]: -----
+    Jun 09 19:56:21 revue shellinabox[4997]: Created certificate: SHA1 Fingerprint=1B:AE:9D:C3:57:37:34:BB:64:79:0D:3D:D4:B9:50:54:9F:FE:FC:82
+    Jun 09 19:56:21 revue shellinabox[4997]: Starting shellinabox ..done
+    Jun 09 19:56:21 revue systemd[1]: Started LSB: shellinabox.
+    revue:/etc/shellinabox/certs # ls -al
+    total 12
+    drwxr-xr-x 1 root        root          70 Jun  9 19:56 .
+    drwxr-xr-x 1 root        root          10 May 17 10:41 ..
+    lrwxrwxrwx 1 root        root          15 Jun  9 19:56 064fecbc.0 -> certificate.pem
+    lrwxrwxrwx 1 root        root          15 Jun  9 19:56 b3543706.0 -> certificate.pem
+    -rw------- 1 shellinabox shellinabox 2916 Jun  9 19:56 certificate.pem
+    revue:/etc/shellinabox/certs # nmap -sV -p 4200 localhost
+
+    Starting Nmap 6.47 ( http://nmap.org ) at 2015-06-09 19:58 CEST
+    Nmap scan report for localhost (127.0.0.1)
+    Host is up (0.00013s latency).
+    PORT     STATE SERVICE VERSION
+    4200/tcp open  http    ShellInABox httpd
+
+    Service detection performed. Please report any incorrect results at http://nmap.org/submit/ .
+    Nmap done: 1 IP address (1 host up) scanned in 11.49 seconds
+
+This will work locally::
+
+    lynx http://localhost:4200
+
+Remotely, it needs the firewall to be enabled for it:
+
+1. Start ``yast``
+2. Go to ``Security and Users``, ``Firewall``
+3. Go to ``Allowed Services``
+4. Ensure ``Shellinabox`` is in the list, when not:
+
+  1. Add ``Shellinabox`` to the list
+  2. Press ``Next`` followed by ``Finish`` to apply the changes
+
+5. Quit ``yast``
+
+Now it works, but note that the https isn't really secure. Chrome will show ``ERR_SSL_VERSION_OR_CIPHER_MISMATCH``, and this will show far more details::
+
+    jeroenp@revue:~/testssl.sh> OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh localhost:4200
+
+So the best is setting up an Apache redirect as shown in in the `shellinabox configuration page <https://code.google.com/p/shellinabox/wiki/shellinaboxd_man#CONFIGURATION>`_::
+
+    <Location /shell>
+      ProxyPass  http://localhost:4200/
+      Order      allow,deny
+      Allow      from all
+    </Location>
+
+For Apache 2.4 we need to slightly change that as we saw when configuring ``apache2`` above. So add these lines to ``/etc/apache2/vhosts.d/00-default.snap.conf``::
+
+    <Location /shell>
+      ProxyPass  http://localhost:4200/
+      Require all granted
+    </Location>
+
+Now test your vhost configuration by running this command::
+
+    htttpd2 -S
+
+If you get the below error, then you need tht http proxy modue to be installed in apache2::
+
+    Invalid command 'ProxyPass', perhaps misspelled or defined by a module not included in the server configuration
+
+In that case, in ``/etc/sysconfig/apache2`` find the line starting with ``APACHE_MODULES`` and add ``proxy_http_module`` to the lis of modules, then perform the ``httpd2 -S `` check again. Finally, restart ``apache2`` with this command::
+
+    systemctl status apache2.service
+
+.. note::
+
+  We need to change ``/etc/sysconfig/apache2`` because ``yast`` will nuke the vhost configs into IP-based-vhosts. See `Configuring Apache <https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_configuration.html>`_ for more details about manually configuring these files without using ``yast``.
+
+If apache doesn't restart, then use ``journalctl -xe`` fo find out what went wrong. In my case ``proxy_http_module`` wasn't installed it's because that's the name in the ``/etc/apache2/sysconfig.d`` which is generated by ``/etc/sysconfig/apache2``. In ``/etc/sysconfig/apache2`` you need two entries appended to ``APACHE_MODULES``::
+
+     mod_proxy mod_proxy_http
+
+I found out about this by rereading `Apache Module mod_proxy_http <https://httpd.apache.org/docs/2.4/mod/mod_proxy_http.html>`_ three times.
+
+If this works, then you should see ``shellinabox`` when going to <http://localhost/shell>> but not yet for <https://localhost/shell>. For the latter we need to enable ``https`` in ```apache2``.
 
 ----------------------------------------------------------------------------
 
