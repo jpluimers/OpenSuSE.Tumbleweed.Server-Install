@@ -18,6 +18,7 @@ Table of Contents
 TODO
 ====
 
+- harden OpenSSL.
 - web site (HTTP-HTTPS)
 - pop3 (port 110)
 - email (SMTP-SSMTP) 25/587
@@ -28,6 +29,13 @@ TODO
 - DNS security <https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server--2> and <http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm>
 - ensure 10rsync-var-lib-named-master.sh works
 - fix syslogd and logrotate
+- via `Secure your Apache Server <https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html>`_:
+
+  - `HTTP Strict Transport Security <https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security>`_
+  - `SecurityEngineering/Public Key Pinning <https://wiki.mozilla.org/SecurityEngineering/Public_Key_Pinning>`_
+  - `OCSP Stapling on Apache <https://raymii.org/s/tutorials/OCSP_Stapling_on_Apache2.html>`_
+  - `testssl.sh <https://testssl.sh/>`_
+  - `SSLLabs SSL Server Test <https://www.ssllabs.com/ssltest/>`_
 
 NOTES
 =====
@@ -204,7 +212,65 @@ These are the **patterns** I extended with:
 - `Internet Gateway <hhttps://www.google.com/search?q="Internet+Gateway"+site%3Aopensuse.org>`_
 - `DHCP and DNS Server <https://www.google.com/search?q="DHCP+and+DNS+Server"+site%3Aopensuse.org>`_
 
-After that I added some **packages** too:
+As **LAMP** installs mariadb, and as of somewhere around July 2015 mariadb bugs about it being installed with default non-password database root credentials::
+
+    revue:/etc # zypper rm mariadb
+    Loading repository data...
+    Reading installed packages...
+    Resolving package dependencies...
+
+    The following package is going to be REMOVED:
+      mariadb
+
+    1 package to remove.
+    After the operation, 78.7 MiB will be freed.
+    Continue? [y/n/? shows all options] (y): y
+    (1/1) Removing mariadb-10.0.17-1.3 .....................................................................................................................................................................................................[done]
+
+    revue:/etc # zypper search "LAMP"
+    Loading repository data...
+    Reading installed packages...
+
+    S | Name                          | Summary             | Type
+    --+-------------------------------+---------------------+--------
+    i | lamp_server                   | Web and LAMP Server | pattern
+    i | patterns-openSUSE-lamp_server | Web and LAMP Server | package
+
+    revue:/etc # zypper remove patterns-openSUSE-lamp_server
+    Loading repository data...
+    Reading installed packages...
+    Resolving package dependencies...
+
+    The following package is going to be REMOVED:
+      patterns-openSUSE-lamp_server
+
+    The following pattern is going to be REMOVED:
+      lamp_server
+
+    1 package to remove.
+    After the operation, 57.0 B will be freed.
+    Continue? [y/n/? shows all options] (y): y
+    (1/1) Removing patterns-openSUSE-lamp_server-20150603-4.1 ..............................................................................................................................................................................[done]
+    revue:/etc #
+
+    revue:/etc # zypper remove mariadb-client mariadb-errormessages
+    Loading repository data...
+    Reading installed packages...
+    Resolving package dependencies...
+
+    The following 2 packages are going to be REMOVED:
+      mariadb-client mariadb-errormessages
+
+    2 packages to remove.
+    After the operation, 21.8 MiB will be freed.
+    Continue? [y/n/? shows all options] (y): y
+    (1/2) Removing mariadb-client-10.0.17-1.3 ..............................................................................................................................................................................................[done]
+    (2/2) Removing mariadb-errormessages-10.0.17-1.3 .......................................................................................................................................................................................[done]
+    revue:/etc #
+
+If I ever need MySQL or MariaDB, I will get it again and solve the root rights.
+
+Finally time for some manual adding of **packages**:
 
 .. note::
 
@@ -329,6 +395,15 @@ This is how I got started:
 
   It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.
 
+  Three important ``etckeeper`` gotchas with powerful scripts like `pre-commit <https://github.com/joeyh/etckeeper/tree/master/pre-commit.d>`_ ``/etc/etckeeper/pre-commit.d``:
+
+  1. ensure you give them executable permissions like `chmod 755 <http://www.networkredux.com/answers/linux-in-general/users-and-permissions/how-do-i-use-the-chmod-command-in-linux>`_.
+  2. ensure they are valid `sh <https://en.wikipedia.org/wiki/Bourne_shell>`_ scripts.
+  3. do not give them the .sh extension:
+
+    - fails: ``/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master``
+    - works: ``/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh``
+
 removing hardlinks from the ``etckeeper`` repository
 ----------------------------------------------------
 
@@ -369,8 +444,8 @@ Note the ``--cache`` part in the command to delete, as then the files will not b
     git commit -m "git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr and bootsplash/themes/openSUSE/cdrom/*.tr"
 
 
-configuring sudo
-----------------
+Adding user ``jeroenp`` to ``SUDOERS`` so it can perform ``sudo``
+-----------------------------------------------------------------
 
 1. Start ``yast``
 2. Open ``Security and Users``, then ``Sudo``
@@ -389,6 +464,7 @@ configuring sudo
 
 4. Press ``OK``
 5. Quit ``yast``
+
 
 This will generate ``/etc/sudoers.YaST2.save`` add a line to ``/etc/sudoers``::
 
@@ -644,7 +720,7 @@ Now modify the ``/etc/noip.com/bash-no-ip-updater.config`` file; alter these ent
     PASSWORD="password"
     HOST="host.domain.com"
 
-.. sidebar:
+.. sidebar:: no-ip login note
 
   I could just use my account name (email was not needed). Other people seem to need their email. Try both.
 
@@ -999,18 +1075,34 @@ Finally stop/start the named service::
 
 .. note::
 
-    Check if your zone files are correct by executing ``named-checkzone``.
+    Check if your zone files are correct by executing `named-checkzone <http://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/>`_::
 
-    Check if your named configuration is correct by executing ``named-checkconfig``.
+        named-checkzone 4delphi.com /var/lib/named/master/4delphi.com
+        named-checkzone pluimers.com /var/lib/named/master/pluimers.com
+
+    Check if your named configuration is correct by executing `named-checkconf <http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html>`_::
+
+        named-checkconf /etc/named.conf
 
     Check if ``named`` delivers the correct zone::
 
+        dig @localhost axfr 4delphi.com
         dig @localhost axfr pluimers.com
 
     See:
 
     - `Check BIND – DNS Server configuration file for errors with named-checkconf tools <http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html>`_
     - `Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool <hhttp://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/>`_
+
+    `Check the named configuration <https://ask.fedoraproject.org/en/question/24288/how-to-debug-bind-conf-and-zone-files/>`_::
+
+        named-checkconf /etc/named.conf
+
+    `Check each named zone <http://www.ewhathow.com/2013/09/how-do-i-check-bind-zone-file-for-errors/>`_::
+
+        named-checkzone localhost /var/lib/named/master/4delphi.com
+        named-checkzone localhost /var/lib/named/master/pluimers.com
+
 
 Ensure that ``/var/lib/named/master`` gets synced to ``/etc/named/master``
 --------------------------------------------------------------------------
@@ -1020,7 +1112,7 @@ Based on these links, I've added a sync script.
 - `etckeeper configuration documentation <https://github.com/joeyh/etckeeper#configuration>`_
 - `unix: using variables <http://www.tutorialspoint.com/unix/unix-using-variables.htm>`_
 
-I stored it in ``/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh``::
+I stored it in ``/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master``::
 
     #! /bin/sh
     ## http://www.tutorialspoint.com/unix/unix-using-variables.htm
@@ -1183,23 +1275,101 @@ More ``monit`` configuration tips (including setting up `HTTPs <https://en.wikip
 Configuring apache2 for the first time
 --------------------------------------
 
-1. Start ``yast``
-2. Open ``Security and Users``, then ``Sudo``
-3. Click ``Add``
+To display the *Apache* version::
 
-  1. Select a ``User`` (in my case ``jeroenp``)
-  2. Select a ``Host`` (in my case ``ALL``)
-  3. At ``RunAs`` type ``ALL`` (this will get translated to ``(ALL)``)
-  4. Ensure that ``No Password`` has a checkmark
-  5. Click ``Add``
+    # httpd2 -v
+    Server version: Apache/2.4.12 (Linux/SUSE)
+    Server built:   2015-06-09 09:24:07.000000000 +0000
 
-    1. Select a ``Command`` (in my case ``ALL``)
-    2. Press ``OK``
+Or since both ``httpd`` and ``httpd2`` point to the same file::
 
-  5. Press ``OK``
+    # httpd2 -v
+    Server version: Apache/2.4.12 (Linux/SUSE)
+    Server built:   2015-06-09 09:24:07.000000000 +0000
 
-4. Press ``OK``
-5. Quit ``yast``
+    # ls -al `which httpd2` `which httpd`
+    lrwxrwxrwx 1 root root 23 Jun 20 15:26 /usr/sbin/httpd -> /usr/sbin/httpd-prefork
+    lrwxrwxrwx 1 root root 23 Jun 20 15:26 /usr/sbin/httpd2 -> /usr/sbin/httpd-prefork
+
+To verify your configuration files are correct, use this command before restarting the apache2 httpd2 server::
+
+    httpd2 -S
+
+Apart from replacing ``combined`` by ``vhost_combined``, you might want to ensure logging is done for each vhost in a separate file: it makes checkout out vhost issues a lot easier.
+
+You can either use the default ``vhost.template`` for that, or the `apache wiki <http://wiki.apache.org>`_ examples: https://wiki.apache.org/httpd/ExampleVhosts
+
+This is my diff between the default ``vhost.template `` and ``pluimers.com.conf`` in ``/etc/apache2/vhosts.d``::
+
+    /etc/apache2/vhosts.d # diff pluimers.com.conf vhost.template
+    1c1
+    < # pluimers.com apache2 vhost configuration based on
+    ---
+    > #
+    15,19c15,17
+    < # <VirtualHost *:80>
+    < <VirtualHost *>
+    <     ServerAlias *.pluimers.com
+    <     ServerAdmin jeroen.pluimers.com+pluimers.com@gmail.com
+    <     ServerName revue
+    ---
+    > <VirtualHost *:80>
+    >     ServerAdmin webmaster@dummy-host.example.com
+    >     ServerName dummy-host.example.com
+    24c22
+    <     DocumentRoot /srv/www/vhosts/pluimers.com
+    ---
+    >     DocumentRoot /srv/www/vhosts/dummy-host.example.com
+    27,30c25,26
+    <     # ErrorLog /var/log/apache2/pluimers.com/error_log
+    <     ErrorLog /var/log/apache2/pluimers.com-error_log
+    <     # CustomLog /var/log/apache2/pluimers.com/access_log vhost_combined
+    <     CustomLog /var/log/apache2/pluimers.com-access_log vhost_combined
+    ---
+    >     ErrorLog /var/log/apache2/dummy-host.example.com-error_log
+    >     CustomLog /var/log/apache2/dummy-host.example.com-access_log combined
+    59c55
+    <     ScriptAlias /cgi-bin/ "/srv/www/vhosts/pluimers.com/cgi-bin/"
+    ---
+    >     ScriptAlias /cgi-bin/ "/srv/www/vhosts/dummy-host.example.com/cgi-bin/"
+    64c60
+    <     <Directory "/srv/www/vhosts/pluimers.com/cgi-bin">
+    ---
+    >     <Directory "/srv/www/vhosts/dummy-host.example.com/cgi-bin">
+    102c98
+    <     <Directory "/srv/www/vhosts/pluimers.com">
+    ---
+    >     <Directory "/srv/www/vhosts/dummy-host.example.com">
+    137d132
+    < </VirtualHost>
+    138a134
+    > </VirtualHost>
+
+Note that I experimented with a log directory per domain like ``/var/log/apache2/pluimers.com/``, but these won't be auto-created, like ``httpd2 -S`` shows::
+
+    /etc/apache2/vhosts.d # httpd2 -S
+    VirtualHost configuration:
+    ...
+    (2)No such file or directory: AH02291: Cannot access directory '/var/log/apache2/pluimers.com/' for error log of vhost defined at /etc/apache2/vhosts.d/pluimers.com.conf:16
+    AH00014: Configuration check failed
+
+Note that ``httpd2 -S`` by default does not execute ``
+This means that if you have ``SSL`` configured, ``httpd2 -S`` will not take that into account the ``APACHE_SERVER_FLAGS`` setting in ``/etc/sysconfig/apache2``
+
+`Workaround from another frustrated user <http://web.ornl.gov/~jar/Apache/SSL_in_Apache_2.html>`_ which `one day I will make easier to use <http://serverfault.com/questions/702155/why-doesnt-httpd2-s-catch-ssl-certificate-issues-whereas-systemctl-restart/702156#comment868640_702156>`_::
+
+    httpd2 -D SSL -S
+
+The same frustrated user also suggested to make this small change in ``/etc/sysconfig/apache2``, from
+
+    APACHE_LOGLEVEL="warn"
+
+to::
+
+    APACHE_LOGLEVEL="debug"
+
+
+
 
 .. sidebar:: Notes when updating (vhosts) configuration from Apache 2.2 to Apache 2.4:
 
@@ -1385,6 +1555,491 @@ If apache doesn't restart, then use ``journalctl -xe`` fo find out what went wro
 I found out about this by rereading `Apache Module mod_proxy_http <https://httpd.apache.org/docs/2.4/mod/mod_proxy_http.html>`_ three times.
 
 If this works, then you should see ``shellinabox`` when going to <http://localhost/shell>> but not yet for <https://localhost/shell>. For the latter we need to enable ``https`` in ```apache2``.
+
+Viewing the long journal
+------------------------
+
+Like mentioned before, ``journalctl`` views the log journal.
+
+An even handier command is this::
+
+    journalctl -xe
+
+This is shorthand for::
+
+    journalctl --catalog --pager-end
+
+It uses these options::
+
+    -e --pager-end           Immediately jump to the end in the pager
+    -x --catalog             Add message explanations where available
+
+This is exactly why I like it over log files:
+
+- it has explanations that can come in very handy
+- it directly goes to the pager (on my system ``less``)
+
+Hardening apache2 SSL cyphers
+-----------------------------
+
+Via `Hardening Your Web Server’s SSL Ciphers — Hynek Schlawack <https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/>`_:
+
+Edit ``/etc/apache2/ssl-global.conf``, then modify/add these lines::
+
+    --- a/apache2/ssl-global.conf
+    +++ b/apache2/ssl-global.conf
+    @@ -77,7 +77,17 @@
+            #   SSL Cipher Suite:
+            #   List the ciphers that the client is permitted to negotiate.
+            #   See the mod_ssl documentation for a complete list.
+    -       SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+    +       # SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+    +        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+    +        SSLCipherSuite ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
+    +        # normally this is in copies of default-vhost-ssl.conf, but it needs to be default:
+    +        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+    +        SSLHonorCipherOrder On
+    +
+    +        ##  SSL compression:
+    +        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+    +        # as of Apache2 2.4.4 the default is Off; this is in case you ever run on a lower version.
+    +        SSLCompression Off
+
+            #   Server Certificate:
+            #   Point SSLCertificateFile at a PEM encoded certificate.  If
+
+After that, test the config, then restart ``apache2``::
+
+    revue:~ # apache2ctl -t
+    Syntax OK
+    revue:~ # systemctl restart apache2.service
+    revue:~ # systemctl status apache2.service
+    ● apache2.service - The Apache Webserver
+       Loaded: loaded (/usr/lib/systemd/system/apache2.service; enabled; vendor preset: disabled)
+       Active: active (running) since Thu 2015-06-11 20:58:12 CEST; 8s ago
+     Main PID: 23760 (httpd-prefork)
+       Status: "Processing requests..."
+       CGroup: /system.slice/apache2.service
+               ├─23760 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+               ├─23780 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+               ├─23781 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+               ├─23782 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+               ├─23783 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+               └─23784 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+
+    Jun 11 20:58:11 revue systemd[1]: Starting The Apache Webserver...
+    Jun 11 20:58:12 revue systemd[1]: Started The Apache Webserver.
+    revue:~ #
+
+Additional information at `Secure your Apache Server <https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html>`_.
+
+Enabling https for apache2
+--------------------------
+
+First get and install a certificate.
+
+Then enable `mod_ssl <http://httpd.apache.org/docs/2.4/mod/mod_ssl.html>`_, in ``/etc/sysconfig/apache2`` you need one entrie appended to ``APACHE_MODULES``::
+
+     mod_ssl
+
+.. note::
+
+   TODO figure out how to use this together with `mod_proxy` and `mod_proxy_http`; see `how to make Apache proxy http requests to https <http://stackoverflow.com/questions/9977215/how-to-make-apache-proxy-http-requests-to-https>`.
+
+
+Generating the private key protected with a strong password
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. sidebar:: strong passwords
+
+  `Avoid weak passwords <https://en.wikipedia.org/wiki/Password_strength#Examples_of_weak_passwords>`_.
+
+  One way of creating a single strong password is by estimating `required bits of entropy <https://en.wikipedia.org/wiki/Password_strength#Required_Bits_of_Entropy>`_, then choosing a `set of characters` and `password length` and generate a `random password with at least that length <https://en.wikipedia.org/wiki/Password_strength#Random_passwords>`_).
+
+  Here 16 characters gets you about 80 bits of precision.
+
+  But remember that often you need multiple strong passwords, so be sure to read some `guidelines around strong passwords <https://en.wikipedia.org/wiki/Password_strength#Guidelines_for_strong_passwords>`_.
+
+
+
+First a few notes:
+
+1. `There is no AES-512 <http://crypto.stackexchange.com/questions/20253/why-we-cant-implement-aes-512-key-size>`_, so the best to use is `AES-256 <https://en.wikipedia.org/wiki/Advanced_Encryption_Standard#Description_of_the_cipher>`_ (AES wiht a 256-bit key).
+2. `RSA keys should be at least 2048 bits long <https://en.wikipedia.org/wiki/RSA_(cryptosystem)#cite_note-20>`_, but 4096 provide even more security (`the factoring of a 4096-bit RSA key was a faulty copy <https://blog.hboeck.de/archives/872-About-the-supposed-factoring-of-a-4096-bit-RSA-key.html>`_).
+3. `DSA keys <https://en.wikipedia.org/wiki/Digital_Signature_Algorithm>`_ are limited to 1024 bits. Don't use them.
+
+The `genrsa <https://www.openssl.org/docs/apps/genrsa.html>`_ command of openssl generates RSA keys.
+
+Generate a 4096 bit RSA private key (keep it in a safe place!) encrypted using the 256-bit AES algorithm (be sure to give it a `strong password <https://en.wikipedia.org/wiki/Password_strength>`_!::
+
+    openssl genrsa -out 4096-bit-rsa-key-encrypted-using-256-bit-aes.private.key -aes256 4096
+
+You can also use `ssh-keygen <https://en.wikipedia.org/wiki/Ssh-keygen>`_, but the `default setup is not that secure <https://wiki.osuosl.org/howtos/ssh_key_tutorial.html>`_ and `making it more secure requires openssl <https://github.com/nickchappell/personal-projects-docs/blob/master/services_notes/ssh_notes.md>`_.
+
+Generate the CSR (Certificate Signing Request)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. sidebar:: `tmpfs` on a Mac
+
+  On a Mac you have `these nice scripts <https://gist.github.com/koshigoe/822455>`_ by `koshigoe <https://gist.github.com/koshigoe>`_ to help you creating a `tmpfs`.
+
+  They use `hdid <https://www.google.com/search?q=hdid>`_,
+  `newfs_hfs <https://www.google.com/search?q=newfs_hfs>`_,
+  `mount <https://www.google.com/search?q=mount>`_,
+  `umount <https://www.google.com/search?q=umount>`_ and
+  `hdiutil <https://www.google.com/search?q=hdiutil>`_.
+
+  `mount-ram.sh <https://gist.githubusercontent.com/koshigoe/822455/raw/dd33aeeb0267040743a4f4272cab371e0880770f/mount-ram.sh>`_::
+
+      #!/bin/sh
+
+      # This program has two feature.
+      #
+      # 1. Create a disk image on RAM.
+      # 2. Mount that disk image.
+      #
+      # Usage:
+      #   $0 <dir> <size>
+      #
+      #   size:
+      #     The `size' is a size of disk image (MB).
+      #
+      #   dir:
+      #     The `dir' is a directory, the dir is used to mount the disk image.
+      #
+      # See also:
+      #   - hdid(8)
+      #
+
+      mount_point=${1}
+      size=${2:-64}
+
+      mkdir -p $mount_point
+      if [ $? -ne 0 ]; then
+          echo "The mount point didn't available." >&2
+          exit $?
+      fi
+
+      sector=$(expr $size \* 1024 \* 1024 / 512)
+      device_name=$(hdid -nomount "ram://${sector}" | awk '{print $1}')
+      if [ $? -ne 0 ]; then
+          echo "Could not create disk image." >&2
+          exit $?
+      fi
+
+      newfs_hfs $device_name > /dev/null
+      if [ $? -ne 0 ]; then
+          echo "Could not format disk image." >&2
+          exit $?
+      fi
+
+      mount -t hfs $device_name $mount_point
+      if [ $? -ne 0 ]; then
+          echo "Could not mount disk image." >&2
+          exit $?
+      fi
+
+  `umount-ram.sh <https://gist.githubusercontent.com/koshigoe/822455/raw/802073f8f0791ba050180986dfe9091f1bca9abf/umount-ram.sh>`_::
+
+      #!/bin/sh
+
+      # This program has two features.
+      #
+      # 1. Unmount a disk image.
+      # 2. Detach the disk image from RAM.
+      #
+      # Usage:
+      #   $0 <dir>
+      #
+      #   dir:
+      #     The `dir' is a directory, the dir is mounting a disk image.
+      #
+      # See also:
+      #   - hdid(8)
+      #
+
+      mount_point=$1
+      if [ ! -d "${mount_point}" ]; then
+          echo "The mount point didn't available." >&2
+          exit 1
+      fi
+      mount_point=$(cd $mount_point && pwd)
+
+      device_name=$(df "${mount_point}" 2>/dev/null | tail -1 | grep "${mount_point}" | cut -d' ' -f1)
+      if [ -z "${device_name}" ]; then
+          echo "The mount point didn't mount disk image." >&2
+          exit 1
+      fi
+
+      umount "${mount_point}"
+      if [ $? -ne 0 ]; then
+          echo "Could not unmount." >&2
+          exit $?
+      fi
+
+      hdiutil detach -quiet $device_name
+
+Here we will generate a `CSR <https://en.wikipedia.org/wiki/Certificate_signing_request>`_ using SHA-256 (which is a `secure hashing <https://en.wikipedia.org/wiki/Secure_Hash_Algorithm>`_ function that is part of the `SHA-2 <https://en.wikipedia.org/wiki/SHA-2#Comparison_of_SHA_functions>`_ family of hashing functions `secure enough for the forseeable future <http://crypto.stackexchange.com/questions/3153/sha-256-vs-any-256-bits-of-sha-512-which-is-more-secure>`_).
+
+1. Copy your encrypted private key to a temporary directory (important: you **have to clean that directory later on**) preferably in a `tmpfs <https://en.wikipedia.org/wiki/Tmpfs>`_ temporary file system.
+
+2. Decrypt your key (enter your password when openssl asks for it)::
+
+    openssl rsa -in 4096-bit-rsa-key-encrypted-using-256-bit-aes.private.key -out 4096-bit-rsa-key.private.key
+
+3. Create a signing request using the decrypted key for your domain (in this case for the `pluimers.com` domain) with some sensible attributes::
+
+    # openssl req -new -sha256 -key 4096-bit-rsa-key.private.key -out pluimers.com.csr
+    You are about to be asked to enter information that will be incorporated
+    into your certificate request.
+    What you are about to enter is what is called a Distinguished Name or a DN.
+    There are quite a few fields but you can leave some blank
+    For some fields there will be a default value,
+    If you enter '.', the field will be left blank.
+    -----
+    Country Name (2 letter code) [AU]:NL
+    State or Province Name (full name) [Some-State]:Noord-Holland
+    Locality Name (eg, city) []:Amsterdam
+    Organization Name (eg, company) [Internet Widgits Pty Ltd]:Pluimers Software Ontwikkeling B.V.
+    Organizational Unit Name (eg, section) []:
+    Common Name (e.g. server FQDN or YOUR name) []:pluimers.com
+    Email Address []:webmaster@pluimers.com
+
+    Please enter the following 'extra' attributes
+    to be sent with your certificate request
+    A challenge password []:
+    An optional company name []:
+    # openssl req -noout -text -in pluimers.com.csr
+        Data:
+            Version: 0 (0x0)
+            Subject: C=NL, ST=Noord-Holland, L=Amsterdam, O=Pluimers Software Ontwikkeling B.V., CN=pluimers.com/emailAddress=webmaster@pluimers.com
+            Subject Public Key Info:
+
+4. Follow the `StartSSL` steps at `Generating the Certificate <https://konklone.com/post/switch-to-https-now-for-free#generating-the-certificate>`_.
+
+    - note you can only have 1 specific subdomain when your StartSSL identity is class 1.
+    - the upload and processing of the CRS takes a few minutes
+    - the generation of the certificate can take like 5 minutes
+    - copy the resulting certificate to ``pluimers.com.crt``
+    - on your OpenSuSE server, save these files:
+        - Certificate: ``/etc/apache2/ssl.crt/pluimers.com.crt``
+        - Decrypted private key: ``/etc/apache2/ssl.key/pluimers.com.key``
+
+5. Fix this error by changing ``/etc/apache2/vhosts.d/pluimers.com-ssl.conf`` from ``ServerName revue`` into ``ServerName www.pluimers.com``::
+
+    [Sun Jun 28 16:43:40.342067 2015] [ssl:debug] [pid 5251] ssl_util_ssl.c(356): AH02412: [revue:443] Cert does not match for name 'revue' [subject: emailAddress=webmaster@pluimers.com,CN=www.pluimers.com,C=NL / issuer: CN=StartCom Class 1 Primary Intermediate Server CA,OU=Secure Digital Certificate Signing,O=StartCom Ltd.,C=IL / serial: 05D759EC0CF620 / notbefore: Jun 14 08:24:00 2015 GMT / notafter: Jun 14 14:46:36 2016 GMT]
+
+
+<http://ndg-security.ceda.ac.uk/wiki/ndg_security/Apache2/SUSE#SSL>
+
+SSLLabs test will most likely give this downgrade:
+
+    This server's certificate chain is incomplete. Grade capped to B.
+
+So make sure you chain your certificates when using startSSL::
+
+    pushd /etc/apache2/ssl.crt
+    wget -m -np https://www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem
+    cat pluimers.com.crt www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem > pluimers.com-chain.crt
+    popd
+
+Now ensure these two lines in ``/etc/apache2/vhosts.d/pluimers.com-ssl.conf`` are as follows::
+
+    #SSLCertificateFile /etc/apache2/ssl.crt/pluimers.com.crt
+    SSLCertificateKeyFile /etc/apache2/ssl.key/pluimers.com.key
+    SSLCertificateChainFile /etc/apache2/ssl.crt/pluimers.com-chain.crt
+
+Finally, restart the apache2 service::
+
+    rcapache2 stop
+    rcapache2 start
+
+If it fails, then look through errors in ``/var/log/apache2/pluimers.com-ssl-error_log``, as ``journalctl -xe`` will not show details.
+
+.. sidebar:: Important apache restart note
+
+  ``rcapache2 restart`` will not fully unload the apache configuration. Use this in stead::
+
+      rcapache2 stop
+      rcapache2 start
+
+  Without it, you will get spurious errors (like https://www.pluimers.com re-using part of the virtual directory configuration for http://www.pluimers.com thereby generating spurious 403-errors) in log files like the ``403 1032`` and ``403 1018`` error codes and ``authorization result of <RequireAny>: denied`` in below logs.
+
+  BTW:
+
+    Note the differences in time-stamp logging. Don't you hate that? What happened to ISO-8601?
+
+  pluimers.com-ssl_request_log::
+
+      [29/Jun/2015:20:16:40 +0200] 80.100.143.119 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 "GET / HTTP/1.1" 1032 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36"
+      [29/Jun/2015:20:16:40 +0200] 80.100.143.119 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 "GET /favicon.ico HTTP/1.1" 1018 "https://www.pluimers.com/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36"
+
+  pluimers.com-access_log::
+
+      revue 80.100.143.119 - - [29/Jun/2015:20:16:40 +0200] "GET / HTTP/1.1" 403 1032 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36"
+      revue 80.100.143.119 - - [29/Jun/2015:20:16:40 +0200] "GET /favicon.ico HTTP/1.1" 403 1018 "https://www.pluimers.com/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36"
+
+  pluimers.com-ssl-error_log::
+
+      [Mon Jun 29 20:16:40.266336 2015] [ssl:info] [pid 5588] [client 80.100.143.119:63297] AH01964: Connection to child 5 established (server revue:443)
+      [Mon Jun 29 20:16:40.267090 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(1908): [client 80.100.143.119:63297] AH02043: SSL virtual host for servername www.pluimers.com found
+      [Mon Jun 29 20:16:40.267832 2015] [ssl:info] [pid 5589] [client 80.100.143.119:63298] AH01964: Connection to child 6 established (server revue:443)
+      [Mon Jun 29 20:16:40.268728 2015] [ssl:debug] [pid 5589] ssl_engine_kernel.c(1908): [client 80.100.143.119:63298] AH02043: SSL virtual host for servername www.pluimers.com found
+      [Mon Jun 29 20:16:40.298407 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(1841): [client 80.100.143.119:63297] AH02041: Protocol: TLSv1.2, Cipher: ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits)
+      [Mon Jun 29 20:16:40.303995 2015] [ssl:debug] [pid 5589] ssl_engine_kernel.c(1841): [client 80.100.143.119:63298] AH02041: Protocol: TLSv1.2, Cipher: ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits)
+      [Mon Jun 29 20:16:40.646809 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(243): [client 80.100.143.119:63297] AH02034: Initial (No.1) HTTPS request received for child 5 (server revue:443)
+      [Mon Jun 29 20:16:40.647091 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all denied: denied
+      [Mon Jun 29 20:16:40.647104 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of <RequireAny>: denied
+      [Mon Jun 29 20:16:40.647112 2015] [authz_core:error] [pid 5588] [client 80.100.143.119:63297] AH01630: client denied by server configuration: /srv/www/vhosts/pluimers.com/
+      [Mon Jun 29 20:16:40.647239 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all granted: granted
+      [Mon Jun 29 20:16:40.647250 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of <RequireAny>: granted
+      [Mon Jun 29 20:16:40.792584 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(243): [client 80.100.143.119:63297] AH02034: Subsequent (No.2) HTTPS request received for child 5 (server revue:443), referer: https://www.pluimers.com/
+      [Mon Jun 29 20:16:40.792637 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all denied: denied, referer: https://www.pluimers.com/
+      [Mon Jun 29 20:16:40.792667 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of <RequireAny>: denied, referer: https://www.pluimers.com/
+      [Mon Jun 29 20:16:40.792676 2015] [authz_core:error] [pid 5588] [client 80.100.143.119:63297] AH01630: client denied by server configuration: /srv/www/vhosts/pluimers.com/favicon.ico, referer: https://www.pluimers.com/
+      [Mon Jun 29 20:16:40.792711 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all granted: granted, referer: https://www.pluimers.com/
+      [Mon Jun 29 20:16:40.792722 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of <RequireAny>: granted, referer: https://www.pluimers.com/
+      [Mon Jun 29 20:16:50.646230 2015] [ssl:info] [pid 5589] (70014)End of file found: [client 80.100.143.119:63298] AH01991: SSL input filter read failed.
+      [Mon Jun 29 20:16:50.646659 2015] [ssl:debug] [pid 5589] ssl_engine_io.c(1003): [client 80.100.143.119:63298] AH02001: Connection closed to child 6 with standard shutdown (server revue:443)
+      [Mon Jun 29 20:16:55.808702 2015] [ssl:info] [pid 5588] (70007)The timeout specified has expired: [client 80.100.143.119:63297] AH01991: SSL input filter read failed.
+      [Mon Jun 29 20:16:55.808989 2015] [ssl:debug] [pid 5588] ssl_engine_io.c(1003): [client 80.100.143.119:63297] AH02001: Connection closed to child 5 with standard shutdown (server revue:443)
+
+
+------------------
+
+0. Remove the temporary directory (preferably, delete the whole ``tmpfs`` volume it is on).
+
+
+<https://blog.websenat.de/2014/05/03/sysadmin-openssl-befehle-und-tipps/>
+
+<https://twitter.com/konklone/status/493748256933810178>
+
+<https://konklone.com/post/switch-to-https-now-for-free#generating-the-certificate>
+
+<https://gist.github.com/konklone/98f48a90bfd9cfd076dc>
+Full log::
+
+    # openssl req -new -sha256 -key 4096-bit-rsa-key.private.key -out pluimers.com.csr
+    You are about to be asked to enter information that will be incorporated
+    into your certificate request.
+    What you are about to enter is what is called a Distinguished Name or a DN.
+    There are quite a few fields but you can leave some blank
+    For some fields there will be a default value,
+    If you enter '.', the field will be left blank.
+    -----
+    Country Name (2 letter code) [AU]:NL
+    State or Province Name (full name) [Some-State]:Noord-Holland
+    Locality Name (eg, city) []:Amsterdam
+    Organization Name (eg, company) [Internet Widgits Pty Ltd]:Pluimers Software Ontwikkeling B.V.
+    Organizational Unit Name (eg, section) []:
+    Common Name (e.g. server FQDN or YOUR name) []:pluimers.com
+    Email Address []:webmaster@pluimers.com
+
+    Please enter the following 'extra' attributes
+    to be sent with your certificate request
+    A challenge password []:
+    An optional company name []:
+
+
+
+Notes
+~~~~~
+
+<https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html#sec_apache2_ssl_configuration_name-based>
+
+
+<https://192.168.71.62/shell>
+
+fails: <https://revue.pluimers.com/shell>
+
+<https://80.100.143.119/shell>
+
+<https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/>
+
+<http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html>
+
+<https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html>
+
+<http://www.techytalk.info/remote-cli-access-to-ubuntu-pc-using-web-browser-through-authenticated-https/comment-page-1/>
+
+<https://konklone.com/post/switch-to-https-now-for-free>
+
+<https://letsencrypt.org>
+
+<http://www.unixmen.com/create-ssl-cetificates-in-opensuse-12-3/>
+
+<https://en.opensuse.org/SDB:Apache_installation>
+
+<https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html>
+
+<http://stackoverflow.com/questions/24888407/setting-up-apache-w-ssl-using-opensuse-yast>
+
+<http://blog.remibergsma.com/2013/03/15/always-available-linux-terminal-shell-in-a-box-on-raspberry-pi/>
+
+.. Note:: test with testssl.sh
+
+<https://weakdh.org/>
+
+Ligt complexer; het SHA-256 verhaal gaat over de certificate signature; niet over de versleuteling van de verbinding zelf. Zie ook: http://googleonlinesecuri...lly-sunsetting-sha-1.html
+
+Om 'modern cryptography / groene balk / geen warnings / errors ' te krijgen in de nieuwste Chrome, IE en Firefox moet je dus certs hebben die op RSA 2048 with SHA-256 of langer gebaseerd zijn of langer, dus geen RSA-512/1024 of SHA-1 of MD5 meer in de certificaat-chain (op de root CA na) en tevens dient er moderne, veilige ciphers met Forward Secrecy gebruikt te worden; waarbij AES-GCM de meest gangbare is. Ook b.v. AES-256-CBC is dus niet goed, omdat CBC een niet-authenticated blockcipher is en GCM wel authenticated is (en stukken sneller !).
+
+Voor meer info zie b.v: http://googleonlinesecuri...lly-sunsetting-sha-1.html Of de SslLabs blog: https://community.qualys.com/blogs/securitylabs
+
+
+Zypper updating
+---------------
+
+The only way to update Tumbleweed is through the distribution update::
+
+    zypper dup
+
+If it doesn't update anything: find when more repostories are added:
+
+<https://forums.opensuse.org/showthread.php/506273-Distribution-Upgrade-on-Tumbleweed-Gnome-(sudo-zypper-dup)>
+
+<http://linux.derkeiler.com/Mailing-Lists/SuSE/2014-11/msg01554.html>
+
+Show all the details of your configured repositories::
+
+    zypper repos --details
+
+mariadb dependency
+------------------
+
+20150706 - somehow mariadb got installed (MySQL)::
+
+    (Use the Enter or Space key to scroll the text by lines or pages.)
+
+    Message from package mariadb:
+
+
+    You just installed MySQL server for the first time.
+
+    You can start it using:
+     rcmysql start
+
+    During first start empty database will be created for your automatically.
+
+    PLEASE REMEMBER TO SET A PASSWORD FOR THE MariaDB root USER !
+    To do so, start the server, then issue the following commands:
+
+    '/usr/bin/mysqladmin' -u root password 'new-password'
+    '/usr/bin/mysqladmin' -u root -h misibook password 'new-password'
+
+    Alternatively you can run:
+    '/usr/bin/mysql_secure_installation'
+
+    which will also give you the option of removing the test
+    databases and anonymous user created by default. This is
+    strongly recommended for production servers.
+
+
+    -----------------------------------------------------------------------------
+
+
+    (Press 'q' to exit the pager.)
+    /var/tmp/TmpFile.A0c0jv lines 1-30/30 (END)
 
 ----------------------------------------------------------------------------
 

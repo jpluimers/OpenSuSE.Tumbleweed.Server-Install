@@ -1,2 +1,2 @@
 #!/bin/sh
-pandoc -s README.rst -o readme.html --table-of-contents
+pandoc -s README.rst -o readme-pandoc.html --table-of-contents

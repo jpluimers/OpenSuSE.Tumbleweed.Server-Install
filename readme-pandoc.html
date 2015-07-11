@@ -1,0 +1,1586 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>revue: getting Tumbleweed on it</title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">revue: getting Tumbleweed on it</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#table-of-contents">Table of Contents</a></li>
+<li><a href="#todo">TODO</a></li>
+<li><a href="#notes">NOTES</a><ul>
+<li><a href="#syslogd">syslogd</a></li>
+<li><a href="#rest">Rest</a></li>
+</ul></li>
+<li><a href="#headless-install">headless install</a><ul>
+<li><a href="#text-mode-console-will-break-line-drawing-after-first-boot">text-mode console will break line drawing after first boot</a></li>
+<li><a href="#start-with-minimal-server-selection-text-mode">Start with &quot;Minimal server selection (text mode)&quot;</a></li>
+<li><a href="#halt-will-fail-use-halt--p-to-halt-under-esxi-5.1"><code>halt</code> will fail, use <code>halt -p</code> to halt under ESXi 5.1</a></li>
+<li><a href="#text-mode-installation-and-conflicts">text-mode installation and conflicts</a></li>
+<li><a href="#add-git-extras">add git-extras</a></li>
+</ul></li>
+<li><a href="#configuration">configuration</a><ul>
+<li><a href="#getting-started-with-etckeeper">getting started with etckeeper</a></li>
+<li><a href="#removing-hardlinks-from-the-etckeeper-repository">removing hardlinks from the <code>etckeeper</code> repository</a></li>
+<li><a href="#adding-user-jeroenp-to-sudoers-so-it-can-perform-sudo">Adding user <code>jeroenp</code> to <code>SUDOERS</code> so it can perform <code>sudo</code></a></li>
+<li><a href="#configuring-ssh">configuring ssh</a></li>
+<li><a href="#install-and-configure-noip-dynamic-dns-update-script">install and configure noip dynamic DNS update script</a></li>
+<li><a href="#configuring-ntpd-firewall-and-jail-for-it">configuring ntpd, firewall and jail for it</a></li>
+<li><a href="#configuring-samba">Configuring <code>samba</code></a></li>
+<li><a href="#testing-and-fixing-so-clients-can-talk-to-our-samba-server">Testing and fixing so clients can talk to our Samba server</a></li>
+<li><a href="#one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup">One day: <a href="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418">syncing between the Samba password and system password storage</a> is setup</a></li>
+<li><a href="#fixing-password-synchronisation">Fixing password synchronisation?</a></li>
+<li><a href="#configuring-namedbind">configuring named/BIND</a></li>
+<li><a href="#ensure-that-varlibnamedmaster-gets-synced-to-etcnamedmaster">Ensure that <code>/var/lib/named/master</code> gets synced to <code>/etc/named/master</code></a></li>
+<li><a href="#adding-aliases-for-commands-removed-in-net-tools">Adding aliases for commands removed in <code>net-tools</code></a></li>
+<li><a href="#configuring-monit-monitoring-service">Configuring <code>monit</code> monitoring service</a></li>
+<li><a href="#configuring-apache2-for-the-first-time">Configuring apache2 for the first time</a></li>
+<li><a href="#hardening-apache2-ssl-cyphers">Hardening apache2 SSL cyphers</a></li>
+<li><a href="#enabling-https-for-apache2">Enabling https for apache2</a><ul>
+<li><a href="#generating-the-private-key-protected-with-a-strong-password">Generating the private key protected with a strong password</a></li>
+<li><a href="#generate-the-csr-certificate-signing-request">Generate the CSR (Certificate Signing Request)</a></li>
+<li><a href="#notes-1">Notes</a></li>
+</ul></li>
+<li><a href="#zypper-updating">Zypper updating</a></li>
+<li><a href="#mariadb-dependency">mariadb dependency</a></li>
+</ul></li>
+</ul>
+</div>
+<p>This is a series of notes and articles about getting OpenSuSE <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Tumbleweed <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> to run on a headless <a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> (i.e. text-only, no GUI) server.</p>
+<p>The first machine I installed OpenSuSE Tumbleweed on is <code>revue</code> <a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. It is a bit of a gimmic, as I already had machines called <code>snip</code> and <code>snap</code>. Dutch people will know why.</p>
+<p><code>snip</code> and <code>snap</code> run regular OpenSuSE releases. <code>revue</code> is my first machine running a <a href="https://en.wikipedia.org/wiki/Rolling_release">rolling</a> release.</p>
+<p>Over time, there will be some documents indicating installation progress and problem solving.</p>
+<h1 id="table-of-contents">Table of Contents</h1>
+<h1 id="todo">TODO</h1>
+<ul>
+<li>harden OpenSSL.</li>
+<li>web site (HTTP-HTTPS)</li>
+<li>pop3 (port 110)</li>
+<li>email (SMTP-SSMTP) 25/587</li>
+<li>rsync (backups) port 873</li>
+<li>modem reboot script (when either ipv4 or ipv6 are down)</li>
+<li>certificates for web and shellinabox</li>
+<li>update root zones through cron</li>
+<li>DNS security &lt;<a href="https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server" class="uri">https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server</a>--2&gt; and &lt;<a href="http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm" class="uri">http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm</a>&gt;</li>
+<li>ensure 10rsync-var-lib-named-master.sh works</li>
+<li>fix syslogd and logrotate</li>
+<li>via <a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html">Secure your Apache Server</a>:
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security">HTTP Strict Transport Security</a></li>
+<li><a href="https://wiki.mozilla.org/SecurityEngineering/Public_Key_Pinning">SecurityEngineering/Public Key Pinning</a></li>
+<li><a href="https://raymii.org/s/tutorials/OCSP_Stapling_on_Apache2.html">OCSP Stapling on Apache</a></li>
+<li><a href="https://testssl.sh/">testssl.sh</a></li>
+<li><a href="https://www.ssllabs.com/ssltest/">SSLLabs SSL Server Test</a></li>
+</ul></li>
+</ul>
+<h1 id="notes">NOTES</h1>
+<p>Things that might need doing.</p>
+<h2 id="syslogd">syslogd</h2>
+<p>See <a href="http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/">this output</a>:</p>
+<pre><code>revue:/etc/xinetd.d # systemctl --failed --all
+  UNIT              LOAD   ACTIVE SUB    DESCRIPTION
+● logrotate.service loaded failed failed Rotate log files
+● syslogd.service   loaded failed failed System Logging Service
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+
+2 loaded units listed.
+To show all installed unit files use &#39;systemctl list-unit-files&#39;.</code></pre>
+<p>Needs investigation.</p>
+<h2 id="rest">Rest</h2>
+<p>Wget/curl are the best solution to update the <code>root.hint</code>. See:</p>
+<ul>
+<li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01589.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01589.html</a>&gt; - use dig, maybe not good</li>
+<li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01746.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01746.html</a>&gt;</li>
+<li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01755.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01755.html</a>&gt; - how to post it so Security picks it up</li>
+<li>&lt;<a href="http://lists.opensuse.org/opensuse/2008-05/msg01658.html" class="uri">http://lists.opensuse.org/opensuse/2008-05/msg01658.html</a>&gt; - use ftp</li>
+</ul>
+<p>The change in root servers resulted in a <a href="https://bugzilla.novell.com/show_bug.cgi?id=392173">security bug fix</a>, but that took a while.</p>
+<p><a href="http://www.tldp.org/HOWTO/DNS-HOWTO-8.html">This script</a> gets it through dig too, but not the best solution.</p>
+<p>Neither ftp, nor http are really secure to get these files from &lt;<a href="http://ftp.internic.net/domain/" class="uri">http://ftp.internic.net/domain/</a>&gt;:</p>
+<ul>
+<li>&lt;<a href="ftp://ftp.internic.net/domain/db.cache" class="uri">ftp://ftp.internic.net/domain/db.cache</a>&gt;</li>
+<li>&lt;<a href="ftp://ftp.internic.net/domain/named.cache" class="uri">ftp://ftp.internic.net/domain/named.cache</a>&gt;</li>
+<li>&lt;<a href="ftp://ftp.internic.net/domain/named.root" class="uri">ftp://ftp.internic.net/domain/named.root</a>&gt;</li>
+<li>&lt;<a href="http://www.internic.net/domain/db.cache" class="uri">http://www.internic.net/domain/db.cache</a>&gt;</li>
+<li>&lt;<a href="http://www.internic.net/domain/named.cache" class="uri">http://www.internic.net/domain/named.cache</a>&gt;</li>
+<li>&lt;<a href="http://www.internic.net/domain/named.root" class="uri">http://www.internic.net/domain/named.root</a>&gt;</li>
+</ul>
+<p>An alternative might be to get the <code>.sig</code> there in in a secure way, then <a href="http://www.linuxquestions.org/questions/linux-newbie-8/md5-and-sig-537564/">use gpg to verify the signatures</a> (as <a href="http://stackoverflow.com/questions/15194779/md5-vs-gpg-signature/15195785#15195785">gpg seems more secure than md5 signatures</a>).</p>
+<p>This is more difficult than it looks like, as you need their GPG public key with ID <code>0BD07395</code>.</p>
+<p>Some notes:</p>
+<blockquote>
+<p>## <a href="http://codenimbus.com/2010/08/02/override-robots-txt-with-wget/" class="uri">http://codenimbus.com/2010/08/02/override-robots-txt-with-wget/</a> wget -e robots=off --wait 1 <a href="http://your.site.here" class="uri">http://your.site.here</a></p>
+<p>## <a href="http://data.iana.org/root-anchors/draft-icann-dnssec-trust-anchor.html" class="uri">http://data.iana.org/root-anchors/draft-icann-dnssec-trust-anchor.html</a> wget -e robots=off -m -np <a href="http://data.iana.org/root-anchors" class="uri">http://data.iana.org/root-anchors</a></p>
+<p>wget -m -np <a href="http://www.internic.net/zones" class="uri">http://www.internic.net/zones</a></p>
+<p>## <a href="http://www.pgpi.org/doc/pgpintro/#p12" class="uri">http://www.pgpi.org/doc/pgpintro/#p12</a> gpg --verify named.root.sig named.root</p>
+<p>## <a href="http://www.links.org/?p=542" class="uri">http://www.links.org/?p=542</a> ## <a href="https://www.google.com/search?q=key+0BD07395" class="uri">https://www.google.com/search?q=key+0BD07395</a> ## <a href="http://xenotrope.blogspot.nl/2015/04/on-dnssec-part-2-i-actually-used-dnssec.html" class="uri">http://xenotrope.blogspot.nl/2015/04/on-dnssec-part-2-i-actually-used-dnssec.html</a></p>
+<p>## <a href="http://ivan.kanis.fr/verifying-a-gpg-signed-file.html" class="uri">http://ivan.kanis.fr/verifying-a-gpg-signed-file.html</a> ## <a href="https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html" class="uri">https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html</a></p>
+<p>## <a href="https://www.gnupg.org/gph/en/manual/x457.html" class="uri">https://www.gnupg.org/gph/en/manual/x457.html</a> ## <a href="http://superuser.com/questions/227991/where-to-upload-pgp-public-key-are-keyservers-still-surviving" class="uri">http://superuser.com/questions/227991/where-to-upload-pgp-public-key-are-keyservers-still-surviving</a> gpg --keyserver keys.gnupg.net --recv-key 0BD07395 gpg --verify named.root.sig named.root</p>
+<p>## <a href="http://security.stackexchange.com/questions/6841/ways-to-sign-gpg-public-key-so-it-is-trusted" class="uri">http://security.stackexchange.com/questions/6841/ways-to-sign-gpg-public-key-so-it-is-trusted</a> ## <a href="http://stackoverflow.com/questions/26217766/download-key-with-gpg-recv-key-and-simultaneously-check-fingerprint-in-a-scr" class="uri">http://stackoverflow.com/questions/26217766/download-key-with-gpg-recv-key-and-simultaneously-check-fingerprint-in-a-scr</a></p>
+</blockquote>
+<p>Some more:</p>
+<pre><code>snap:/tmp/www.internic.net/zones # gpg --verify named.root.sig named.root
+gpg: Signature made Sat May 23 14:50:54 2015 CEST using DSA key ID 0BD07395
+gpg: Can&#39;t check signature: No public key
+
+gpg --keyserver keys.gnupg.net --recv-key 0BD07395
+
+gpg --verify named.root.sig named.root
+gpg: Signature made Sat May 23 14:50:54 2015 CEST using DSA key ID 0BD07395
+gpg: Good signature from &quot;Registry Administrator &lt;nstld@verisign-grs.com&gt;&quot;
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 81F6 6E4A 1CE4 4531 08DB  6811 84FA 869E 0BD0 7395</code></pre>
+<p>I had this in <code>named_root_hint.cron</code>:</p>
+<pre><code>#! /bin/sh
+#
+
+RootHint=root.hint
+NamedCache=named.cache
+NamedCacheDownloadPath=ftp.internic.net/domain/$NamedCache
+FtpNamedCacheDownloadPath=ftp://$NamedCacheDownloadPath
+VarLibNamed=/var/lib/named/
+VarLibNamedNamedCache=$VarLibNamed$NamedCache
+VarLibNamedRootHint=$VarLibNamed$RootHint
+VarLibNamedNamedCacheNew=$VarLibNamed$NamedCache.new
+
+#echo &quot;$RootHint&quot;
+#echo &quot;$NamedCacheDownloadPath&quot;
+#echo &quot;ftp://ftp.internic.net/domain&quot;
+#echo &quot;$FtpNamedCacheDownloadPath&quot;
+#echo &quot;$VarLibNamedNamedCache&quot;
+#echo &quot;$VarLibNamedNamedCacheNew&quot;
+
+cd $VarLibNamed
+wget -q -N $FtpNamedCacheDownloadPath
+
+if (test -e $VarLibNamedNamedCache) ; then
+
+  diff $VarLibNamedNamedCache $VarLibNamedNamedCacheNew
+
+  if [ &quot;$?&quot; -ne &quot;0&quot; ] ; then
+  # if $VarLibNamedNamedCacheNew does not exist, or $VarLibNamedNamedCache is different from $VarLibNamedNamedCacheNew
+
+    cp -f $VarLibNamedNamedCache $VarLibNamedNamedCacheNew
+    echo &quot;There is a fresh $VarLibNamedNamedCacheNew file that you might want to update into $VarLibNamedRootHint&quot;
+  fi
+
+  diff $VarLibNamedRootHint $VarLibNamedNamedCacheNew
+
+  if [ &quot;$?&quot; -ne &quot;0&quot; ] ; then
+  # if $VarLibNamedNamedCacheNew does not exist, or $VarLibNamedRootHint is different from $VarLibNamedNamedCacheNew
+
+#    rcnamed restart
+    echo &quot;$VarLibNamedRootHint is different from $VarLibNamedNamedCacheNew, you might need to update $VarLibNamedRootHint, then perform rcnamed restart &quot;
+  fi
+
+  rm -f $VarLibNamedNamedCache
+fi</code></pre>
+<h1 id="headless-install">headless install</h1>
+<h2 id="text-mode-console-will-break-line-drawing-after-first-boot">text-mode console will break line drawing after first boot</h2>
+<p>A long standing bug, and I'm amazed not more people complain about this.</p>
+<p>I've queued a <a href="https://wiert.wordpress.com/?p=27755&quot;">blog entry</a> about this titled &quot;TUMBLEWEED: local console yast linedrawing characters garbage after first reboot&quot;.</p>
+<p>The workaround is simple: Call <code>/bin/unicode_start</code> on the command line before starting <code>yast</code>. It looks you need this only once per machine.</p>
+<h2 id="start-with-minimal-server-selection-text-mode">Start with &quot;Minimal server selection (text mode)&quot;</h2>
+<p>The OpenSuSE way of a headless install starts with &quot;Minimal server selection (text mode)&quot;. On top of that you extend the installation.</p>
+<p>In about 20 gigabyte disk space, you can &quot;Minimal server selection (text mode)&quot; extended by a limited set of packages.</p>
+<p>These are the <strong>patterns</strong> I extended with:</p>
+<ul>
+<li><a href="https://software.opensuse.org/package/patterns-openSUSE-enhanced_base">Enhanced Base System</a></li>
+<li><a href="https://www.google.com/search?q=&quot;Console+Tools&quot;+site%3Aopensuse.org">Console Tools</a></li>
+<li><a href="https://www.google.com/search?q=&quot;File+Server&quot;+site%3Aopensuse.org">File Server</a></li>
+<li><a href="https://www.google.com/search?q=&quot;Network+Administration&quot;+site%3Aopensuse.org">Network Administration</a></li>
+<li><a href="https://www.google.com/search?q=&quot;Mail+and+News+Server&quot;+site%3Aopensuse.org">Mail and News Server</a></li>
+<li><a href="https://www.google.com/search?q=&quot;Web+and+LAMP+Server&quot;+site%3Aopensuse.org">Web and LAMP Server</a></li>
+<li><a href="hhttps://www.google.com/search?q=&quot;Internet+Gateway&quot;+site%3Aopensuse.org">Internet Gateway</a></li>
+<li><a href="https://www.google.com/search?q=&quot;DHCP+and+DNS+Server&quot;+site%3Aopensuse.org">DHCP and DNS Server</a></li>
+</ul>
+<p>As <strong>LAMP</strong> installs mariadb, and as of somewhere around July 2015 mariadb bugs about it being installed with default non-password database root credentials:</p>
+<pre><code>revue:/etc # zypper rm mariadb
+Loading repository data...
+Reading installed packages...
+Resolving package dependencies...
+
+The following package is going to be REMOVED:
+  mariadb
+
+1 package to remove.
+After the operation, 78.7 MiB will be freed.
+Continue? [y/n/? shows all options] (y): y
+(1/1) Removing mariadb-10.0.17-1.3 .....................................................................................................................................................................................................[done]
+
+revue:/etc # zypper search &quot;LAMP&quot;
+Loading repository data...
+Reading installed packages...
+
+S | Name                          | Summary             | Type
+--+-------------------------------+---------------------+--------
+i | lamp_server                   | Web and LAMP Server | pattern
+i | patterns-openSUSE-lamp_server | Web and LAMP Server | package
+
+revue:/etc # zypper remove patterns-openSUSE-lamp_server
+Loading repository data...
+Reading installed packages...
+Resolving package dependencies...
+
+The following package is going to be REMOVED:
+  patterns-openSUSE-lamp_server
+
+The following pattern is going to be REMOVED:
+  lamp_server
+
+1 package to remove.
+After the operation, 57.0 B will be freed.
+Continue? [y/n/? shows all options] (y): y
+(1/1) Removing patterns-openSUSE-lamp_server-20150603-4.1 ..............................................................................................................................................................................[done]
+revue:/etc #
+
+revue:/etc # zypper remove mariadb-client mariadb-errormessages
+Loading repository data...
+Reading installed packages...
+Resolving package dependencies...
+
+The following 2 packages are going to be REMOVED:
+  mariadb-client mariadb-errormessages
+
+2 packages to remove.
+After the operation, 21.8 MiB will be freed.
+Continue? [y/n/? shows all options] (y): y
+(1/2) Removing mariadb-client-10.0.17-1.3 ..............................................................................................................................................................................................[done]
+(2/2) Removing mariadb-errormessages-10.0.17-1.3 .......................................................................................................................................................................................[done]
+revue:/etc #</code></pre>
+<p>If I ever need MySQL or MariaDB, I will get it again and solve the root rights.</p>
+<p>Finally time for some manual adding of <strong>packages</strong>:</p>
+<blockquote>
+<p><strong>note</strong></p>
+<p>Note that some of these won't install just yet, see the <a href="text-mode-installation-and-conflicts">text-mode installation and conflicts</a> section.</p>
+</blockquote>
+<ul>
+<li><a href="https://software.opensuse.org/package/etckeeper">etckeeper</a></li>
+<li><a href="https://software.opensuse.org/package/syslogd">syslogd</a></li>
+<li><a href="https://software.opensuse.org/package/emacs">emacs</a></li>
+<li><a href="https://software.opensuse.org/package/joe">joe</a></li>
+<li><a href="https://software.opensuse.org/package/nano">nano</a></li>
+<li><a href="https://software.opensuse.org/package/pico">pico</a></li>
+<li><a href="https://software.opensuse.org/package/vim">vim</a></li>
+<li><a href="https://software.opensuse.org/package/dovecot">dovecot</a></li>
+<li><a href="https://software.opensuse.org/package/mutt">mutt</a></li>
+<li><a href="https://software.opensuse.org/package/par">par</a></li>
+<li><a href="https://software.opensuse.org/package/make">make</a></li>
+<li><a href="https://software.opensuse.org/package/monit">monit</a></li>
+<li><a href="https://software.opensuse.org/package/mc">mc</a></li>
+<li><a href="https://software.opensuse.org/package/mirror">mirror</a></li>
+<li><a href="https://software.opensuse.org/package/p7zip">p7zip</a></li>
+<li><a href="https://software.opensuse.org/package/zip">zip</a></li>
+<li><a href="https://software.opensuse.org/package/zsync">zsync</a></li>
+<li><a href="https://software.opensuse.org/package/git">git</a></li>
+<li><a href="hhttps://software.opensuse.org/package/mercurial">mercurial</a>*</li>
+<li><a href="hhttps://software.opensuse.org/package/perl">perl</a></li>
+<li><a href="https://software.opensuse.org/package/php">php</a>*</li>
+<li><a href="https://software.opensuse.org/package/apache2-mod_php5">apache2-mod_php5</a>*</li>
+<li><a href="https://software.opensuse.org/package/python">python</a>*</li>
+<li><a href="https://software.opensuse.org/package/dropbox">dropbox</a>*</li>
+<li><a href="https://software.opensuse.org/package/ca-certificates-cacert">ca-certificates-cacert</a></li>
+<li><a href="https://software.opensuse.org/package/bridge-utils">bridge-utils</a></li>
+<li><a href="https://software.opensuse.org/package/fping">fping</a></li>
+<li><a href="https://software.opensuse.org/package/ftp">ftp</a></li>
+<li><a href="https://software.opensuse.org/package/gftp">gftp</a></li>
+<li><a href="https://software.opensuse.org/package/icecast">icecast</a></li>
+<li><a href="https://software.opensuse.org/package/links">links</a></li>
+<li><a href="https://software.opensuse.org/package/iptraf-ng">iptraf-ng</a></li>
+<li><a href="https://software.opensuse.org/package/shellinabox">shellinabox</a></li>
+<li><a href="hhttps://software.opensuse.org/package/kvirustotal">kvirustotal</a></li>
+<li><a href="https://software.opensuse.org/package/monit">monit</a></li>
+</ul>
+<p>These packages were already installed:</p>
+<ul>
+<li><a href="https://software.opensuse.org/package/info">info</a></li>
+<li><a href="https://software.opensuse.org/package/man">man</a></li>
+<li><a href="https://software.opensuse.org/package/man-pages">man-pages</a></li>
+<li><a href="https://software.opensuse.org/package/mc">mc</a></li>
+<li><a href="https://software.opensuse.org/package/w3m">w3m</a></li>
+</ul>
+<p>Didn't yet install:</p>
+<ul>
+<li><a href="https://software.opensuse.org/package/bash-doc">bash-doc</a>*</li>
+<li><a href="https://software.opensuse.org/package/samba-doc">samba-doc</a>*</li>
+</ul>
+<blockquote>
+<p><strong>note</strong></p>
+<p>If you want to know <a href="http://unix.stackexchange.com/questions/158041/how-do-i-find-a-package-that-provides-a-given-file-in-opensuse">which package provides a certain file</a>, then use this command:</p>
+<pre><code>zypper search --provides --match-exact hg</code></pre>
+<p>Where <code>hg</code> is the file you are looking for.</p>
+</blockquote>
+<h2 id="halt-will-fail-use-halt--p-to-halt-under-esxi-5.1"><code>halt</code> will fail, use <code>halt -p</code> to halt under ESXi 5.1</h2>
+<p>A long time ago, <a href="http://wiert.me/2012/12/30/opensuse-12-x-a-plain-halt-will-not-shutdown-the-system-properly/">I wrote that</a> <code>halt</code> fails, but <code>halt -p</code> succeeds when running under VMware ESXi 5.1 (I don't run physical boxes any more).</p>
+<p>This still fails under OpenSuSE Tumbleweed 13.2.</p>
+<h2 id="text-mode-installation-and-conflicts">text-mode installation and conflicts</h2>
+<p>The easiest way to start a headless install is picking &quot;Minimal server selection (text mode)&quot; during installation.</p>
+<p>The problem however is that this indeed minimal. It is enforced by the <code>patterns-openSUSE-minimal_base-conflicts</code> <a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> pattern which is part of the minimal install.</p>
+<p>It prevents some packages to install like <code>mercurial</code>, <code>php</code> and <code>python</code>.</p>
+<p>To prevent that, remove the <code>patterns-openSUSE-minimal_base-conflicts</code> package specific for the OpenSuSE version you use <a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a>.</p>
+<p>Do this <strong>after</strong> you've selected the patterns you want to install. Otherwise recommended packages can be installed potentially blowing your size.</p>
+<h2 id="add-git-extras">add git-extras</h2>
+<p>See the <a href="https://github.com/tj/git-extras/blob/master/Installation.md">git-extras Install documentation</a> for why/how.</p>
+<p>Just run this command:</p>
+<pre><code>(cd /tmp &amp;&amp; git clone https://github.com/tj/git-extras.git &amp;&amp; cd git-extras &amp;&amp; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) &amp;&amp; sudo make install)</code></pre>
+<h1 id="configuration">configuration</h1>
+<h2 id="getting-started-with-etckeeper">getting started with etckeeper</h2>
+<p>A while ago <code>etckeeper</code> (which is <a href="https://github.com/joeyh/etckeeper">open source on GitHub</a>) was <a href="http://joeyh.name/code/etckeeper/">requested</a> to be put into the factory repository, and now <a href="https://software.opensuse.org/package/etckeeper">is</a>.</p>
+<p>This is how I got started:</p>
+<ol style="list-style-type: decimal">
+<li>I created a new private repository on bitbucket called <a href="https://bitbucket.org/jeroenp/etckeeper.revue" class="uri">https://bitbucket.org/jeroenp/etckeeper.revue</a></li>
+<li><p>I ran these commands locally:</p>
+<pre><code>etckeeper init
+cd /etc
+git status
+git commit -m &quot;initial checkin&quot;
+git gc # pack git repo to save a lot of space
+
+cd /path/to/my/repo
+git remote add origin https://jeroenp@bitbucket.org/jeroenp/etckeeper.revue.git
+git push -u origin --all # pushes up the repo and its refs for the first time
+git push -u origin --tags # pushes up any tags</code></pre></li>
+</ol>
+<blockquote>
+<p><strong>note</strong></p>
+<p><a href="http://etckeeper.branchable.com/">etckeeper</a> is a collection of tools to let <code>/etc</code> be stored in a git, mercurial, bazaar or darcs repository. This lets you use git to review or revert changes that were made to <code>/etc</code>. Or even push the repository elsewhere for backups or cherry-picking configuration changes.</p>
+<p>It hooks into package managers like apt to automatically commit changes made to <code>/etc</code> during package upgrades. It tracks file metadata that git does not normally support, but that is important for /etc, such as the permissions of <code>/etc/shadow</code>.</p>
+<p>It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.</p>
+<p>Three important <code>etckeeper</code> gotchas with powerful scripts like <a href="https://github.com/joeyh/etckeeper/tree/master/pre-commit.d">pre-commit</a> <code>/etc/etckeeper/pre-commit.d</code>:</p>
+<ol style="list-style-type: decimal">
+<li>ensure you give them executable permissions like <a href="http://www.networkredux.com/answers/linux-in-general/users-and-permissions/how-do-i-use-the-chmod-command-in-linux">chmod 755</a>.</li>
+<li>ensure they are valid <a href="https://en.wikipedia.org/wiki/Bourne_shell">sh</a> scripts.</li>
+<li>do not give them the .sh extension:</li>
+</ol>
+<blockquote>
+<ul>
+<li>fails: <code>/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master</code></li>
+<li>works: <code>/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh</code></li>
+</ul>
+</blockquote>
+</blockquote>
+<h2 id="removing-hardlinks-from-the-etckeeper-repository">removing hardlinks from the <code>etckeeper</code> repository</h2>
+<p>Inspired by <a href="http://unix.stackexchange.com/questions/63627/excluding-files-in-etckeeper-with-gitignore-doesnt-work/63628#63628">this answer</a> to get rid of these messages during <a href="https://github.com/joeyh/etckeeper#what-etckeeper-does">etckeeper commit</a> to delete many <a href="http://lists.opensuse.org/opensuse-factory/2014-06/msg00115.html">hardlinked bootsplash files</a>:</p>
+<pre><code>etckeeper warning: hardlinked files could cause problems with git:
+bootsplash/themes/openSUSE/bootloader/af.tr
+...
+bootsplash/themes/openSUSE/bootloader/pt.tr
+bootsplash/themes/openSUSE/bootloader/pt_BR.tr
+bootsplash/themes/openSUSE/bootloader/ro.tr
+...
+bootsplash/themes/openSUSE/bootloader/xh.tr
+bootsplash/themes/openSUSE/bootloader/zh_CN.tr
+bootsplash/themes/openSUSE/bootloader/zh_TW.tr
+bootsplash/themes/openSUSE/bootloader/zu.tr
+bootsplash/themes/openSUSE/cdrom/af.tr
+...
+bootsplash/themes/openSUSE/cdrom/pt.tr
+bootsplash/themes/openSUSE/cdrom/pt_BR.tr
+bootsplash/themes/openSUSE/cdrom/ro.tr
+...
+bootsplash/themes/openSUSE/cdrom/xh.tr
+bootsplash/themes/openSUSE/cdrom/zh_CN.tr
+bootsplash/themes/openSUSE/cdrom/zh_TW.tr
+bootsplash/themes/openSUSE/cdrom/zu.tr</code></pre>
+<p>Add these two lines to <code>/etc/.gitignore</code></p>
+<blockquote>
+<p>bootsplash/themes/openSUSE/bootloader/<em>.tr bootsplash/themes/openSUSE/cdrom/</em>.tr</p>
+</blockquote>
+<p>Note the <code>--cache</code> part in the command to delete, as then the files will not be deleted locally, only in the repository:</p>
+<pre><code>git add .gitignore
+git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr
+git rm --cached bootsplash/themes/openSUSE/cdrom/*.tr
+git commit -m &quot;git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr and bootsplash/themes/openSUSE/cdrom/*.tr&quot;</code></pre>
+<h2 id="adding-user-jeroenp-to-sudoers-so-it-can-perform-sudo">Adding user <code>jeroenp</code> to <code>SUDOERS</code> so it can perform <code>sudo</code></h2>
+<ol style="list-style-type: decimal">
+<li>Start <code>yast</code></li>
+<li>Open <code>Security and Users</code>, then <code>Sudo</code></li>
+<li>Click <code>Add</code></li>
+</ol>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Select a <code>User</code> (in my case <code>jeroenp</code>)</li>
+<li>Select a <code>Host</code> (in my case <code>ALL</code>)</li>
+<li>At <code>RunAs</code> type <code>ALL</code> (this will get translated to <code>(ALL)</code>)</li>
+<li>Ensure that <code>No Password</code> has a checkmark</li>
+<li>Click <code>Add</code></li>
+</ol>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Select a <code>Command</code> (in my case <code>ALL</code>)</li>
+<li>Press <code>OK</code></li>
+</ol>
+</blockquote>
+<ol start="5" style="list-style-type: decimal">
+<li>Press <code>OK</code></li>
+</ol>
+</blockquote>
+<ol start="4" style="list-style-type: decimal">
+<li>Press <code>OK</code></li>
+<li>Quit <code>yast</code></li>
+</ol>
+<p>This will generate <code>/etc/sudoers.YaST2.save</code> add a line to <code>/etc/sudoers</code>:</p>
+<pre><code>jeroenp ALL = (ALL) NOPASSWD:ALL</code></pre>
+<blockquote>
+<p><strong>note</strong></p>
+<p>Note that <a href="http://superuser.com/questions/357467/what-do-the-alls-in-the-line-admin-all-all-all-in-ubuntus-etc-sudoers">each ALL entry has a different meaning</a>.</p>
+</blockquote>
+<h2 id="configuring-ssh">configuring ssh</h2>
+<p>Up until OpenSuSE 12.x, there was yast2-sshd. It is <a href="https://www.suse.com/documentation/opensuse114/book_security/data/sec_ssh_yast.html">still in the documentation</a>, but it <a href="http://lists.opensuse.org/opensuse/2013-11/msg00751.html">has been orphaned</a> so you need to configure it manually. It isn't hard: below is the diff of the <code>/etc/sshd_config</code> file.</p>
+<p>Note that when manually changing sshd configuration options, you can test (<code>-t</code>) or test-extended (<code>-T</code>) <a href="https://www.ixsystems.com/whats-new/how-secure-can-secure-shell-ssh-be-basic-configuration-of-openssh/">like this</a>:</p>
+<pre><code>sshd –t
+sshd -T</code></pre>
+<p>Part of the hardening is executing this from <code>/etc/ssh</code>:</p>
+<pre><code>wget https://github.com/comotion/gone/blob/github/modules/ssh
+chmod 700 ssh
+./ssh
+rm ./ssh</code></pre>
+<p>I finally saved the changes using <code>etckeeper</code>:</p>
+<pre><code>etckeeper commit -m &quot;sshd and hardening&quot;
+git push</code></pre>
+<p>This is what the diff looks like:</p>
+<pre><code>--- a/ssh/sshd_config
++++ b/ssh/sshd_config
+@@ -10,7 +10,13 @@
+ # possible, but leave them commented.  Uncommented options override the
+ # default value.
+
+-#Port 22
++Port 22
++Port 10022
++Port 20022
++Port 30022
++Port 40022
++Port 50022
++Port 60022
+ #AddressFamily any
+ #ListenAddress 0.0.0.0
+ #ListenAddress ::
+@@ -35,15 +41,15 @@
+
+ # Logging
+ # obsoletes QuietMode and FascistLogging
+-#SyslogFacility AUTH
+-#LogLevel INFO
++SyslogFacility AUTH
++LogLevel INFO
+
+ # Authentication:
+
+ #LoginGraceTime 2m
+-#PermitRootLogin yes
+-#StrictModes yes
+-#MaxAuthTries 6
++PermitRootLogin no
++StrictModes yes
++MaxAuthTries 1
+ #MaxSessions 10
+
+ #RSAAuthentication yes
+@@ -61,28 +67,28 @@ AuthorizedKeysFile  .ssh/authorized_keys
+ # For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+ #RhostsRSAAuthentication no
+ # similar for protocol version 2
+-#HostbasedAuthentication no
++HostbasedAuthentication no
+ # Change to yes if you don&#39;t trust ~/.ssh/known_hosts for
+ # RhostsRSAAuthentication and HostbasedAuthentication
+ #IgnoreUserKnownHosts no
+ # Don&#39;t read the user&#39;s ~/.rhosts and ~/.shosts files
+-#IgnoreRhosts yes
++IgnoreRhosts yes
+
+ # To disable tunneled clear text passwords, change to no here!
+ PasswordAuthentication no
+-#PermitEmptyPasswords no
++PermitEmptyPasswords no
+
+ # Change to no to disable s/key passwords
+-#ChallengeResponseAuthentication yes
++ChallengeResponseAuthentication yes
+
+ # Kerberos options
+-#KerberosAuthentication no
++KerberosAuthentication no
+ #KerberosOrLocalPasswd yes
+ #KerberosTicketCleanup yes
+ #KerberosGetAFSToken no
+
+ # GSSAPI options
+-#GSSAPIAuthentication no
++GSSAPIAuthentication no
+ #GSSAPICleanupCredentials yes
+ #GSSAPIStrictAcceptorCheck yes
+ #GSSAPIKeyExchange no
+@@ -107,17 +113,17 @@ UsePAM yes
+
+ #AllowAgentForwarding yes
+ #AllowTcpForwarding yes
+-#GatewayPorts no
+-X11Forwarding yes
++GatewayPorts no
++X11Forwarding no
+ #X11DisplayOffset 10
+ #X11UseLocalhost yes
+ #PermitTTY yes
+-#PrintMotd yes
+-#PrintLastLog yes
+-#TCPKeepAlive yes
++PrintMotd no
++PrintLastLog yes
++TCPKeepAlive yes
+ #UseLogin no
+ UsePrivilegeSeparation sandbox     # Default for new installations.
+-#PermitUserEnvironment no
++PermitUserEnvironment no
+ #Compression delayed
+ #ClientAliveInterval 0
+ #ClientAliveCountMax 3
+@@ -129,7 +135,7 @@ UsePrivilegeSeparation sandbox      # Default for new installations.
+ #VersionAddendum none
+
+ # no default banner path
+-#Banner none
++Banner /etc/issue
+
+ # override default of no subsystems
+ Subsystem  sftp    /usr/lib/ssh/sftp-server
+@@ -145,3 +151,6 @@ AcceptEnv LC_IDENTIFICATION LC_ALL
+ #  AllowTcpForwarding no
+ #  PermitTTY no
+ #  ForceCommand cvs server
++KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
++Ciphers chacha20-poly1305@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
++MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com</code></pre>
+<blockquote>
+<p><strong>note</strong></p>
+<p>In the diff are steps from <a href="http://people.redhat.com/swells/mea/SECSCAN-FirstRun/sshd_config.htm">SSH Server Configuration rhel-lockdown</a>, <a href="http://wp.kjro.se/2013/09/06/hardening-your-ssh-server-opensshd_config/">Hardening your SSH server (opensshd_config)</a> and the script behind <a href="http://kacper.blog.redpill-linpro.com/archives/702"><a href="http://kacper.blog.redpill-linpro.com/archives/702" class="uri">http://kacper.blog.redpill-linpro.com/archives/702</a></a> from <a href="https://github.com/comotion/gone/blob/github/modules/ssh">gone/ssh at github · comotion/gone</a>. Note that the <code>sandbox</code> value for <code>UsePrivilegeSeparation</code> is even <a href="http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5?query=sshd_config&amp;sec=5">more secure</a> than the <code>yes</code> value.</p>
+</blockquote>
+<p>Now ensure that the firewall allows for ssh:</p>
+<ol style="list-style-type: decimal">
+<li>Start <code>yast</code></li>
+<li>Go to <code>Security and Users</code>, <code>Firewall</code></li>
+<li>Go to <code>Allowed Services</code></li>
+<li>Ensure <code>Secure Shell Server</code> is in the list, when not:</li>
+</ol>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Add <code>Secure Shell Server</code> to the list</li>
+<li>Press <code>Next</code> followed by <code>Finish</code> to apply the changes</li>
+</ol>
+</blockquote>
+<ol start="5" style="list-style-type: decimal">
+<li>Quit <code>yast</code></li>
+</ol>
+<p>Finally start <code>sshd</code>:</p>
+<pre><code>rcsshd start
+rcsshd status</code></pre>
+<h2 id="install-and-configure-noip-dynamic-dns-update-script">install and configure noip dynamic DNS update script</h2>
+<p>The script is based on &lt;<a href="https://github.com/mdmower/bash-no-ip-updater.git" class="uri">https://github.com/mdmower/bash-no-ip-updater.git</a>&gt;.</p>
+<p>Create the below <code>/etc/noip.com.install.sh</code> script with <code>chmod 700</code>, then run it to install.</p>
+<p>One of the things it does is move the config file outside the repository (<a href="https://github.com/mdmower/bash-no-ip-updater/pull/2">I've made a pull-request for that</a>) as it contains credentials.</p>
+<p>Full source is at &lt;<a href="https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3" class="uri">https://gist.github.com/jpluimers/3f8c9c024446f6c6dab3</a>&gt;:</p>
+<pre><code>#! /bin/sh
+#
+# creates /etc/NoIP directory
+# clones https://github.com/mdmower/bash-no-ip-updater.git
+# copies configuration file so it is outside of the git sub-repository (and can be versioned with etckeeper)
+# modifies the script to use the copied configuration file
+
+ETC_TARGET=/etc/noip.com
+LOG_TARGET=/var/log/noip.com
+CONFIG_BASE=bash-no-ip-updater
+CONFIG_TARGET=$CONFIG_BASE.config
+SCRIPT_TARGET=noipupdater.sh
+CRON_HOURLY_TARGET=/etc/cron.hourly/$SCRIPT_TARGET
+
+mkdir $ETC_TARGET
+pushd $ETC_TARGET
+git clone https://github.com/mdmower/$CONFIG_BASE.git
+cp $CONFIG_BASE/config $CONFIG_TARGET
+
+mkdir -p $LOG_TARGET
+
+# replace
+## LOGDIR=&quot;$HOME/logs&quot;
+# with
+## LOGDIR=&quot;/var/logs/noip.com&quot;
+# use double quotes to allow for variable expansion: http://stackoverflow.com/questions/17477890/expand-variables-in-sed/17477911#17477911
+# escape slashes in arguments: http://www.grymoire.com/Unix/Sed.html#uh-62
+echo old:
+sed -n &quot;/^LOGDIR=\&quot;\$HOME\/logs\&quot;$/ p&quot; $CONFIG_TARGET
+LOG_TARGET_EXPANDED=`echo &quot;$LOG_TARGET&quot; | sed &#39;s:[]\[\^\$\.\*\/]:\\\\&amp;:g&#39;`
+#echo &quot;/^LOGDIR=\&quot;\$HOME\/logs\&quot;$/ s/\&quot;\$HOME\/logs\&quot;$/\&quot;${LOG_TARGET}\&quot;/&quot;
+#echo &quot;/^LOGDIR=\&quot;\$HOME\/logs\&quot;$/ s/\&quot;\$HOME\/logs\&quot;$/\&quot;${LOG_TARGET_EXPANDED}\&quot;/&quot;
+sed -e &quot;/^LOGDIR=\&quot;\$HOME\/logs\&quot;$/ s/\&quot;\$HOME\/logs\&quot;$/\&quot;${LOG_TARGET_EXPANDED}\&quot;/&quot; $CONFIG_TARGET &gt; $CONFIG_TARGET.tmp &amp;&amp; mv $CONFIG_TARGET.tmp $CONFIG_TARGET
+echo new:
+sed -n &quot;/^LOGDIR=\&quot;.*\&quot;$/ p&quot; $CONFIG_TARGET
+
+pushd $CONFIG_BASE
+# in ``noip.com/bash-no-ip-updater/noipupdater.sh``  replace
+## CONFIGFILE=&quot;$( cd &quot;$( dirname &quot;$0&quot; )&quot; &amp;&amp; pwd )/config&quot;
+# by
+## CONFIGFILE=&quot;$( cd &quot;$( dirname &quot;$0&quot; )&quot; &amp;&amp; pwd ).config&quot;
+# in-place sed: http://stackoverflow.com/questions/5171901/sed-command-find-and-replace-in-file-and-overwrite-file-doesnt-work-it-empties/5174368#5174368
+# set tips: http://www.grymoire.com/Unix/Sed.html
+## sed -e &#39;script script&#39; index.html &gt; index.html.tmp &amp;&amp; mv index.html.tmp index.html
+echo &quot;old:&quot;
+sed -n &#39;/^CONFIGFILE\=.*\/config&quot;$/ p&#39; $SCRIPT_TARGET
+sed -e &#39;/^CONFIGFILE\=.*\/config&quot;$/ s/\/config&quot;$/.config&quot;/&#39; $SCRIPT_TARGET &gt; $SCRIPT_TARGET.tmp &amp;&amp; mv $SCRIPT_TARGET.tmp $SCRIPT_TARGET
+echo &quot;new:&quot;
+sed -n &#39;/^CONFIGFILE\=.*\.config&quot;$/ p&#39; $SCRIPT_TARGET
+chmod 755 $SCRIPT_TARGET
+popd
+
+popd
+echo files:
+find noip.com* | grep -v \.git
+
+# http://stackoverflow.com/questions/7875540/how-do-you-write-multiple-line-configuration-file-using-bash-and-use-variables/7875614#7875614
+#!/bin/bash
+cat &gt;$CRON_HOURLY_TARGET &lt;&lt;EOL
+#! /bin/sh
+#
+# Hourly job to ensure the noip.com information for this host is up-to-date.
+#
+$ETC_TARGET/$CONFIG_BASE/$SCRIPT_TARGET
+EOL
+
+echo Hourly crontab entry in $CRON_HOURLY_TARGET
+chmod 755 $CRON_HOURLY_TARGET
+cat $CRON_HOURLY_TARGET</code></pre>
+<p>Now modify the <code>/etc/noip.com/bash-no-ip-updater.config</code> file; alter these entries:</p>
+<pre><code>USERNAME=&quot;email@address.com&quot;
+PASSWORD=&quot;password&quot;
+HOST=&quot;host.domain.com&quot;</code></pre>
+<blockquote>
+<p><strong>no-ip login note</strong></p>
+<p>I could just use my account name (email was not needed). Other people seem to need their email. Try both.</p>
+</blockquote>
+<p>Finally run <code>/etc/noip.com/bash-no-ip-updater/noipupdater.sh</code> ones and look at the log file <code>/var/log/noip.com/noip.log</code> to see the result and check <code>/var/log/noip.com/last_ip</code> if the IP-address is indeed correct.</p>
+<h2 id="configuring-ntpd-firewall-and-jail-for-it">configuring ntpd, firewall and jail for it</h2>
+<p>By default, OpenSuSE Tumbleweed 13.2 has <code>ntdp</code> enabled and configured as client and server, even though some of the tools mislead into thinking the server is not working correctly.</p>
+<p>But first the firewall portion:</p>
+<ol style="list-style-type: decimal">
+<li>Start <code>yast</code></li>
+<li>Open <code>Security and Users</code>, then <code>Firewall</code></li>
+<li>Go to <code>Allowed Services</code></li>
+<li>Ensure <code>xntp Server</code> is in the list, when not:</li>
+</ol>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Add <code>xntp Server</code> to the list</li>
+<li>Press <code>Next</code> followed by <code>Finish</code> to apply the changes</li>
+</ol>
+</blockquote>
+<ol start="5" style="list-style-type: decimal">
+<li>Quit <code>yast</code></li>
+<li>Start <code>yast</code></li>
+<li>Open <code>Network Services</code>, then <code>NTP Configuration</code></li>
+<li>Go to <code>Security Settings</code></li>
+<li>Ensure <code>Run NTP Daemon in Chroot Jail</code> is in the checked, when not:</li>
+</ol>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Check <code>Run NTP Daemon in Chroot Jail</code></li>
+<li>Press <code>OK</code></li>
+</ol>
+</blockquote>
+<ol start="5" style="list-style-type: decimal">
+<li>Quit <code>yast</code></li>
+</ol>
+<p>An <a href="http://doc.ntp.org/4.2.8/ntpq.html">ntpq</a> verification shows the client portion works fine (you <a href="http://linux.derkeiler.com/Mailing-Lists/SuSE/2013-02/msg00442.html">could do this in the past from rcntpd status</a>, see below):</p>
+<pre><code>revue:/etc # ntpq -p
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
++vps.vdven.org   193.79.237.14    2 u  132  128  377    3.839    0.102   0.130
+*metronoom.dmz.c .PPS.            1 u   64  128  377    4.520   -0.079   0.096
++arethusa.tweake 193.190.230.65   2 u  131  128  377    2.795    0.047   0.066
+-srv.nl.margash. 113.133.43.202   3 u   58  128  377    3.371    0.919   0.390</code></pre>
+<p>But it won't run as a server just yet, as the deprecated <a href="http://doc.ntp.org/4.2.8/ntpdc.html">ntpdc</a> shows:</p>
+<pre><code>revue:/etc # ntpdc -p
+localhost: timed out, nothing received
+***Request timed out</code></pre>
+<p>This is also shown when running rcntpd status where you get message containing <a href="https://www.google.com/search?q=&quot;localhost%3A+timed+out%2C+nothing+received&quot;">&quot;localhost: timed out, nothing received&quot;</a>:</p>
+<pre><code>revue:/etc # rcntpd status
+● ntpd.service - NTP Server Daemon
+   Loaded: loaded (/usr/lib/systemd/system/ntpd.service; enabled; vendor preset: disabled)
+   Active: active (running) since Tue 2015-05-26 20:45:59 CEST; 44min ago
+     Docs: man:ntpd(1)
+  Process: 2371 ExecStart=/usr/sbin/start-ntpd start (code=exited, status=0/SUCCESS)
+ Main PID: 2383 (ntpd)
+   CGroup: /system.slice/ntpd.service
+           └─2383 /usr/sbin/ntpd -p /var/run/ntp/ntpd.pid -g -u ntp:ntp -i /var/lib/ntp -c /etc/ntp.conf
+
+May 26 20:45:54 revue start-ntpd[2371]: Starting network time protocol daemon (NTPD)sntp 4.2.8p2@1.3265-o Wed Apr 22 00:47:12 UTC 2015 (1)
+May 26 20:45:54 revue start-ntpd[2371]: kod_init_kod_db(): Cannot open KoD db file /var/db/ntp-kod: No such file or directory
+May 26 20:45:54 revue sntp[2384]: 2015-05-26 20:45:54.222429 (-0100) -0.00246 +/- 0.012134 192.168.71.1 s2 no-leap
+May 26 20:45:54 revue start-ntpd[2371]: 2015-05-26 20:45:54.222429 (-0100) -0.00246 +/- 0.012134 192.168.71.1 s2 no-leap
+May 26 20:45:54 revue ntpd[2383]: Listening on routing socket on fd #22 for interface updates
+May 26 20:45:54 revue ntpd[2383]: switching logging to file /var/log/ntp
+May 26 20:45:59 revue start-ntpd[2371]: localhost: timed out, nothing received
+May 26 20:45:59 revue start-ntpd[2371]: ***Request timed out
+May 26 20:45:59 revue /usr/sbin/start-ntpd[2390]: runtime configuration: keyid 1
+                                                  passwd 3a84bf3
+                                                  addserver 192.168.71.1
+                                                  quit
+May 26 20:45:59 revue systemd[1]: Started NTP Server Daemon.</code></pre>
+<p>It took me quite a while to figure out why these two show failures. It's because <code>ntpdc</code> is deprecated, and it is <a href="https://build.opensuse.org/package/view_file/openSUSE:Factory/ntp/conf.start-ntpd?expand=1">used by conf.start-ntpd</a>. Too bad it is so hard to get the actual source DVCS of OpenSuSE so I don't know the history of that file.</p>
+<blockquote>
+<p><strong>note</strong></p>
+<p>For the tests, I got inspired by <a href="http://www.thegeekstuff.com/2014/06/linux-ntp-server-client/">How to Install and Configure Linux NTP Server and Client</a></p>
+</blockquote>
+<h2 id="configuring-samba">Configuring <code>samba</code></h2>
+<ol style="list-style-type: decimal">
+<li>Start <code>yast</code></li>
+<li>Open <code>Network Services</code>, then <code>Samba Server</code></li>
+<li>Fill in the <code>Workgroup or Domain Name</code> (I kept it at <code>WORKGROUP</code> as my domain-less Windows machines are configured like that)</li>
+<li>Press <code>Next</code></li>
+<li>Choose the <code>Server type</code> (I kept it at <code>Not a Domain Controller</code> as don't run a domain)</li>
+<li>Press <code>Next</code></li>
+<li>In the <code>Samba Configuration</code> screen:</li>
+</ol>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Ensure <code>Service Start</code> is set to <code>During Boot</code>.</li>
+<li>Ensure <code>Open Port in Firewall</code> is checked.</li>
+<li>Press <code>OK</code></li>
+</ol>
+</blockquote>
+<ol start="8" style="list-style-type: decimal">
+<li>Quit <code>yast</code></li>
+</ol>
+<p>This will modify these files:</p>
+<ul>
+<li><code>/etc/apparmor.d/local/usr.sbin.smbd-shares</code> (upon Samba start)</li>
+<li><code>/etc/samba/smb.conf</code></li>
+<li><code>/etc/sysconfig/SuSEfirewall2</code></li>
+</ul>
+<p>and add these configuration files:</p>
+<ul>
+<li><code>/etc/printcap</code> (which will be auto-generated from <code>/etc/cups/printers.conf</code> if it exists)</li>
+<li><code>/etc/systemd/system/multi-user.target.wants/nmb.service</code></li>
+<li><code>/etc/systemd/system/multi-user.target.wants/smb.service</code></li>
+</ul>
+<p>Run these commands to <a href="hhttps://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/install.html#id2553312">test if the basic configuration was successful</a> with <a href="https://www.samba.org/samba/docs/man/manpages/testparm.1.html">testclient</a> and <a href="h"><a href="https://www.samba.org/samba/docs/man/manpages/smbclient.1.html" class="uri">https://www.samba.org/samba/docs/man/manpages/smbclient.1.html</a></a>:</p>
+<pre><code>testparm /etc/samba/smb.conf
+smbclient -L `hostname`</code></pre>
+<blockquote>
+<p><strong>note</strong></p>
+<p>During <code>smbclient</code> you will have to type your unix password.</p>
+</blockquote>
+<h2 id="testing-and-fixing-so-clients-can-talk-to-our-samba-server">Testing and fixing so clients can talk to our Samba server</h2>
+<p>Now it is time to test the smb connectivity as well:</p>
+<pre><code>smbclient //`hostname`/profiles -U jeroenp
+Enter jeroenp&#39;s password:
+Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.2.1-3406-SUSE-oS13.2-x86_64]
+tree connect failed: NT_STATUS_ACCESS_DENIED</code></pre>
+<blockquote>
+<p><strong>note</strong></p>
+<p>Do <strong>not</strong> try to solve the <a href="https://forum.manjaro.org/index.php?topic=19252.0">NT_STATUS_ACCESS_DENIED issue</a> by enabling <code>client lanman auth</code> as this makes your system less secure (<a href="hhttps://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html#idp59214864">LANMAN authentication can be cracked quite easily</a>).</p>
+</blockquote>
+<p>The first think to check is the samba password database, as samba uses different authentication database than the standard linux one (hence the linux password above). Check it with <a href="https://www.samba.org/samba/docs/man/manpages/pdbedit.8.html">pdbedit</a> like this:</p>
+<pre><code>pdbedit --list --verbose jeroenp</code></pre>
+<p>If it shows <code>Username not found!</code> then you need to add the user:</p>
+<blockquote>
+<p>revue:/etc # pdbedit --create --user jeroenp new password: retype new password: Unix username: jeroenp NT username: Account Flags: [U ] User SID: S-1-5-21-539969646-619626457-384116915-1000 Primary Group SID: S-1-5-21-539969646-619626457-384116915-513 Full Name: Jeroen Pluimers Home Directory: \revuejeroenp.9xprofile HomeDir Drive: P: Logon Script: Profile Path: \revueprofiles.msprofile Domain: REVUE Account desc: Workstations: Munged dial: Logon time: 0 Logoff time: Wed, 06 Feb 2036 16:06:39 CET Kickoff time: Wed, 06 Feb 2036 16:06:39 CET Password last set: Wed, 27 May 2015 20:51:21 CEST Password can change: Wed, 27 May 2015 20:51:21 CEST Password must change: never Last bad password : 0 Bad password count : 0 Logon hours : FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</p>
+</blockquote>
+<blockquote>
+<p><strong>note</strong></p>
+<p>Do <strong>not</strong> use <a href="https://www.samba.org/samba/docs/man/manpages/smbpasswd.8.html">smbpasswd</a> to add the user as that only supports the <code>smbpasswd</code> database format, whereas pdbedit<a href="http://unix.stackexchange.com/questions/107032/deleting-a-samba-user-pbdedit-vs-smbpasswd-whats-the-difference/107033#107033">supports any password backend</a>.</p>
+</blockquote>
+<p>Now do final checks:</p>
+<pre><code>smbclient --list `hostname` --user jeroenp
+smbclient //`hostname`/jeroenp -U jeroenp</code></pre>
+<h2 id="one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup">One day: <a href="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/pam.html#id2667418">syncing between the Samba password and system password storage</a> is setup</h2>
+<p>See <a href="https://www.google.com/search?q=&quot;Use+SMB+Information+for+Linux+Authentication&quot;">Use SMB Information for Linux Authentication</a>.</p>
+<h2 id="fixing-password-synchronisation">Fixing password synchronisation?</h2>
+<blockquote>
+<p><strong>note</strong></p>
+<p>Background reading (web-archive link as the site itself is down): <a href="http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html">Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares</a>.</p>
+</blockquote>
+<h2 id="configuring-namedbind">configuring named/BIND</h2>
+<ol style="list-style-type: decimal">
+<li>Start <code>yast</code></li>
+<li>Open <code>System</code>, then <code>/etc/sysconfig Editor</code></li>
+<li>In <code>Configuration Options</code>, open these tree nodes: <code>Network</code>; <code>DNS</code>; <code>Name Server</code></li>
+<li>Ensure the below entries have the correct values:</li>
+</ol>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li><code>NAMED_RUN_CHROOTED</code> has no value</li>
+<li><code>NAMED_ARGS</code> has no value</li>
+<li><code>NAMED_CONF_INCLUDE_FILES</code> has value <code>options logging master slaves rnd-access.conf</code></li>
+<li><code>NAMED_INITIALIZE_SCRIPTS</code> has value <code>createNamedConfInclude</code> (this is the default value)</li>
+</ol>
+</blockquote>
+<ol start="5" style="list-style-type: decimal">
+<li>If any value needed to be changed, then press <code>Finish</code> and confirm the changes.</li>
+<li>Open <code>Security and Users</code>, then <code>Firewall</code></li>
+<li>Go to <code>Allowed Services</code></li>
+<li>Ensure <code>bind DNS server</code> is in the list, when not:</li>
+</ol>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Add <code>bind DNS server</code> to the list</li>
+<li>Press <code>Next</code> followed by <code>Finish</code> to apply the changes</li>
+</ol>
+</blockquote>
+<ol start="9" style="list-style-type: decimal">
+<li>Quit <code>yast</code></li>
+</ol>
+<p>Add an empty <code>/etc/named.d/forwarders.conf</code>.</p>
+<p>Add <code>/etc/named.d/master</code>:</p>
+<pre><code>zone &quot;4delphi.com&quot; {
+        type master;
+        file &quot;master/4delphi.com&quot;;
+};
+
+zone &quot;pluimers.com&quot; {
+        type master;
+        file &quot;master/pluimers.com&quot;;
+};
+
+zone &quot;pluimers.localnet&quot; {
+        type master;
+        file &quot;master/pluimers.localnet&quot;;
+        notify no;
+        allow-query     { internals; };
+        allow-transfer  { internals; };
+};
+
+zone &quot;71.168.192.IN-ADDR.ARPA&quot; {
+        type master;
+        file &quot;master/192.168.71&quot;;
+        notify no;
+        allow-query     { internals; };
+        allow-transfer  { internals; };
+};
+
+zone &quot;171.168.192.IN-ADDR.ARPA&quot; {
+        type master;
+        file &quot;master/192.168.171&quot;;
+        notify no;
+        allow-query     { internals; };
+        allow-transfer  { internals; };
+};</code></pre>
+<p>Add <code>/etc/named.d/options</code>:</p>
+<pre><code>acl internals {
+        127.0.0.1/24;
+                192.168.71.0/16;
+                192.168.171.0/16;
+          };
+
+acl externals {
+        82.161.131.169; // jeroen - ADSL xs4all
+        80.100.143.119; // jeroen - fiber xs4all
+        37.153.243.241; // jeroen - fiber helden van nu 1 - router
+        37.153.243.242; // jeroen - fiber helden van nu 2 - server DNS 1
+        37.153.243.243; // jeroen - fiber helden van nu 3 - server
+        37.153.243.244; // jeroen - fiber helden van nu 4 - server
+        37.153.243.245; // jeroen - fiber helden van nu 5 - server
+        37.153.243.246; // jeroen - fiber helden van nu 6 - server DNS 2
+          62.195.34.14; // jeroen - Cable UPC (tijdelijk)
+         136.243.21.95; // remco/cor - Hetzner host - ziggy.domainnetwerk.info
+         83.163.69.172; // martijn - mwpg.xs4all.nl
+                   109.70.6.22; // jaco - Dynasol
+        };</code></pre>
+<p>Ensure these files exist:</p>
+<p><code>/var/lib/named/master/192.168.171</code>:</p>
+<pre><code>$TTL 1H
+@               IN      SOA     ns.pluimers.localnet.   root.4delphi.com. (
+                        2005011803 ; serial
+                        1H         ; refresh
+                        900        ; retry
+                        3W         ; expire
+                        2H         ; default_ttl
+                        )
+@               IN      NS      ns.pluimers.localnet.
+80             IN      PTR     jp1.pluimers.localnet.
+80             IN      PTR     snap.pluimers.localnet.
+80             IN      PTR     ns.pluimers.localnet.
+70             IN      PTR     snip.pluimers.localnet.</code></pre>
+<p><code>/var/lib/named/master/192.168.71</code>:</p>
+<pre><code>$TTL 1H
+@               IN      SOA     ns.pluimers.localnet.   root.4delphi.com. (
+                        2005011803 ; serial
+                        1H         ; refresh
+                        900        ; retry
+                        3W         ; expire
+                        2H         ; default_ttl
+                        )
+@               IN      NS      ns.pluimers.localnet.
+80             IN      PTR     jp1.pluimers.localnet.
+80             IN      PTR     snap.pluimers.localnet.
+80             IN      PTR     ns.pluimers.localnet.
+70             IN      PTR     snip.pluimers.localnet.</code></pre>
+<p><code>/var/lib/named/master/named.local</code>:</p>
+<pre><code>$TTL 2H
+@               IN      SOA     localhost.      root.localhost. (
+                        2004111611 ; serial
+                        1H         ; refresh
+                        900        ; retry
+                        3W         ; expire
+                        2H         ; default_ttl
+                        )
+1               IN      PTR     localhost.
+@               IN      NS      localhost.</code></pre>
+<p><code>/var/lib/named/master/pluimers.localnet</code>:</p>
+<pre><code>$TTL 2H
+@               IN      SOA     ns.pluimers.localnet.    root.4delphi.com. (
+                        2004111615 ; serial
+                        1H         ; refresh
+                        900        ; retry
+                        3W         ; expire
+                        2H         ; default_ttl
+                        )
+@                       IN      MX      5       mail.pluimers.com.
+@                       IN      NS      ns.pluimers.localnet.
+@                       IN      A       192.168.71.80
+localhost               IN      A       127.0.0.1
+jp1                     IN      A       192.168.71.80
+ns                      IN      A       192.168.71.80
+snap                    IN      A       192.168.71.80
+snip                    IN      A       192.168.71.70</code></pre>
+<p><code>/var/lib/named/master/pluimers.com</code>:</p>
+<pre><code>to fill in later</code></pre>
+<p><code>/var/lib/named/master/4delphi.com</code>:</p>
+<pre><code>to fill in later</code></pre>
+<p>Finally stop/start the named service:</p>
+<pre><code>rcnamed stop
+rcnamed start
+rcnamed status</code></pre>
+<blockquote>
+<p><strong>note</strong></p>
+<p>Check if your zone files are correct by executing <a href="http://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/">named-checkzone</a>:</p>
+<pre><code>named-checkzone 4delphi.com /var/lib/named/master/4delphi.com
+named-checkzone pluimers.com /var/lib/named/master/pluimers.com</code></pre>
+<p>Check if your named configuration is correct by executing <a href="http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html">named-checkconf</a>:</p>
+<pre><code>named-checkconf /etc/named.conf</code></pre>
+<p>Check if <code>named</code> delivers the correct zone:</p>
+<pre><code>dig @localhost axfr 4delphi.com
+dig @localhost axfr pluimers.com</code></pre>
+<p>See:</p>
+<ul>
+<li><a href="http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html">Check BIND – DNS Server configuration file for errors with named-checkconf tools</a></li>
+<li><a href="hhttp://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/">Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool</a></li>
+</ul>
+<p><a href="https://ask.fedoraproject.org/en/question/24288/how-to-debug-bind-conf-and-zone-files/">Check the named configuration</a>:</p>
+<pre><code>named-checkconf /etc/named.conf</code></pre>
+<p><a href="http://www.ewhathow.com/2013/09/how-do-i-check-bind-zone-file-for-errors/">Check each named zone</a>:</p>
+<pre><code>named-checkzone localhost /var/lib/named/master/4delphi.com
+named-checkzone localhost /var/lib/named/master/pluimers.com</code></pre>
+</blockquote>
+<h2 id="ensure-that-varlibnamedmaster-gets-synced-to-etcnamedmaster">Ensure that <code>/var/lib/named/master</code> gets synced to <code>/etc/named/master</code></h2>
+<p>Based on these links, I've added a sync script.</p>
+<ul>
+<li><a href="https://github.com/joeyh/etckeeper#configuration">etckeeper configuration documentation</a></li>
+<li><a href="http://www.tutorialspoint.com/unix/unix-using-variables.htm">unix: using variables</a></li>
+</ul>
+<p>I stored it in <code>/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master</code>:</p>
+<pre><code>#! /bin/sh
+## http://www.tutorialspoint.com/unix/unix-using-variables.htm
+TARGET=/etc/named/master
+mkdir -p $TARGET
+rsync -avloz /var/lib/named/master/ $TARGET/</code></pre>
+<p>You need to give this script the right permissons, otherwise <code>etckeeper</code> wil skip it:</p>
+<pre><code>chmod 755 /etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh</code></pre>
+<h2 id="adding-aliases-for-commands-removed-in-net-tools">Adding aliases for commands removed in <code>net-tools</code></h2>
+<p>Add this to <code>/etc/bash.bashrc.local</code>:</p>
+<pre><code># stuff removed from net-tools
+# see https://features.opensuse.org/317197 and https://build.opensuse.org/package/view_file/network:utilities/net-tools/net-tools.changes
+## Because of changes on Thu Apr 10 12:33:41 UTC 2014
+alias &quot;arp=echo &#39;use \&quot;ip neigh\&quot; or \&quot;ip -r neight\&quot;&#39; &amp;&amp; ip neigh&quot;
+alias &quot;ifconfig=echo &#39;use \&quot;ip a\&quot;&#39; &amp;&amp; ip a&quot;
+alias &quot;netstat= echo &#39;use \&quot;ss\&quot; or \&quot;ss -r\&quot;&#39; &amp;&amp; ss&quot;
+alias &quot;route=echo &#39;use \&quot;ip r\&quot;&#39; &amp;&amp; ip r&quot;
+## Because of changes on Sun Mar 29 00:41:21 UTC 2015
+alias &quot;ipmaddr=echo &#39;use \&quot;ip maddr\&quot;&#39; &amp;&amp; ip maddr&quot;
+alias &quot;iptunnel=echo &#39;use \&quot;ip tunnel\&quot;&#39; &amp;&amp; ip tunnel&quot;</code></pre>
+<h2 id="configuring-monit-monitoring-service">Configuring <code>monit</code> monitoring service</h2>
+<p>At first, <a href="https://software.opensuse.org/package/monit">monit</a> won't run:</p>
+<pre><code>revue:~ # rcmonit restart
+redirecting to systemctl restart monit.service
+Failed to restart monit.service: Unit monit.service failed to load: No such file or directory.</code></pre>
+<p>Even though it is an offical package, it is missing the <a href="http://www.freedesktop.org/software/systemd/man/systemd.service.html">.service file</a>.</p>
+<p>That is easy to fix by downloading and modifying the <code>monit.service</code> template <a href="https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in" class="uri">https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in</a>:</p>
+<pre><code>#! /bin/sh
+#
+# Fixes this error:
+#    revue:~ # rcmonit restart
+#    redirecting to systemctl restart monit.service
+#    Failed to restart monit.service: Unit monit.service failed to load: No such file or directory.
+SERVICE_TARGET=monit.service
+pushd /etc/systemd/system/
+# http://stackoverflow.com/questions/13735051/curl-and-capturing-output-to-a-file
+curl https://bitbucket.org/tildeslash/monit/raw/master/system/startup/monit.service.in -o $SERVICE_TARGET
+# escape slashes in arguments: http://www.grymoire.com/Unix/Sed.html#uh-62
+## might need to get rid of the backtick and replace \\ by \, see:
+# http://unix.stackexchange.com/questions/5778/whats-the-difference-between-stuff-and-stuff/5782#5782
+MONIT_EXPANDED=`echo &quot;$(which monit)&quot; | sed &#39;s:[]\[\^\$\.\*\/]:\\\\&amp;:g&#39;`
+echo SERVICE_TARGET=$SERVICE_TARGET
+echo MONIT_EXPANDED=$MONIT_EXPANDED
+
+echo old:
+sed -n &quot;/@prefix@\/bin\/monit/ p&quot; $SERVICE_TARGET
+# replace @prefix@ with the directory where monit resides
+# replace @sysconfigdir@ with etc
+sed -e &quot;/@prefix@\/bin\/monit/ s/@prefix@\/bin\/monit/${MONIT_EXPANDED}/&quot; $SERVICE_TARGET &gt; $SERVICE_TARGET.tmp &amp;&amp; mv $SERVICE_TARGET.tmp $SERVICE_TARGET
+sed -e &quot;/@sysconfdir@/ s/@sysconfdir@/etc/&quot; $SERVICE_TARGET &gt; $SERVICE_TARGET.tmp &amp;&amp; mv $SERVICE_TARGET.tmp $SERVICE_TARGET
+echo new:
+sed -n &quot;/monitrc/ p&quot; $SERVICE_TARGET
+
+chmod 755 $SERVICE_TARGET
+popd
+systemctl enable monit.service
+systemctl status monit.service
+systemctl start monit.service</code></pre>
+<p>But it still doesn't start, as <a href="https://www.google.com/search?q=journalctl">journalctl</a> (the logging part part of <a href="https://en.wikipedia.org/wiki/Systemd">systemd</a>) shows:</p>
+<pre><code>revue:/etc # journalctl _COMM=monit
+-- Logs begin at Sat 2015-06-06 10:05:54 CEST, end at Sat 2015-06-06 15:00:01 CEST. --
+Jun 06 10:01:24 revue monit[1496]: Error opening the idfile &#39;/run/monit/.monit.id&#39; -- No such file or directory
+Jun 06 10:01:24 revue monit[1496]: Error opening the idfile &#39;/run/monit/.monit.id&#39; -- No such file or directory
+Jun 06 10:01:24 revue monit[1496]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
+Jun 06 10:01:24 revue monit[1496]: Error opening pidfile &#39;@@PIDDIR@@/monit.pid&#39; for writing -- No such file or directory
+Jun 06 10:01:24 revue monit[1496]: Monit daemon died
+Jun 06 10:01:24 revue monit[1496]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
+Jun 06 10:01:24 revue monit[1551]: Error opening the idfile &#39;/run/monit/.monit.id&#39; -- No such file or directory
+Jun 06 10:01:24 revue monit[1551]: Error opening the idfile &#39;/run/monit/.monit.id&#39; -- No such file or directory
+Jun 06 10:01:24 revue monit[1551]: No daemon process found
+Jun 06 10:01:24 revue monit[1551]: No daemon process found</code></pre>
+<blockquote>
+<p><strong>note</strong></p>
+<p>Note that <a href="https://www.google.com/search?q=journalctl">journalctl</a> can feel a bit complex for casual users, so to get <code>/var/log/messages</code> back you might want to install <code>rsyslog</code> as explained by <a href="https://forums.opensuse.org/showthread.php/505084-Whither-var-log-messages">Whither /var/log/messages?</a>.</p>
+<p>For a comparison, read:</p>
+<ul>
+<li><a href="http://blog.delouw.ch/2013/07/24/why-journalctl-is-cool-and-syslog-will-survive-for-another-decade/">Why journalctl is cool and syslog will survive for another decade « Luc de Louw's Blog</a>.</li>
+<li><a href="https://docs.oracle.com/cd/E52668_01/E54670/html/ol7-log-sec.html">3.8 Configuring and Using System Logging</a>.</li>
+</ul>
+</blockquote>
+<p>A quick look into <code>/etc/monitrc</code> reveals the initialisation of the <code>monit</code> package forgot to create <code>/run/monit/.monit.id</code>:</p>
+<pre><code>revue:/etc # grep &quot;\.monit\.id&quot; /etc/monitrc
+## default the file is placed in $HOME/.monit.id.
+set idfile /run/monit/.monit.id</code></pre>
+<p>The cause is that the <code>idfile</code> must both exist (see the error message) <a href="https://mmonit.com/wiki/MMonit/FAQ#monitid">and have a unique id in it</a>.</p>
+<p>If it exists but does not have a valid id, then you get this error:</p>
+<pre><code>Jun 06 15:34:13 revue systemd[1]: Starting Pro-active monitoring utility for unix systems...
+Jun 06 15:34:13 revue monit[4404]: Error reading id from file &#39;/run/monit/.monit.id&#39;
+Jun 06 15:34:13 revue monit[4404]: Error reading id from file &#39;/run/monit/.monit.id&#39;
+Jun 06 15:34:13 revue monit[4404]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
+Jun 06 15:34:13 revue systemd[1]: monit.service: main process exited, code=exited, status=1/FAILURE</code></pre>
+<p>Both issues is easily fixed by creating and running this <code>/etc/monit-create-idfile.sh</code> script:</p>
+<pre><code>#! /bin/sh
+#
+# creates idfile from configuration in in /etc/monitrc
+ETC_TARGET=/etc/monitrc
+# http://unix.stackexchange.com/questions/84922/extract-a-part-of-one-line-from-a-file-with-sed/84957#84957
+# trick: search and edit and print at the same time
+ID_FILE=`sed -n -e &quot;/^set idfile .*monit.id$/ s/^set idfile // p&quot; $ETC_TARGET`
+echo id file: $ID_FILE
+# http://stackoverflow.com/questions/6121091/get-file-directory-path-from-filepath/6121114#6121114
+ID_FILE_DIRECTORY=$(dirname &quot;${ID_FILE}&quot;)
+echo id file directory: $ID_FILE_DIRECTORY
+ls -al $ID_FILE
+mkdir -p $ID_FILE_DIRECTORY
+touch $ID_FILE
+ls -al $ID_FILE
+echo y | monit --resetid
+cat $ID_FILE &amp;&amp; echo</code></pre>
+<p>Finally we caome to the last error: some more replacement needs to take place to prevent this error because <code>monit</code> cannot find its <a href="http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204">pid</a> file:</p>
+<pre><code>Jun 06 16:20:48 revue monit[4760]: Error opening pidfile &#39;@@PIDDIR@@/monit.pid&#39; for writing -- No such file or directory
+Jun 06 16:20:48 revue monit[4760]: Monit daemon died</code></pre>
+<p>This is then fixed by creating and running this <code>/etc/monitrc-fix.sh</code>:</p>
+<pre><code>#! /bin/sh
+#
+# fixes the pidfile in /etc/monitrc
+ETC_TARGET=/etc/monitrc
+# use double quotes to allow for variable expansion: http://stackoverflow.com/questions/17477890/expand-variables-in-sed/17477911#17477911
+# escape slashes in arguments: http://www.grymoire.com/Unix/Sed.html#uh-62
+echo old:
+sed -n &quot;/^# set pidfile \/var\/run\/monit.pid$/ p&quot; $ETC_TARGET
+sed -e &quot;/^# set pidfile \/var\/run\/monit.pid$/ s/^# //&quot; $ETC_TARGET &gt; $ETC_TARGET.tmp &amp;&amp; mv $ETC_TARGET.tmp $ETC_TARGET
+echo new:
+sed -n &quot;/^set pidfile \/var\/run\/monit.pid$/ p&quot; $ETC_TARGET
+systemctl status monit.service
+systemctl start monit.service</code></pre>
+<p>More <code>monit</code> configuration tips (including setting up <a href="https://en.wikipedia.org/wiki/HTTPS">HTTPs</a> with a <a href="https://en.wikipedia.org/wiki/Self-signed_certificate">self-signed certificate</a> - imporant as <code>monit</code> uses plain username/password <a href="https://en.wikipedia.org/wiki/Basic_access_authentication">http basic authentication</a>) are at:</p>
+<ul>
+<li><a href="http://xmodulo.com/server-monitoring-system-monit.html">How to set up server monitoring system with Monit - Xmodulo</a>.</li>
+<li><a href="http://www.itzgeek.com/how-tos/linux/opensuse/install-monit-on-opensuse-13-2.html">Install Monit on openSUSE 13.2</a>.</li>
+</ul>
+<h2 id="configuring-apache2-for-the-first-time">Configuring apache2 for the first time</h2>
+<p>To display the <em>Apache</em> version:</p>
+<pre><code># httpd2 -v
+Server version: Apache/2.4.12 (Linux/SUSE)
+Server built:   2015-06-09 09:24:07.000000000 +0000</code></pre>
+<p>Or since both <code>httpd</code> and <code>httpd2</code> point to the same file:</p>
+<pre><code># httpd2 -v
+Server version: Apache/2.4.12 (Linux/SUSE)
+Server built:   2015-06-09 09:24:07.000000000 +0000
+
+# ls -al `which httpd2` `which httpd`
+lrwxrwxrwx 1 root root 23 Jun 20 15:26 /usr/sbin/httpd -&gt; /usr/sbin/httpd-prefork
+lrwxrwxrwx 1 root root 23 Jun 20 15:26 /usr/sbin/httpd2 -&gt; /usr/sbin/httpd-prefork</code></pre>
+<p>To verify your configuration files are correct, use this command before restarting the apache2 httpd2 server:</p>
+<pre><code>httpd2 -S</code></pre>
+<p>Apart from replacing <code>combined</code> by <code>vhost_combined</code>, you might want to ensure logging is done for each vhost in a separate file: it makes checkout out vhost issues a lot easier.</p>
+<p>You can either use the default <code>vhost.template</code> for that, or the <a href="http://wiki.apache.org">apache wiki</a> examples: <a href="https://wiki.apache.org/httpd/ExampleVhosts" class="uri">https://wiki.apache.org/httpd/ExampleVhosts</a></p>
+<p>This is my diff between the default <code>vhost.template</code> and <code>pluimers.com.conf</code> in <code>/etc/apache2/vhosts.d</code>:</p>
+<pre><code>/etc/apache2/vhosts.d # diff pluimers.com.conf vhost.template
+1c1
+&lt; # pluimers.com apache2 vhost configuration based on
+---
+&gt; #
+15,19c15,17
+&lt; # &lt;VirtualHost *:80&gt;
+&lt; &lt;VirtualHost *&gt;
+&lt;     ServerAlias *.pluimers.com
+&lt;     ServerAdmin jeroen.pluimers.com+pluimers.com@gmail.com
+&lt;     ServerName revue
+---
+&gt; &lt;VirtualHost *:80&gt;
+&gt;     ServerAdmin webmaster@dummy-host.example.com
+&gt;     ServerName dummy-host.example.com
+24c22
+&lt;     DocumentRoot /srv/www/vhosts/pluimers.com
+---
+&gt;     DocumentRoot /srv/www/vhosts/dummy-host.example.com
+27,30c25,26
+&lt;     # ErrorLog /var/log/apache2/pluimers.com/error_log
+&lt;     ErrorLog /var/log/apache2/pluimers.com-error_log
+&lt;     # CustomLog /var/log/apache2/pluimers.com/access_log vhost_combined
+&lt;     CustomLog /var/log/apache2/pluimers.com-access_log vhost_combined
+---
+&gt;     ErrorLog /var/log/apache2/dummy-host.example.com-error_log
+&gt;     CustomLog /var/log/apache2/dummy-host.example.com-access_log combined
+59c55
+&lt;     ScriptAlias /cgi-bin/ &quot;/srv/www/vhosts/pluimers.com/cgi-bin/&quot;
+---
+&gt;     ScriptAlias /cgi-bin/ &quot;/srv/www/vhosts/dummy-host.example.com/cgi-bin/&quot;
+64c60
+&lt;     &lt;Directory &quot;/srv/www/vhosts/pluimers.com/cgi-bin&quot;&gt;
+---
+&gt;     &lt;Directory &quot;/srv/www/vhosts/dummy-host.example.com/cgi-bin&quot;&gt;
+102c98
+&lt;     &lt;Directory &quot;/srv/www/vhosts/pluimers.com&quot;&gt;
+---
+&gt;     &lt;Directory &quot;/srv/www/vhosts/dummy-host.example.com&quot;&gt;
+137d132
+&lt; &lt;/VirtualHost&gt;
+138a134
+&gt; &lt;/VirtualHost&gt;</code></pre>
+<p>Note that I experimented with a log directory per domain like <code>/var/log/apache2/pluimers.com/</code>, but these won't be auto-created, like <code>httpd2 -S</code> shows:</p>
+<pre><code>/etc/apache2/vhosts.d # httpd2 -S
+VirtualHost configuration:
+...
+(2)No such file or directory: AH02291: Cannot access directory &#39;/var/log/apache2/pluimers.com/&#39; for error log of vhost defined at /etc/apache2/vhosts.d/pluimers.com.conf:16
+AH00014: Configuration check failed</code></pre>
+<p>Note that <code>httpd2 -S</code> by default does not execute <code>This means that if you have</code>SSL<code>configured,</code>httpd2 -S<code>will not take that into account the</code>APACHE_SERVER_FLAGS<code>setting in</code>/etc/sysconfig/apache2<code>`Workaround from another frustrated user &lt;http://web.ornl.gov/~jar/Apache/SSL_in_Apache_2.html&gt;`_ which `one day I will make easier to use &lt;http://serverfault.com/questions/702155/why-doesnt-httpd2-s-catch-ssl-certificate-issues-whereas-systemctl-restart/702156#comment868640_702156&gt;`_::      httpd2 -D SSL -S  The same frustrated user also suggested to make this small change in</code>/etc/sysconfig/apache2<code>, from      APACHE_LOGLEVEL=&quot;warn&quot;  to::      APACHE_LOGLEVEL=&quot;debug&quot;     .. sidebar:: Notes when updating (vhosts) configuration from Apache 2.2 to Apache 2.4:    Instead of using `mod_access_compat &lt;http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html&gt;`_ modify the configuration files to use the directives in `mod_authz_host &lt;http://httpd.apache.org/docs/2.4/mod/mod_authz_host.html&gt;`_.    See `Upgrading to 2.4 from 2.2 &lt;http://httpd.apache.org/docs/2.4/upgrading.html&gt;`_    Replace the lines::        Order deny,allow       Deny from all    with::        Require all denied    Replace the lines::        Order allow,deny       Allow from all    with::        Require all granted    More background info:    - Denying: `Apache 2.4 Upgrade and the &quot;Invalid Command 'Order'&quot; Error &lt;https://systembash.com/apache-2-4-upgrade-and-the-invalid-command-order-error/&gt;`_   - Granting: `Upgrading to Apache 2.4 from Apache HTTP Server 2.2.x &lt;http://brianflove.com/2014/04/23/upgrading-to-apache-2-4-from-apache-http-server-2-2-x/&gt;`_     **Common problems when upgrading**    - Startup errors:      -</code>Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration<code>- load module `mod_unixd &lt;http://httpd.apache.org/docs/2.4/mod/mod_unixd.html&gt;`_     -</code>Invalid command 'Require', perhaps misspelled or defined by a module not included in the server configuration<code>, or</code>Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration<code>- load module `mod_access_compat &lt;http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html&gt;`_, or update configuration to 2.4 authorization directives.     -</code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf<code>- remove `DefaultType &lt;http://httpd.apache.org/docs/2.4/mod/core.html#defaulttype&gt;`_ and replace with other configuration settings.     -</code>Invalid command 'AddOutputFilterByType', perhaps misspelled or defined by a module not included in the server configuration<code>- `AddOutputFilterByType &lt;http://httpd.apache.org/docs/2.4/mod/mod_filter.html#addoutputfilterbytype&gt;`_ has moved from the core to mod_filter, which must be loaded.    - Errors serving requests:      -</code>configuration error: couldn't check user: /path<code>- load module `mod_authn_core &lt;http://httpd.apache.org/docs/2.4/mod/mod_authn_core.html&gt;`_.     -</code>.htaccess files aren't being processed<code>- Check for an appropriate `AllowOverride &lt;http://httpd.apache.org/docs/2.4/mod/core.html#allowoverride&gt;`_ directive; the default changed to</code>None<code>in 2.4.  Getting and running</code>testssl.sh<code>----------------------------------  Simple steps from a non-root account::      git clone https://github.com/drwetter/testssl.sh.git     cd testssl.sh      OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh beginend.net     OPENSSL=./testssl.sh beginend.net     OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh www.beginend.net     OPENSSL=./testssl.sh www.beginend.net  Login / Reboot Fritz!Box ------------------------  There is a bash script for Fritz!Box access at &lt;https://github.com/jpluimers/bash-fritzclient&gt;.  Installation is simple:  1. Go to</code>/etc<code>2.</code>git clone <a href="https://github.com/jpluimers/bash-fritzclient.git" class="uri">https://github.com/jpluimers/bash-fritzclient.git</a><code>3. Copy</code>bash-fritzclientbash-fritzclient.config.template<code>to</code>/etc/bash-fritzclient.template<code>4. Configure</code>/etc/bash-fritzclient.template<code>.  configuring and running shellinabox with ssh --------------------------------------------  A great tool for configuring your machine over a connection not allowing ssh is `shellinabox &lt;http://shellinabox.com&gt;`__.  Certificates are in</code>/etc/shellinabox/certs<code>.  After installation, it isn't running::      revue:/etc/shellinabox/certs # systemctl status shellinabox.service     ● shellinabox.service - LSB: shellinabox        Loaded: loaded (/etc/init.d/shellinabox)        Active: inactive (dead)          Docs: man:systemd-sysv-generator(8)      revue:/etc/shellinabox/certs # systemctl enable shellinabox.service     shellinabox.service is not a native service, redirecting to /sbin/chkconfig.     Executing /sbin/chkconfig shellinabox on     revue:/etc/shellinabox/certs # systemctl start shellinabox.service     revue:/etc/shellinabox/certs # systemctl status shellinabox.service     ● shellinabox.service - LSB: shellinabox        Loaded: loaded (/etc/init.d/shellinabox)        Active: active (running) since Tue 2015-06-09 19:56:21 CEST; 20s ago          Docs: man:systemd-sysv-generator(8)       Process: 4997 ExecStart=/etc/init.d/shellinabox start (code=exited, status=0/SUCCESS)        CGroup: /system.slice/shellinabox.service                ├─5030 /usr/bin/shellinaboxd --background=/var/run/shellinaboxd.pid -u shellinabox -s /:SSH -c /etc/shellinabox/certs                └─5031 /usr/bin/shellinaboxd --background=/var/run/shellinaboxd.pid -u shellinabox -s /:SSH -c /etc/shellinabox/certs      Jun 09 19:56:20 revue shellinabox[4997]: No shellinabox certificate found, creating one now...     Jun 09 19:56:20 revue shellinabox[4997]: Generating a 2048 bit RSA private key     Jun 09 19:56:20 revue shellinabox[4997]: .................................+++     Jun 09 19:56:21 revue shellinabox[4997]: .............................................................+++     Jun 09 19:56:21 revue shellinabox[4997]: unable to write 'random state'     Jun 09 19:56:21 revue shellinabox[4997]: writing new private key to '/tmp/create-ssl-key-7GwyL'     Jun 09 19:56:21 revue shellinabox[4997]: -----     Jun 09 19:56:21 revue shellinabox[4997]: Created certificate: SHA1 Fingerprint=1B:AE:9D:C3:57:37:34:BB:64:79:0D:3D:D4:B9:50:54:9F:FE:FC:82     Jun 09 19:56:21 revue shellinabox[4997]: Starting shellinabox ..done     Jun 09 19:56:21 revue systemd[1]: Started LSB: shellinabox.     revue:/etc/shellinabox/certs # ls -al     total 12     drwxr-xr-x 1 root        root          70 Jun  9 19:56 .     drwxr-xr-x 1 root        root          10 May 17 10:41 ..     lrwxrwxrwx 1 root        root          15 Jun  9 19:56 064fecbc.0 -&gt; certificate.pem     lrwxrwxrwx 1 root        root          15 Jun  9 19:56 b3543706.0 -&gt; certificate.pem     -rw------- 1 shellinabox shellinabox 2916 Jun  9 19:56 certificate.pem     revue:/etc/shellinabox/certs # nmap -sV -p 4200 localhost      Starting Nmap 6.47 ( http://nmap.org ) at 2015-06-09 19:58 CEST     Nmap scan report for localhost (127.0.0.1)     Host is up (0.00013s latency).     PORT     STATE SERVICE VERSION     4200/tcp open  http    ShellInABox httpd      Service detection performed. Please report any incorrect results at http://nmap.org/submit/ .     Nmap done: 1 IP address (1 host up) scanned in 11.49 seconds  This will work locally::      lynx http://localhost:4200  Remotely, it needs the firewall to be enabled for it:  1. Start</code>yast<code>2. Go to</code>Security and Users<code>,</code>Firewall<code>3. Go to</code>Allowed Services<code>4. Ensure</code>Shellinabox<code>is in the list, when not:    1. Add</code>Shellinabox<code>to the list   2. Press</code>Next<code>followed by</code>Finish<code>to apply the changes  5. Quit</code>yast<code>Now it works, but note that the https isn't really secure. Chrome will show</code>ERR_SSL_VERSION_OR_CIPHER_MISMATCH<code>, and this will show far more details::      jeroenp@revue:~/testssl.sh&gt; OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh localhost:4200  So the best is setting up an Apache redirect as shown in in the `shellinabox configuration page &lt;https://code.google.com/p/shellinabox/wiki/shellinaboxd_man#CONFIGURATION&gt;`_::      &lt;Location /shell&gt;       ProxyPass  http://localhost:4200/       Order      allow,deny       Allow      from all     &lt;/Location&gt;  For Apache 2.4 we need to slightly change that as we saw when configuring</code>apache2<code>above. So add these lines to</code>/etc/apache2/vhosts.d/00-default.snap.conf<code>::      &lt;Location /shell&gt;       ProxyPass  http://localhost:4200/       Require all granted     &lt;/Location&gt;  Now test your vhost configuration by running this command::      htttpd2 -S  If you get the below error, then you need tht http proxy modue to be installed in apache2::      Invalid command 'ProxyPass', perhaps misspelled or defined by a module not included in the server configuration  In that case, in</code>/etc/sysconfig/apache2<code>find the line starting with</code>APACHE_MODULES<code>and add</code>proxy_http_module<code>to the lis of modules, then perform the</code>httpd2 -S <code>check again. Finally, restart</code>apache2<code>with this command::      systemctl status apache2.service  .. note::    We need to change</code>/etc/sysconfig/apache2<code>because</code>yast<code>will nuke the vhost configs into IP-based-vhosts. See `Configuring Apache &lt;https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_configuration.html&gt;`_ for more details about manually configuring these files without using</code>yast<code>.  If apache doesn't restart, then use</code>journalctl -xe<code>fo find out what went wrong. In my case</code>proxy_http_module<code>wasn't installed it's because that's the name in the</code>/etc/apache2/sysconfig.d<code>which is generated by</code>/etc/sysconfig/apache2<code>. In</code>/etc/sysconfig/apache2<code>you need two entries appended to</code>APACHE_MODULES<code>::       mod_proxy mod_proxy_http  I found out about this by rereading `Apache Module mod_proxy_http &lt;https://httpd.apache.org/docs/2.4/mod/mod_proxy_http.html&gt;`_ three times.  If this works, then you should see</code>shellinabox<code>when going to &lt;http://localhost/shell&gt;&gt; but not yet for &lt;https://localhost/shell&gt;. For the latter we need to enable</code>https<code>in</code>apache2.
+
+Viewing the long journal
+------------------------
+
+Like mentioned before, journalctl` views the log journal.</p>
+<p>An even handier command is this:</p>
+<pre><code>journalctl -xe</code></pre>
+<p>This is shorthand for:</p>
+<pre><code>journalctl --catalog --pager-end</code></pre>
+<p>It uses these options:</p>
+<pre><code>-e --pager-end           Immediately jump to the end in the pager
+-x --catalog             Add message explanations where available</code></pre>
+<p>This is exactly why I like it over log files:</p>
+<ul>
+<li>it has explanations that can come in very handy</li>
+<li>it directly goes to the pager (on my system <code>less</code>)</li>
+</ul>
+<h2 id="hardening-apache2-ssl-cyphers">Hardening apache2 SSL cyphers</h2>
+<p>Via <a href="https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/">Hardening Your Web Server’s SSL Ciphers — Hynek Schlawack</a>:</p>
+<p>Edit <code>/etc/apache2/ssl-global.conf</code>, then modify/add these lines:</p>
+<pre><code>--- a/apache2/ssl-global.conf
++++ b/apache2/ssl-global.conf
+@@ -77,7 +77,17 @@
+        #   SSL Cipher Suite:
+        #   List the ciphers that the client is permitted to negotiate.
+        #   See the mod_ssl documentation for a complete list.
+-       SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
++       # SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
++        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
++        SSLCipherSuite ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
++        # normally this is in copies of default-vhost-ssl.conf, but it needs to be default:
++        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
++        SSLHonorCipherOrder On
++
++        ##  SSL compression:
++        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
++        # as of Apache2 2.4.4 the default is Off; this is in case you ever run on a lower version.
++        SSLCompression Off
+
+        #   Server Certificate:
+        #   Point SSLCertificateFile at a PEM encoded certificate.  If</code></pre>
+<p>After that, test the config, then restart <code>apache2</code>:</p>
+<pre><code>revue:~ # apache2ctl -t
+Syntax OK
+revue:~ # systemctl restart apache2.service
+revue:~ # systemctl status apache2.service
+● apache2.service - The Apache Webserver
+   Loaded: loaded (/usr/lib/systemd/system/apache2.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2015-06-11 20:58:12 CEST; 8s ago
+ Main PID: 23760 (httpd-prefork)
+   Status: &quot;Processing requests...&quot;
+   CGroup: /system.slice/apache2.service
+           ├─23760 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           ├─23780 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           ├─23781 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           ├─23782 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           ├─23783 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           └─23784 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+
+Jun 11 20:58:11 revue systemd[1]: Starting The Apache Webserver...
+Jun 11 20:58:12 revue systemd[1]: Started The Apache Webserver.
+revue:~ #</code></pre>
+<p>Additional information at <a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html">Secure your Apache Server</a>.</p>
+<h2 id="enabling-https-for-apache2">Enabling https for apache2</h2>
+<p>First get and install a certificate.</p>
+<p>Then enable <a href="http://httpd.apache.org/docs/2.4/mod/mod_ssl.html">mod_ssl</a>, in <code>/etc/sysconfig/apache2</code> you need one entrie appended to <code>APACHE_MODULES</code>:</p>
+<pre><code>mod_ssl</code></pre>
+<blockquote>
+<p><strong>note</strong></p>
+<p>TODO figure out how to use this together with mod_proxy and mod_proxy_http; see how to make Apache proxy http requests to https &lt;http://stackoverflow.com/questions/9977215/how-to-make-apache-proxy-http-requests-to-https&gt;.</p>
+</blockquote>
+<h3 id="generating-the-private-key-protected-with-a-strong-password">Generating the private key protected with a strong password</h3>
+<blockquote>
+<p><strong>strong passwords</strong></p>
+<p><a href="https://en.wikipedia.org/wiki/Password_strength#Examples_of_weak_passwords">Avoid weak passwords</a>.</p>
+<p>One way of creating a single strong password is by estimating <a href="https://en.wikipedia.org/wiki/Password_strength#Required_Bits_of_Entropy">required bits of entropy</a>, then choosing a set of characters and password length and generate a <a href="https://en.wikipedia.org/wiki/Password_strength#Random_passwords">random password with at least that length</a>).</p>
+<p>Here 16 characters gets you about 80 bits of precision.</p>
+<p>But remember that often you need multiple strong passwords, so be sure to read some <a href="https://en.wikipedia.org/wiki/Password_strength#Guidelines_for_strong_passwords">guidelines around strong passwords</a>.</p>
+</blockquote>
+<p>First a few notes:</p>
+<ol style="list-style-type: decimal">
+<li><a href="http://crypto.stackexchange.com/questions/20253/why-we-cant-implement-aes-512-key-size">There is no AES-512</a>, so the best to use is <a href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard#Description_of_the_cipher">AES-256</a> (AES wiht a 256-bit key).</li>
+<li><a href="https://en.wikipedia.org/wiki/RSA_(cryptosystem)#cite_note-20">RSA keys should be at least 2048 bits long</a>, but 4096 provide even more security (<a href="https://blog.hboeck.de/archives/872-About-the-supposed-factoring-of-a-4096-bit-RSA-key.html">the factoring of a 4096-bit RSA key was a faulty copy</a>).</li>
+<li><a href="https://en.wikipedia.org/wiki/Digital_Signature_Algorithm">DSA keys</a> are limited to 1024 bits. Don't use them.</li>
+</ol>
+<p>The <a href="https://www.openssl.org/docs/apps/genrsa.html">genrsa</a> command of openssl generates RSA keys.</p>
+<p>Generate a 4096 bit RSA private key (keep it in a safe place!) encrypted using the 256-bit AES algorithm (be sure to give it a <a href="https://en.wikipedia.org/wiki/Password_strength">strong password</a>!:</p>
+<pre><code>openssl genrsa -out 4096-bit-rsa-key-encrypted-using-256-bit-aes.private.key -aes256 4096</code></pre>
+<p>You can also use <a href="https://en.wikipedia.org/wiki/Ssh-keygen">ssh-keygen</a>, but the <a href="https://wiki.osuosl.org/howtos/ssh_key_tutorial.html">default setup is not that secure</a> and <a href="https://github.com/nickchappell/personal-projects-docs/blob/master/services_notes/ssh_notes.md">making it more secure requires openssl</a>.</p>
+<h3 id="generate-the-csr-certificate-signing-request">Generate the CSR (Certificate Signing Request)</h3>
+<blockquote>
+<p><strong>tmpfs on a Mac</strong></p>
+<p>On a Mac you have <a href="https://gist.github.com/koshigoe/822455">these nice scripts</a> by <a href="https://gist.github.com/koshigoe">koshigoe</a> to help you creating a tmpfs.</p>
+<p>They use <a href="https://www.google.com/search?q=hdid">hdid</a>, <a href="https://www.google.com/search?q=newfs_hfs">newfs_hfs</a>, <a href="https://www.google.com/search?q=mount">mount</a>, <a href="https://www.google.com/search?q=umount">umount</a> and <a href="https://www.google.com/search?q=hdiutil">hdiutil</a>.</p>
+<p><a href="https://gist.githubusercontent.com/koshigoe/822455/raw/dd33aeeb0267040743a4f4272cab371e0880770f/mount-ram.sh">mount-ram.sh</a>:</p>
+<pre><code>#!/bin/sh
+
+# This program has two feature.
+#
+# 1. Create a disk image on RAM.
+# 2. Mount that disk image.
+#
+# Usage:
+#   $0 &lt;dir&gt; &lt;size&gt;
+#
+#   size:
+#     The `size&#39; is a size of disk image (MB).
+#
+#   dir:
+#     The `dir&#39; is a directory, the dir is used to mount the disk image.
+#
+# See also:
+#   - hdid(8)
+#
+
+mount_point=${1}
+size=${2:-64}
+
+mkdir -p $mount_point
+if [ $? -ne 0 ]; then
+    echo &quot;The mount point didn&#39;t available.&quot; &gt;&amp;2
+    exit $?
+fi
+
+sector=$(expr $size \* 1024 \* 1024 / 512)
+device_name=$(hdid -nomount &quot;ram://${sector}&quot; | awk &#39;{print $1}&#39;)
+if [ $? -ne 0 ]; then
+    echo &quot;Could not create disk image.&quot; &gt;&amp;2
+    exit $?
+fi
+
+newfs_hfs $device_name &gt; /dev/null
+if [ $? -ne 0 ]; then
+    echo &quot;Could not format disk image.&quot; &gt;&amp;2
+    exit $?
+fi
+
+mount -t hfs $device_name $mount_point
+if [ $? -ne 0 ]; then
+    echo &quot;Could not mount disk image.&quot; &gt;&amp;2
+    exit $?
+fi</code></pre>
+<p><a href="https://gist.githubusercontent.com/koshigoe/822455/raw/802073f8f0791ba050180986dfe9091f1bca9abf/umount-ram.sh">umount-ram.sh</a>:</p>
+<pre><code>#!/bin/sh
+
+# This program has two features.
+#
+# 1. Unmount a disk image.
+# 2. Detach the disk image from RAM.
+#
+# Usage:
+#   $0 &lt;dir&gt;
+#
+#   dir:
+#     The `dir&#39; is a directory, the dir is mounting a disk image.
+#
+# See also:
+#   - hdid(8)
+#
+
+mount_point=$1
+if [ ! -d &quot;${mount_point}&quot; ]; then
+    echo &quot;The mount point didn&#39;t available.&quot; &gt;&amp;2
+    exit 1
+fi
+mount_point=$(cd $mount_point &amp;&amp; pwd)
+
+device_name=$(df &quot;${mount_point}&quot; 2&gt;/dev/null | tail -1 | grep &quot;${mount_point}&quot; | cut -d&#39; &#39; -f1)
+if [ -z &quot;${device_name}&quot; ]; then
+    echo &quot;The mount point didn&#39;t mount disk image.&quot; &gt;&amp;2
+    exit 1
+fi
+
+umount &quot;${mount_point}&quot;
+if [ $? -ne 0 ]; then
+    echo &quot;Could not unmount.&quot; &gt;&amp;2
+    exit $?
+fi
+
+hdiutil detach -quiet $device_name</code></pre>
+</blockquote>
+<p>Here we will generate a <a href="https://en.wikipedia.org/wiki/Certificate_signing_request">CSR</a> using SHA-256 (which is a <a href="https://en.wikipedia.org/wiki/Secure_Hash_Algorithm">secure hashing</a> function that is part of the <a href="https://en.wikipedia.org/wiki/SHA-2#Comparison_of_SHA_functions">SHA-2</a> family of hashing functions <a href="http://crypto.stackexchange.com/questions/3153/sha-256-vs-any-256-bits-of-sha-512-which-is-more-secure">secure enough for the forseeable future</a>).</p>
+<ol style="list-style-type: decimal">
+<li>Copy your encrypted private key to a temporary directory (important: you <strong>have to clean that directory later on</strong>) preferably in a <a href="https://en.wikipedia.org/wiki/Tmpfs">tmpfs</a> temporary file system.</li>
+<li><p>Decrypt your key (enter your password when openssl asks for it):</p>
+<pre><code>openssl rsa -in 4096-bit-rsa-key-encrypted-using-256-bit-aes.private.key -out 4096-bit-rsa-key.private.key</code></pre></li>
+<li><p>Create a signing request using the decrypted key for your domain (in this case for the pluimers.com domain) with some sensible attributes:</p>
+<pre><code># openssl req -new -sha256 -key 4096-bit-rsa-key.private.key -out pluimers.com.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter &#39;.&#39;, the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:NL
+State or Province Name (full name) [Some-State]:Noord-Holland
+Locality Name (eg, city) []:Amsterdam
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Pluimers Software Ontwikkeling B.V.
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:pluimers.com
+Email Address []:webmaster@pluimers.com
+
+Please enter the following &#39;extra&#39; attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+# openssl req -noout -text -in pluimers.com.csr
+    Data:
+        Version: 0 (0x0)
+        Subject: C=NL, ST=Noord-Holland, L=Amsterdam, O=Pluimers Software Ontwikkeling B.V., CN=pluimers.com/emailAddress=webmaster@pluimers.com
+        Subject Public Key Info:</code></pre></li>
+<li><p>Follow the StartSSL steps at <a href="https://konklone.com/post/switch-to-https-now-for-free#generating-the-certificate">Generating the Certificate</a>.</p>
+<blockquote>
+<ul>
+<li>note you can only have 1 specific subdomain when your StartSSL identity is class 1.</li>
+<li>the upload and processing of the CRS takes a few minutes</li>
+<li>the generation of the certificate can take like 5 minutes</li>
+<li>copy the resulting certificate to <code>pluimers.com.crt</code></li>
+<li><dl>
+<dt>on your OpenSuSE server, save these files:</dt>
+<dd><ul>
+<li>Certificate: <code>/etc/apache2/ssl.crt/pluimers.com.crt</code></li>
+<li>Decrypted private key: <code>/etc/apache2/ssl.key/pluimers.com.key</code></li>
+</ul>
+</dd>
+</dl></li>
+</ul>
+</blockquote></li>
+<li><p>Fix this error by changing <code>/etc/apache2/vhosts.d/pluimers.com-ssl.conf</code> from <code>ServerName revue</code> into <code>ServerName www.pluimers.com</code>:</p>
+<pre><code>[Sun Jun 28 16:43:40.342067 2015] [ssl:debug] [pid 5251] ssl_util_ssl.c(356): AH02412: [revue:443] Cert does not match for name &#39;revue&#39; [subject: emailAddress=webmaster@pluimers.com,CN=www.pluimers.com,C=NL / issuer: CN=StartCom Class 1 Primary Intermediate Server CA,OU=Secure Digital Certificate Signing,O=StartCom Ltd.,C=IL / serial: 05D759EC0CF620 / notbefore: Jun 14 08:24:00 2015 GMT / notafter: Jun 14 14:46:36 2016 GMT]</code></pre></li>
+</ol>
+<p>&lt;<a href="http://ndg-security.ceda.ac.uk/wiki/ndg_security/Apache2/SUSE#SSL" class="uri">http://ndg-security.ceda.ac.uk/wiki/ndg_security/Apache2/SUSE#SSL</a>&gt;</p>
+<p>SSLLabs test will most likely give this downgrade:</p>
+<blockquote>
+<p>This server's certificate chain is incomplete. Grade capped to B.</p>
+</blockquote>
+<p>So make sure you chain your certificates when using startSSL:</p>
+<pre><code>pushd /etc/apache2/ssl.crt
+wget -m -np https://www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem
+cat pluimers.com.crt www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem &gt; pluimers.com-chain.crt
+popd</code></pre>
+<p>Now ensure these two lines in <code>/etc/apache2/vhosts.d/pluimers.com-ssl.conf</code> are as follows:</p>
+<pre><code>#SSLCertificateFile /etc/apache2/ssl.crt/pluimers.com.crt
+SSLCertificateKeyFile /etc/apache2/ssl.key/pluimers.com.key
+SSLCertificateChainFile /etc/apache2/ssl.crt/pluimers.com-chain.crt</code></pre>
+<p>Finally, restart the apache2 service:</p>
+<pre><code>rcapache2 stop
+rcapache2 start</code></pre>
+<p>If it fails, then look through errors in <code>/var/log/apache2/pluimers.com-ssl-error_log</code>, as <code>journalctl -xe</code> will not show details.</p>
+<blockquote>
+<p><strong>Important apache restart note</strong></p>
+<p><code>rcapache2 restart</code> will not fully unload the apache configuration. Use this in stead:</p>
+<pre><code>rcapache2 stop
+rcapache2 start</code></pre>
+<p>Without it, you will get spurious errors (like <a href="https://www.pluimers.com" class="uri">https://www.pluimers.com</a> re-using part of the virtual directory configuration for <a href="http://www.pluimers.com" class="uri">http://www.pluimers.com</a> thereby generating spurious 403-errors) in log files like the <code>403 1032</code> and <code>403 1018</code> error codes and <code>authorization result of &lt;RequireAny&gt;: denied</code> in below logs.</p>
+<p>BTW:</p>
+<blockquote>
+<p>Note the differences in time-stamp logging. Don't you hate that? What happened to ISO-8601?</p>
+</blockquote>
+<p>pluimers.com-ssl_request_log:</p>
+<pre><code>[29/Jun/2015:20:16:40 +0200] 80.100.143.119 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 &quot;GET / HTTP/1.1&quot; 1032 &quot;-&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36&quot;
+[29/Jun/2015:20:16:40 +0200] 80.100.143.119 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 &quot;GET /favicon.ico HTTP/1.1&quot; 1018 &quot;https://www.pluimers.com/&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36&quot;</code></pre>
+<p>pluimers.com-access_log:</p>
+<pre><code>revue 80.100.143.119 - - [29/Jun/2015:20:16:40 +0200] &quot;GET / HTTP/1.1&quot; 403 1032 &quot;-&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36&quot;
+revue 80.100.143.119 - - [29/Jun/2015:20:16:40 +0200] &quot;GET /favicon.ico HTTP/1.1&quot; 403 1018 &quot;https://www.pluimers.com/&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36&quot;</code></pre>
+<p>pluimers.com-ssl-error_log:</p>
+<pre><code>[Mon Jun 29 20:16:40.266336 2015] [ssl:info] [pid 5588] [client 80.100.143.119:63297] AH01964: Connection to child 5 established (server revue:443)
+[Mon Jun 29 20:16:40.267090 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(1908): [client 80.100.143.119:63297] AH02043: SSL virtual host for servername www.pluimers.com found
+[Mon Jun 29 20:16:40.267832 2015] [ssl:info] [pid 5589] [client 80.100.143.119:63298] AH01964: Connection to child 6 established (server revue:443)
+[Mon Jun 29 20:16:40.268728 2015] [ssl:debug] [pid 5589] ssl_engine_kernel.c(1908): [client 80.100.143.119:63298] AH02043: SSL virtual host for servername www.pluimers.com found
+[Mon Jun 29 20:16:40.298407 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(1841): [client 80.100.143.119:63297] AH02041: Protocol: TLSv1.2, Cipher: ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits)
+[Mon Jun 29 20:16:40.303995 2015] [ssl:debug] [pid 5589] ssl_engine_kernel.c(1841): [client 80.100.143.119:63298] AH02041: Protocol: TLSv1.2, Cipher: ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits)
+[Mon Jun 29 20:16:40.646809 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(243): [client 80.100.143.119:63297] AH02034: Initial (No.1) HTTPS request received for child 5 (server revue:443)
+[Mon Jun 29 20:16:40.647091 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all denied: denied
+[Mon Jun 29 20:16:40.647104 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of &lt;RequireAny&gt;: denied
+[Mon Jun 29 20:16:40.647112 2015] [authz_core:error] [pid 5588] [client 80.100.143.119:63297] AH01630: client denied by server configuration: /srv/www/vhosts/pluimers.com/
+[Mon Jun 29 20:16:40.647239 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all granted: granted
+[Mon Jun 29 20:16:40.647250 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of &lt;RequireAny&gt;: granted
+[Mon Jun 29 20:16:40.792584 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(243): [client 80.100.143.119:63297] AH02034: Subsequent (No.2) HTTPS request received for child 5 (server revue:443), referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792637 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all denied: denied, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792667 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of &lt;RequireAny&gt;: denied, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792676 2015] [authz_core:error] [pid 5588] [client 80.100.143.119:63297] AH01630: client denied by server configuration: /srv/www/vhosts/pluimers.com/favicon.ico, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792711 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all granted: granted, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792722 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of &lt;RequireAny&gt;: granted, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:50.646230 2015] [ssl:info] [pid 5589] (70014)End of file found: [client 80.100.143.119:63298] AH01991: SSL input filter read failed.
+[Mon Jun 29 20:16:50.646659 2015] [ssl:debug] [pid 5589] ssl_engine_io.c(1003): [client 80.100.143.119:63298] AH02001: Connection closed to child 6 with standard shutdown (server revue:443)
+[Mon Jun 29 20:16:55.808702 2015] [ssl:info] [pid 5588] (70007)The timeout specified has expired: [client 80.100.143.119:63297] AH01991: SSL input filter read failed.
+[Mon Jun 29 20:16:55.808989 2015] [ssl:debug] [pid 5588] ssl_engine_io.c(1003): [client 80.100.143.119:63297] AH02001: Connection closed to child 5 with standard shutdown (server revue:443)</code></pre>
+</blockquote>
+<hr />
+<ol start="0" style="list-style-type: decimal">
+<li>Remove the temporary directory (preferably, delete the whole <code>tmpfs</code> volume it is on).</li>
+</ol>
+<p>&lt;<a href="https://blog.websenat.de/2014/05/03/sysadmin-openssl-befehle-und-tipps/" class="uri">https://blog.websenat.de/2014/05/03/sysadmin-openssl-befehle-und-tipps/</a>&gt;</p>
+<p>&lt;<a href="https://twitter.com/konklone/status/493748256933810178" class="uri">https://twitter.com/konklone/status/493748256933810178</a>&gt;</p>
+<p>&lt;<a href="https://konklone.com/post/switch-to-https-now-for-free#generating-the-certificate" class="uri">https://konklone.com/post/switch-to-https-now-for-free#generating-the-certificate</a>&gt;</p>
+<p>&lt;<a href="https://gist.github.com/konklone/98f48a90bfd9cfd076dc" class="uri">https://gist.github.com/konklone/98f48a90bfd9cfd076dc</a>&gt; Full log:</p>
+<pre><code># openssl req -new -sha256 -key 4096-bit-rsa-key.private.key -out pluimers.com.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter &#39;.&#39;, the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:NL
+State or Province Name (full name) [Some-State]:Noord-Holland
+Locality Name (eg, city) []:Amsterdam
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Pluimers Software Ontwikkeling B.V.
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:pluimers.com
+Email Address []:webmaster@pluimers.com
+
+Please enter the following &#39;extra&#39; attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:</code></pre>
+<h3 id="notes-1">Notes</h3>
+<p>&lt;<a href="https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html#sec_apache2_ssl_configuration_name-based" class="uri">https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html#sec_apache2_ssl_configuration_name-based</a>&gt;</p>
+<p>&lt;<a href="https://192.168.71.62/shell" class="uri">https://192.168.71.62/shell</a>&gt;</p>
+<p>fails: &lt;<a href="https://revue.pluimers.com/shell" class="uri">https://revue.pluimers.com/shell</a>&gt;</p>
+<p>&lt;<a href="https://80.100.143.119/shell" class="uri">https://80.100.143.119/shell</a>&gt;</p>
+<p>&lt;<a href="https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/" class="uri">https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/</a>&gt;</p>
+<p>&lt;<a href="http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html" class="uri">http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html</a>&gt;</p>
+<p>&lt;<a href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html" class="uri">https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html</a>&gt;</p>
+<p>&lt;<a href="http://www.techytalk.info/remote-cli-access-to-ubuntu-pc-using-web-browser-through-authenticated-https/comment-page-1/" class="uri">http://www.techytalk.info/remote-cli-access-to-ubuntu-pc-using-web-browser-through-authenticated-https/comment-page-1/</a>&gt;</p>
+<p>&lt;<a href="https://konklone.com/post/switch-to-https-now-for-free" class="uri">https://konklone.com/post/switch-to-https-now-for-free</a>&gt;</p>
+<p>&lt;<a href="https://letsencrypt.org" class="uri">https://letsencrypt.org</a>&gt;</p>
+<p>&lt;<a href="http://www.unixmen.com/create-ssl-cetificates-in-opensuse-12-3/" class="uri">http://www.unixmen.com/create-ssl-cetificates-in-opensuse-12-3/</a>&gt;</p>
+<p>&lt;<a href="https://en.opensuse.org/SDB:Apache_installation" class="uri">https://en.opensuse.org/SDB:Apache_installation</a>&gt;</p>
+<p>&lt;<a href="https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html" class="uri">https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html</a>&gt;</p>
+<p>&lt;<a href="http://stackoverflow.com/questions/24888407/setting-up-apache-w-ssl-using-opensuse-yast" class="uri">http://stackoverflow.com/questions/24888407/setting-up-apache-w-ssl-using-opensuse-yast</a>&gt;</p>
+<p>&lt;<a href="http://blog.remibergsma.com/2013/03/15/always-available-linux-terminal-shell-in-a-box-on-raspberry-pi/" class="uri">http://blog.remibergsma.com/2013/03/15/always-available-linux-terminal-shell-in-a-box-on-raspberry-pi/</a>&gt;</p>
+<blockquote>
+<p><strong>note</strong></p>
+<p>test with testssl.sh</p>
+</blockquote>
+<p>&lt;<a href="https://weakdh.org/" class="uri">https://weakdh.org/</a>&gt;</p>
+<p>Ligt complexer; het SHA-256 verhaal gaat over de certificate signature; niet over de versleuteling van de verbinding zelf. Zie ook: <a href="http://googleonlinesecuri" class="uri">http://googleonlinesecuri</a>...lly-sunsetting-sha-1.html</p>
+<p>Om 'modern cryptography / groene balk / geen warnings / errors ' te krijgen in de nieuwste Chrome, IE en Firefox moet je dus certs hebben die op RSA 2048 with SHA-256 of langer gebaseerd zijn of langer, dus geen RSA-512/1024 of SHA-1 of MD5 meer in de certificaat-chain (op de root CA na) en tevens dient er moderne, veilige ciphers met Forward Secrecy gebruikt te worden; waarbij AES-GCM de meest gangbare is. Ook b.v. AES-256-CBC is dus niet goed, omdat CBC een niet-authenticated blockcipher is en GCM wel authenticated is (en stukken sneller !).</p>
+<p>Voor meer info zie b.v: <a href="http://googleonlinesecuri" class="uri">http://googleonlinesecuri</a>...lly-sunsetting-sha-1.html Of de SslLabs blog: <a href="https://community.qualys.com/blogs/securitylabs" class="uri">https://community.qualys.com/blogs/securitylabs</a></p>
+<h2 id="zypper-updating">Zypper updating</h2>
+<p>The only way to update Tumbleweed is through the distribution update:</p>
+<pre><code>zypper dup</code></pre>
+<p>If it doesn't update anything: find when more repostories are added:</p>
+<p>&lt;<a href="https://forums.opensuse.org/showthread.php/506273-Distribution-Upgrade-on-Tumbleweed-Gnome" class="uri">https://forums.opensuse.org/showthread.php/506273-Distribution-Upgrade-on-Tumbleweed-Gnome</a>-(sudo-zypper-dup)&gt;</p>
+<p>&lt;<a href="http://linux.derkeiler.com/Mailing-Lists/SuSE/2014-11/msg01554.html" class="uri">http://linux.derkeiler.com/Mailing-Lists/SuSE/2014-11/msg01554.html</a>&gt;</p>
+<p>Show all the details of your configured repositories:</p>
+<pre><code>zypper repos --details</code></pre>
+<h2 id="mariadb-dependency">mariadb dependency</h2>
+<p>20150706 - somehow mariadb got installed (MySQL):</p>
+<pre><code>(Use the Enter or Space key to scroll the text by lines or pages.)
+
+Message from package mariadb:
+
+
+You just installed MySQL server for the first time.
+
+You can start it using:
+ rcmysql start
+
+During first start empty database will be created for your automatically.
+
+PLEASE REMEMBER TO SET A PASSWORD FOR THE MariaDB root USER !
+To do so, start the server, then issue the following commands:
+
+&#39;/usr/bin/mysqladmin&#39; -u root password &#39;new-password&#39;
+&#39;/usr/bin/mysqladmin&#39; -u root -h misibook password &#39;new-password&#39;
+
+Alternatively you can run:
+&#39;/usr/bin/mysql_secure_installation&#39;
+
+which will also give you the option of removing the test
+databases and anonymous user created by default. This is
+strongly recommended for production servers.
+
+
+-----------------------------------------------------------------------------
+
+
+(Press &#39;q&#39; to exit the pager.)
+/var/tmp/TmpFile.A0c0jv lines 1-30/30 (END)</code></pre>
+<hr />
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>I keep using the old <a href="https://en.wikipedia.org/wiki/SUSE">SuSE</a> writing, I'm an old fart.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p><a href="https://en.opensuse.org/Portal:Tumbleweed">Tumbleweed</a> is the rolling release of OpenSuSE.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p><a href="https://en.wikipedia.org/wiki/Headless_software">Headless</a> as in no GUI, not as in <a href="https://en.wikipedia.org/wiki/Embedded_system">Embedded System</a>. So there is a text <a href="https://en.wikipedia.org/wiki/System_console">console</a>, and remote <a href="https://en.wikipedia.org/wiki/Secure_Shell">ssh</a>.<a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>See <a href="https://en.wikipedia.org/wiki/Snip_en_Snap">Snip en Snap revue</a>.<a href="#fnref4">↩</a></p></li>
+<li id="fn5"><p>The <a href="https://www.google.com/search?q=patterns-openSUSE-minimal_base-conflicts">patterns-openSUSE-minimal_base-conflicts</a> is there to <a href="http://unix.stackexchange.com/questions/144438/missing-broken-dependancies-on-opensuse-normal/144583#144583">prevent recommended packages to blow up a minimal installation</a><a href="#fnref5">↩</a></p></li>
+<li id="fn6"><p>The <a href="http://unix.stackexchange.com/questions/73427/cant-install-python-because-of-zypper-conflict">actual conflicts package</a> contains the version number of the distribution you use.<a href="#fnref6">↩</a></p></li>
+</ol>
+</div>
+</body>
+</html>

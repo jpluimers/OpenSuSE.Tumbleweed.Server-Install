@@ -346,52 +346,63 @@ ul.auto-toc {
 <p><tt class="docutils literal">snip</tt> and <tt class="docutils literal">snap</tt> run regular OpenSuSE releases. <tt class="docutils literal">revue</tt> is my first machine running a <a class="reference external" href="https://en.wikipedia.org/wiki/Rolling_release">rolling</a> release.</p>
 <p>Over time, there will be some documents indicating installation progress and problem solving.</p>
 <div class="section" id="table-of-contents">
-<h1><a class="toc-backref" href="#id14">Table of Contents</a></h1>
+<h1><a class="toc-backref" href="#id16">Table of Contents</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#table-of-contents" id="id14">Table of Contents</a></li>
-<li><a class="reference internal" href="#todo" id="id15">TODO</a></li>
-<li><a class="reference internal" href="#notes" id="id16">NOTES</a><ul>
-<li><a class="reference internal" href="#syslogd" id="id17">syslogd</a></li>
-<li><a class="reference internal" href="#rest" id="id18">Rest</a></li>
+<li><a class="reference internal" href="#table-of-contents" id="id16">Table of Contents</a></li>
+<li><a class="reference internal" href="#todo" id="id17">TODO</a></li>
+<li><a class="reference internal" href="#notes" id="id18">NOTES</a><ul>
+<li><a class="reference internal" href="#syslogd" id="id19">syslogd</a></li>
+<li><a class="reference internal" href="#rest" id="id20">Rest</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#headless-install" id="id19">headless install</a><ul>
-<li><a class="reference internal" href="#text-mode-console-will-break-line-drawing-after-first-boot" id="id20">text-mode console will break line drawing after first boot</a></li>
-<li><a class="reference internal" href="#start-with-minimal-server-selection-text-mode" id="id21">Start with &quot;Minimal server selection (text mode)&quot;</a></li>
-<li><a class="reference internal" href="#halt-will-fail-use-halt-p-to-halt-under-esxi-5-1" id="id22"><tt class="docutils literal">halt</tt> will fail, use <tt class="docutils literal">halt <span class="pre">-p</span></tt> to halt under ESXi 5.1</a></li>
-<li><a class="reference internal" href="#id8" id="id23">text-mode installation and conflicts</a></li>
-<li><a class="reference internal" href="#add-git-extras" id="id24">add git-extras</a></li>
+<li><a class="reference internal" href="#headless-install" id="id21">headless install</a><ul>
+<li><a class="reference internal" href="#text-mode-console-will-break-line-drawing-after-first-boot" id="id22">text-mode console will break line drawing after first boot</a></li>
+<li><a class="reference internal" href="#start-with-minimal-server-selection-text-mode" id="id23">Start with &quot;Minimal server selection (text mode)&quot;</a></li>
+<li><a class="reference internal" href="#halt-will-fail-use-halt-p-to-halt-under-esxi-5-1" id="id24"><tt class="docutils literal">halt</tt> will fail, use <tt class="docutils literal">halt <span class="pre">-p</span></tt> to halt under ESXi 5.1</a></li>
+<li><a class="reference internal" href="#id8" id="id25">text-mode installation and conflicts</a></li>
+<li><a class="reference internal" href="#add-git-extras" id="id26">add git-extras</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#configuration" id="id25">configuration</a><ul>
-<li><a class="reference internal" href="#getting-started-with-etckeeper" id="id26">getting started with etckeeper</a></li>
-<li><a class="reference internal" href="#removing-hardlinks-from-the-etckeeper-repository" id="id27">removing hardlinks from the <tt class="docutils literal">etckeeper</tt> repository</a></li>
-<li><a class="reference internal" href="#configuring-sudo" id="id28">configuring sudo</a></li>
-<li><a class="reference internal" href="#configuring-ssh" id="id29">configuring ssh</a></li>
-<li><a class="reference internal" href="#install-and-configure-noip-dynamic-dns-update-script" id="id30">install and configure <cite>noip</cite> dynamic DNS update script</a></li>
-<li><a class="reference internal" href="#configuring-ntpd-firewall-and-jail-for-it" id="id31">configuring ntpd, firewall and jail for it</a></li>
-<li><a class="reference internal" href="#configuring-samba" id="id32">Configuring <tt class="docutils literal">samba</tt></a></li>
-<li><a class="reference internal" href="#testing-and-fixing-so-clients-can-talk-to-our-samba-server" id="id33">Testing and fixing so clients can talk to our Samba server</a></li>
-<li><a class="reference internal" href="#one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup" id="id34">One day: syncing between the Samba password and system password storage is setup</a></li>
-<li><a class="reference internal" href="#fixing-password-synchronisation" id="id35">Fixing password synchronisation?</a></li>
-<li><a class="reference internal" href="#configuring-named-bind" id="id36">configuring named/BIND</a></li>
-<li><a class="reference internal" href="#ensure-that-var-lib-named-master-gets-synced-to-etc-named-master" id="id37">Ensure that <tt class="docutils literal">/var/lib/named/master</tt> gets synced to <tt class="docutils literal">/etc/named/master</tt></a></li>
-<li><a class="reference internal" href="#adding-aliases-for-commands-removed-in-net-tools" id="id38">Adding aliases for commands removed in <tt class="docutils literal"><span class="pre">net-tools</span></tt></a></li>
-<li><a class="reference internal" href="#configuring-monit-monitoring-service" id="id39">Configuring <tt class="docutils literal">monit</tt> monitoring service</a></li>
-<li><a class="reference internal" href="#configuring-apache2-for-the-first-time" id="id40">Configuring apache2 for the first time</a></li>
-<li><a class="reference internal" href="#getting-and-running-testssl-sh" id="id41">Getting and running <tt class="docutils literal">testssl.sh</tt></a></li>
-<li><a class="reference internal" href="#login-reboot-fritz-box" id="id42">Login / Reboot Fritz!Box</a></li>
-<li><a class="reference internal" href="#configuring-and-running-shellinabox-with-ssh" id="id43">configuring and running shellinabox with ssh</a></li>
+<li><a class="reference internal" href="#configuration" id="id27">configuration</a><ul>
+<li><a class="reference internal" href="#getting-started-with-etckeeper" id="id28">getting started with etckeeper</a></li>
+<li><a class="reference internal" href="#removing-hardlinks-from-the-etckeeper-repository" id="id29">removing hardlinks from the <tt class="docutils literal">etckeeper</tt> repository</a></li>
+<li><a class="reference internal" href="#adding-user-jeroenp-to-sudoers-so-it-can-perform-sudo" id="id30">Adding user <tt class="docutils literal">jeroenp</tt> to <tt class="docutils literal">SUDOERS</tt> so it can perform <tt class="docutils literal">sudo</tt></a></li>
+<li><a class="reference internal" href="#configuring-ssh" id="id31">configuring ssh</a></li>
+<li><a class="reference internal" href="#install-and-configure-noip-dynamic-dns-update-script" id="id32">install and configure <cite>noip</cite> dynamic DNS update script</a></li>
+<li><a class="reference internal" href="#configuring-ntpd-firewall-and-jail-for-it" id="id33">configuring ntpd, firewall and jail for it</a></li>
+<li><a class="reference internal" href="#configuring-samba" id="id34">Configuring <tt class="docutils literal">samba</tt></a></li>
+<li><a class="reference internal" href="#testing-and-fixing-so-clients-can-talk-to-our-samba-server" id="id35">Testing and fixing so clients can talk to our Samba server</a></li>
+<li><a class="reference internal" href="#one-day-syncing-between-the-samba-password-and-system-password-storage-is-setup" id="id36">One day: syncing between the Samba password and system password storage is setup</a></li>
+<li><a class="reference internal" href="#fixing-password-synchronisation" id="id37">Fixing password synchronisation?</a></li>
+<li><a class="reference internal" href="#configuring-named-bind" id="id38">configuring named/BIND</a></li>
+<li><a class="reference internal" href="#ensure-that-var-lib-named-master-gets-synced-to-etc-named-master" id="id39">Ensure that <tt class="docutils literal">/var/lib/named/master</tt> gets synced to <tt class="docutils literal">/etc/named/master</tt></a></li>
+<li><a class="reference internal" href="#adding-aliases-for-commands-removed-in-net-tools" id="id40">Adding aliases for commands removed in <tt class="docutils literal"><span class="pre">net-tools</span></tt></a></li>
+<li><a class="reference internal" href="#configuring-monit-monitoring-service" id="id41">Configuring <tt class="docutils literal">monit</tt> monitoring service</a></li>
+<li><a class="reference internal" href="#configuring-apache2-for-the-first-time" id="id42">Configuring apache2 for the first time</a></li>
+<li><a class="reference internal" href="#getting-and-running-testssl-sh" id="id43">Getting and running <tt class="docutils literal">testssl.sh</tt></a></li>
+<li><a class="reference internal" href="#login-reboot-fritz-box" id="id44">Login / Reboot Fritz!Box</a></li>
+<li><a class="reference internal" href="#configuring-and-running-shellinabox-with-ssh" id="id45">configuring and running shellinabox with ssh</a></li>
+<li><a class="reference internal" href="#viewing-the-long-journal" id="id46">Viewing the long journal</a></li>
+<li><a class="reference internal" href="#hardening-apache2-ssl-cyphers" id="id47">Hardening apache2 SSL cyphers</a></li>
+<li><a class="reference internal" href="#enabling-https-for-apache2" id="id48">Enabling https for apache2</a><ul>
+<li><a class="reference internal" href="#generating-the-private-key-protected-with-a-strong-password" id="id49">Generating the private key protected with a strong password</a></li>
+<li><a class="reference internal" href="#generate-the-csr-certificate-signing-request" id="id50">Generate the CSR (Certificate Signing Request)</a></li>
+<li><a class="reference internal" href="#id15" id="id51">Notes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#zypper-updating" id="id52">Zypper updating</a></li>
+<li><a class="reference internal" href="#mariadb-dependency" id="id53">mariadb dependency</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div class="section" id="todo">
-<h1><a class="toc-backref" href="#id15">TODO</a></h1>
+<h1><a class="toc-backref" href="#id17">TODO</a></h1>
 <ul class="simple">
+<li>harden OpenSSL.</li>
 <li>web site (HTTP-HTTPS)</li>
 <li>pop3 (port 110)</li>
 <li>email (SMTP-SSMTP) 25/587</li>
@@ -402,13 +413,21 @@ ul.auto-toc {
 <li>DNS security &lt;<a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server--2">https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server--2</a>&gt; and &lt;<a class="reference external" href="http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm">http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm</a>&gt;</li>
 <li>ensure 10rsync-var-lib-named-master.sh works</li>
 <li>fix syslogd and logrotate</li>
+<li>via <a class="reference external" href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html">Secure your Apache Server</a>:<ul>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security">HTTP Strict Transport Security</a></li>
+<li><a class="reference external" href="https://wiki.mozilla.org/SecurityEngineering/Public_Key_Pinning">SecurityEngineering/Public Key Pinning</a></li>
+<li><a class="reference external" href="https://raymii.org/s/tutorials/OCSP_Stapling_on_Apache2.html">OCSP Stapling on Apache</a></li>
+<li><a class="reference external" href="https://testssl.sh/">testssl.sh</a></li>
+<li><a class="reference external" href="https://www.ssllabs.com/ssltest/">SSLLabs SSL Server Test</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="notes">
-<h1><a class="toc-backref" href="#id16">NOTES</a></h1>
+<h1><a class="toc-backref" href="#id18">NOTES</a></h1>
 <p>Things that might need doing.</p>
 <div class="section" id="syslogd">
-<h2><a class="toc-backref" href="#id17">syslogd</a></h2>
+<h2><a class="toc-backref" href="#id19">syslogd</a></h2>
 <p>See <a class="reference external" href="http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/">this output</a>:</p>
 <pre class="literal-block">
 revue:/etc/xinetd.d # systemctl --failed --all
@@ -426,7 +445,7 @@ To show all installed unit files use 'systemctl list-unit-files'.
 <p>Needs investigation.</p>
 </div>
 <div class="section" id="rest">
-<h2><a class="toc-backref" href="#id18">Rest</a></h2>
+<h2><a class="toc-backref" href="#id20">Rest</a></h2>
 <p>Wget/curl are the best solution to update the <tt class="docutils literal">root.hint</tt>. See:</p>
 <ul class="simple">
 <li>&lt;<a class="reference external" href="http://lists.opensuse.org/opensuse/2008-05/msg01589.html">http://lists.opensuse.org/opensuse/2008-05/msg01589.html</a>&gt; - use dig, maybe not good</li>
@@ -533,16 +552,16 @@ fi
 </div>
 </div>
 <div class="section" id="headless-install">
-<h1><a class="toc-backref" href="#id19">headless install</a></h1>
+<h1><a class="toc-backref" href="#id21">headless install</a></h1>
 <div class="section" id="text-mode-console-will-break-line-drawing-after-first-boot">
-<h2><a class="toc-backref" href="#id20">text-mode console will break line drawing after first boot</a></h2>
+<h2><a class="toc-backref" href="#id22">text-mode console will break line drawing after first boot</a></h2>
 <p>A long standing bug, and I'm amazed not more people complain about this.</p>
 <p>I've queued a <a class="reference external" href="https://wiert.wordpress.com/?p=27755&quot;">blog entry</a> about this titled &quot;TUMBLEWEED: local console yast linedrawing characters garbage after first reboot&quot;.</p>
 <p>The workaround is simple: Call <tt class="docutils literal">/bin/unicode_start</tt> on the command line
 before starting <tt class="docutils literal">yast</tt>. It looks you need this only once per machine.</p>
 </div>
 <div class="section" id="start-with-minimal-server-selection-text-mode">
-<h2><a class="toc-backref" href="#id21">Start with &quot;Minimal server selection (text mode)&quot;</a></h2>
+<h2><a class="toc-backref" href="#id23">Start with &quot;Minimal server selection (text mode)&quot;</a></h2>
 <p>The OpenSuSE way of a headless install starts with &quot;Minimal server selection (text mode)&quot;. On top of that you extend the installation.</p>
 <p>In about 20 gigabyte disk space, you can &quot;Minimal server selection (text mode)&quot; extended by a limited set of packages.</p>
 <p>These are the <strong>patterns</strong> I extended with:</p>
@@ -556,7 +575,64 @@ before starting <tt class="docutils literal">yast</tt>. It looks you need this o
 <li><a class="reference external" href="hhttps://www.google.com/search?q=&quot;Internet+Gateway&quot;+site%3Aopensuse.org">Internet Gateway</a></li>
 <li><a class="reference external" href="https://www.google.com/search?q=&quot;DHCP+and+DNS+Server&quot;+site%3Aopensuse.org">DHCP and DNS Server</a></li>
 </ul>
-<p>After that I added some <strong>packages</strong> too:</p>
+<p>As <strong>LAMP</strong> installs mariadb, and as of somewhere around July 2015 mariadb bugs about it being installed with default non-password database root credentials:</p>
+<pre class="literal-block">
+revue:/etc # zypper rm mariadb
+Loading repository data...
+Reading installed packages...
+Resolving package dependencies...
+
+The following package is going to be REMOVED:
+  mariadb
+
+1 package to remove.
+After the operation, 78.7 MiB will be freed.
+Continue? [y/n/? shows all options] (y): y
+(1/1) Removing mariadb-10.0.17-1.3 .....................................................................................................................................................................................................[done]
+
+revue:/etc # zypper search &quot;LAMP&quot;
+Loading repository data...
+Reading installed packages...
+
+S | Name                          | Summary             | Type
+--+-------------------------------+---------------------+--------
+i | lamp_server                   | Web and LAMP Server | pattern
+i | patterns-openSUSE-lamp_server | Web and LAMP Server | package
+
+revue:/etc # zypper remove patterns-openSUSE-lamp_server
+Loading repository data...
+Reading installed packages...
+Resolving package dependencies...
+
+The following package is going to be REMOVED:
+  patterns-openSUSE-lamp_server
+
+The following pattern is going to be REMOVED:
+  lamp_server
+
+1 package to remove.
+After the operation, 57.0 B will be freed.
+Continue? [y/n/? shows all options] (y): y
+(1/1) Removing patterns-openSUSE-lamp_server-20150603-4.1 ..............................................................................................................................................................................[done]
+revue:/etc #
+
+revue:/etc # zypper remove mariadb-client mariadb-errormessages
+Loading repository data...
+Reading installed packages...
+Resolving package dependencies...
+
+The following 2 packages are going to be REMOVED:
+  mariadb-client mariadb-errormessages
+
+2 packages to remove.
+After the operation, 21.8 MiB will be freed.
+Continue? [y/n/? shows all options] (y): y
+(1/2) Removing mariadb-client-10.0.17-1.3 ..............................................................................................................................................................................................[done]
+(2/2) Removing mariadb-errormessages-10.0.17-1.3 .......................................................................................................................................................................................[done]
+revue:/etc #
+</pre>
+<p>If I ever need MySQL or MariaDB, I will get it again and solve the root rights.</p>
+<p>Finally time for some manual adding of <strong>packages</strong>:</p>
 <div class="note">
 <p class="first admonition-title">Note</p>
 <p class="last">Note that some of these won't install just yet, see the <a class="reference external" href="text-mode-installation-and-conflicts">text-mode installation and conflicts</a> section.</p>
@@ -621,12 +697,12 @@ zypper search --provides --match-exact hg
 </div>
 </div>
 <div class="section" id="halt-will-fail-use-halt-p-to-halt-under-esxi-5-1">
-<h2><a class="toc-backref" href="#id22"><tt class="docutils literal">halt</tt> will fail, use <tt class="docutils literal">halt <span class="pre">-p</span></tt> to halt under ESXi 5.1</a></h2>
+<h2><a class="toc-backref" href="#id24"><tt class="docutils literal">halt</tt> will fail, use <tt class="docutils literal">halt <span class="pre">-p</span></tt> to halt under ESXi 5.1</a></h2>
 <p>A long time ago, <a class="reference external" href="http://wiert.me/2012/12/30/opensuse-12-x-a-plain-halt-will-not-shutdown-the-system-properly/">I wrote that</a> <tt class="docutils literal">halt</tt> fails, but <tt class="docutils literal">halt <span class="pre">-p</span></tt> succeeds when running under VMware ESXi 5.1 (I don't run physical boxes any more).</p>
 <p>This still fails under OpenSuSE Tumbleweed 13.2.</p>
 </div>
 <div class="section" id="id8">
-<h2><a class="toc-backref" href="#id23">text-mode installation and conflicts</a></h2>
+<h2><a class="toc-backref" href="#id25">text-mode installation and conflicts</a></h2>
 <p>The easiest way to start a headless install is picking &quot;Minimal server selection (text mode)&quot; during installation.</p>
 <p>The problem however is that this indeed minimal. It is enforced by the <tt class="docutils literal"><span class="pre">patterns-openSUSE-minimal_base-conflicts</span></tt> <a class="footnote-reference" href="#patterns-opensuse-minimal-base-conflicts-footnote" id="id9">[5]</a> pattern which is part of the minimal install.</p>
 <p>It prevents some packages to install like <tt class="docutils literal">mercurial</tt>, <tt class="docutils literal">php</tt> and <tt class="docutils literal">python</tt>.</p>
@@ -634,7 +710,7 @@ zypper search --provides --match-exact hg
 <p>Do this <strong>after</strong> you've selected the patterns you want to install. Otherwise recommended packages can be installed potentially blowing your size.</p>
 </div>
 <div class="section" id="add-git-extras">
-<h2><a class="toc-backref" href="#id24">add git-extras</a></h2>
+<h2><a class="toc-backref" href="#id26">add git-extras</a></h2>
 <p>See the <a class="reference external" href="https://github.com/tj/git-extras/blob/master/Installation.md">git-extras Install documentation</a> for why/how.</p>
 <p>Just run this command:</p>
 <pre class="literal-block">
@@ -643,9 +719,9 @@ zypper search --provides --match-exact hg
 </div>
 </div>
 <div class="section" id="configuration">
-<h1><a class="toc-backref" href="#id25">configuration</a></h1>
+<h1><a class="toc-backref" href="#id27">configuration</a></h1>
 <div class="section" id="getting-started-with-etckeeper">
-<h2><a class="toc-backref" href="#id26">getting started with etckeeper</a></h2>
+<h2><a class="toc-backref" href="#id28">getting started with etckeeper</a></h2>
 <p>A while ago <tt class="docutils literal">etckeeper</tt> (which is <a class="reference external" href="https://github.com/joeyh/etckeeper">open source on GitHub</a>) was <a class="reference external" href="http://joeyh.name/code/etckeeper/">requested</a> to be put into the factory repository, and now <a class="reference external" href="https://software.opensuse.org/package/etckeeper">is</a>.</p>
 <p>This is how I got started:</p>
 <ol class="arabic">
@@ -670,11 +746,23 @@ git push -u origin --tags # pushes up any tags
 <p class="first admonition-title">Note</p>
 <p><a class="reference external" href="http://etckeeper.branchable.com/">etckeeper</a> is a collection of tools to let <tt class="docutils literal">/etc</tt> be stored in a git, mercurial, bazaar or darcs repository. This lets you use git to review or revert changes that were made to <tt class="docutils literal">/etc</tt>. Or even push the repository elsewhere for backups or cherry-picking configuration changes.</p>
 <p>It hooks into package managers like apt to automatically commit changes made to <tt class="docutils literal">/etc</tt> during package upgrades. It tracks file metadata that git does not normally support, but that is important for /etc, such as the permissions of <tt class="docutils literal">/etc/shadow</tt>.</p>
-<p class="last">It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.</p>
+<p>It's quite modular and configurable, while also being simple to use if you understand the basics of working with version control.</p>
+<p>Three important <tt class="docutils literal">etckeeper</tt> gotchas with powerful scripts like <a class="reference external" href="https://github.com/joeyh/etckeeper/tree/master/pre-commit.d">pre-commit</a> <tt class="docutils literal"><span class="pre">/etc/etckeeper/pre-commit.d</span></tt>:</p>
+<ol class="arabic simple">
+<li>ensure you give them executable permissions like <a class="reference external" href="http://www.networkredux.com/answers/linux-in-general/users-and-permissions/how-do-i-use-the-chmod-command-in-linux">chmod 755</a>.</li>
+<li>ensure they are valid <a class="reference external" href="https://en.wikipedia.org/wiki/Bourne_shell">sh</a> scripts.</li>
+<li>do not give them the .sh extension:</li>
+</ol>
+<blockquote class="last">
+<ul class="simple">
+<li>fails: <tt class="docutils literal"><span class="pre">/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master</span></tt></li>
+<li>works: <tt class="docutils literal"><span class="pre">/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh</span></tt></li>
+</ul>
+</blockquote>
 </div>
 </div>
 <div class="section" id="removing-hardlinks-from-the-etckeeper-repository">
-<h2><a class="toc-backref" href="#id27">removing hardlinks from the <tt class="docutils literal">etckeeper</tt> repository</a></h2>
+<h2><a class="toc-backref" href="#id29">removing hardlinks from the <tt class="docutils literal">etckeeper</tt> repository</a></h2>
 <p>Inspired by <a class="reference external" href="http://unix.stackexchange.com/questions/63627/excluding-files-in-etckeeper-with-gitignore-doesnt-work/63628#63628">this answer</a> to get rid of these messages during <a class="reference external" href="https://github.com/joeyh/etckeeper#what-etckeeper-does">etckeeper commit</a> to delete many <a class="reference external" href="http://lists.opensuse.org/opensuse-factory/2014-06/msg00115.html">hardlinked bootsplash files</a>:</p>
 <pre class="literal-block">
 etckeeper warning: hardlinked files could cause problems with git:
@@ -711,8 +799,8 @@ git rm --cached bootsplash/themes/openSUSE/cdrom/*.tr
 git commit -m &quot;git rm --cached bootsplash/themes/openSUSE/bootloader/*.tr and bootsplash/themes/openSUSE/cdrom/*.tr&quot;
 </pre>
 </div>
-<div class="section" id="configuring-sudo">
-<h2><a class="toc-backref" href="#id28">configuring sudo</a></h2>
+<div class="section" id="adding-user-jeroenp-to-sudoers-so-it-can-perform-sudo">
+<h2><a class="toc-backref" href="#id30">Adding user <tt class="docutils literal">jeroenp</tt> to <tt class="docutils literal">SUDOERS</tt> so it can perform <tt class="docutils literal">sudo</tt></a></h2>
 <ol class="arabic simple">
 <li>Start <tt class="docutils literal">yast</tt></li>
 <li>Open <tt class="docutils literal">Security and Users</tt>, then <tt class="docutils literal">Sudo</tt></li>
@@ -750,7 +838,7 @@ jeroenp     ALL = (ALL) NOPASSWD:ALL
 </div>
 </div>
 <div class="section" id="configuring-ssh">
-<h2><a class="toc-backref" href="#id29">configuring ssh</a></h2>
+<h2><a class="toc-backref" href="#id31">configuring ssh</a></h2>
 <p>Up until OpenSuSE 12.x, there was yast2-sshd. It is <a class="reference external" href="https://www.suse.com/documentation/opensuse114/book_security/data/sec_ssh_yast.html">still in the documentation</a>, but it <a class="reference external" href="http://lists.opensuse.org/opensuse/2013-11/msg00751.html">has been orphaned</a> so you need to configure it manually. It isn't hard: below is the diff of the <tt class="docutils literal">/etc/sshd_config</tt> file.</p>
 <p>Note that when manually changing sshd configuration options, you can test (<tt class="docutils literal"><span class="pre">-t</span></tt>) or test-extended (<tt class="docutils literal"><span class="pre">-T</span></tt>) <a class="reference external" href="https://www.ixsystems.com/whats-new/how-secure-can-secure-shell-ssh-be-basic-configuration-of-openssh/">like this</a>:</p>
 <pre class="literal-block">
@@ -912,7 +1000,7 @@ rcsshd status
 </pre>
 </div>
 <div class="section" id="install-and-configure-noip-dynamic-dns-update-script">
-<h2><a class="toc-backref" href="#id30">install and configure <cite>noip</cite> dynamic DNS update script</a></h2>
+<h2><a class="toc-backref" href="#id32">install and configure <cite>noip</cite> dynamic DNS update script</a></h2>
 <p>The script is based on &lt;<a class="reference external" href="https://github.com/mdmower/bash-no-ip-updater.git">https://github.com/mdmower/bash-no-ip-updater.git</a>&gt;.</p>
 <p>Create the below <tt class="docutils literal">/etc/noip.com.install.sh</tt> script with <tt class="docutils literal">chmod 700</tt>, then run it to install.</p>
 <p>One of the things it does is move the config file outside the repository (<a class="reference external" href="https://github.com/mdmower/bash-no-ip-updater/pull/2">I've made a pull-request for that</a>) as it contains credentials.</p>
@@ -994,13 +1082,14 @@ USERNAME=&quot;email&#64;address.com&quot;
 PASSWORD=&quot;password&quot;
 HOST=&quot;host.domain.com&quot;
 </pre>
-<!-- sidebar:
-
-I could just use my account name (email was not needed). Other people seem to need their email. Try both. -->
+<div class="sidebar">
+<p class="first sidebar-title">no-ip login note</p>
+<p class="last">I could just use my account name (email was not needed). Other people seem to need their email. Try both.</p>
+</div>
 <p>Finally run <tt class="docutils literal"><span class="pre">/etc/noip.com/bash-no-ip-updater/noipupdater.sh</span></tt> ones and look at the log file <tt class="docutils literal">/var/log/noip.com/noip.log</tt> to see the result and check <tt class="docutils literal">/var/log/noip.com/last_ip</tt> if the IP-address is indeed correct.</p>
 </div>
 <div class="section" id="configuring-ntpd-firewall-and-jail-for-it">
-<h2><a class="toc-backref" href="#id31">configuring ntpd, firewall and jail for it</a></h2>
+<h2><a class="toc-backref" href="#id33">configuring ntpd, firewall and jail for it</a></h2>
 <p>By default, OpenSuSE Tumbleweed 13.2 has <tt class="docutils literal">ntdp</tt> enabled and configured as client and server, even though some of the tools mislead into thinking the server is not working correctly.</p>
 <p>But first the firewall portion:</p>
 <ol class="arabic simple">
@@ -1082,7 +1171,7 @@ May 26 20:45:59 revue systemd[1]: Started NTP Server Daemon.
 </div>
 </div>
 <div class="section" id="configuring-samba">
-<h2><a class="toc-backref" href="#id32">Configuring <tt class="docutils literal">samba</tt></a></h2>
+<h2><a class="toc-backref" href="#id34">Configuring <tt class="docutils literal">samba</tt></a></h2>
 <ol class="arabic simple">
 <li>Start <tt class="docutils literal">yast</tt></li>
 <li>Open <tt class="docutils literal">Network Services</tt>, then <tt class="docutils literal">Samba Server</tt></li>
@@ -1125,7 +1214,7 @@ smbclient -L `hostname`
 </div>
 </div>
 <div class="section" id="testing-and-fixing-so-clients-can-talk-to-our-samba-server">
-<h2><a class="toc-backref" href="#id33">Testing and fixing so clients can talk to our Samba server</a></h2>
+<h2><a class="toc-backref" href="#id35">Testing and fixing so clients can talk to our Samba server</a></h2>
 <p>Now it is time to test the smb connectivity as well:</p>
 <pre class="literal-block">
 smbclient //`hostname`/profiles -U jeroenp
@@ -1185,14 +1274,14 @@ smbclient //`hostname`/jeroenp -U jeroenp
 <p>See <a class="reference external" href="https://www.google.com/search?q=&quot;Use+SMB+Information+for+Linux+Authentication&quot;">Use SMB Information for Linux Authentication</a>.</p>
 </div>
 <div class="section" id="fixing-password-synchronisation">
-<h2><a class="toc-backref" href="#id35">Fixing password synchronisation?</a></h2>
+<h2><a class="toc-backref" href="#id37">Fixing password synchronisation?</a></h2>
 <div class="note">
 <p class="first admonition-title">Note</p>
 <p class="last">Background reading (web-archive link as the site itself is down): <a class="reference external" href="http://web.archive.org/web/20130801222534/http://swerdna.dyndns.org/susesambaserver.html">Samba Server and Suse / openSUSE: HowTo Configure a Professional File Server on a SOHO LAN, covering Name Resolution, Authentication, Security and Shares</a>.</p>
 </div>
 </div>
 <div class="section" id="configuring-named-bind">
-<h2><a class="toc-backref" href="#id36">configuring named/BIND</a></h2>
+<h2><a class="toc-backref" href="#id38">configuring named/BIND</a></h2>
 <ol class="arabic simple">
 <li>Start <tt class="docutils literal">yast</tt></li>
 <li>Open <tt class="docutils literal">System</tt>, then <tt class="docutils literal">/etc/sysconfig Editor</tt></li>
@@ -1363,27 +1452,44 @@ rcnamed status
 </pre>
 <div class="note">
 <p class="first admonition-title">Note</p>
-<p>Check if your zone files are correct by executing <tt class="docutils literal"><span class="pre">named-checkzone</span></tt>.</p>
-<p>Check if your named configuration is correct by executing <tt class="docutils literal"><span class="pre">named-checkconfig</span></tt>.</p>
+<p>Check if your zone files are correct by executing <a class="reference external" href="http://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/">named-checkzone</a>:</p>
+<pre class="literal-block">
+named-checkzone 4delphi.com /var/lib/named/master/4delphi.com
+named-checkzone pluimers.com /var/lib/named/master/pluimers.com
+</pre>
+<p>Check if your named configuration is correct by executing <a class="reference external" href="http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html">named-checkconf</a>:</p>
+<pre class="literal-block">
+named-checkconf /etc/named.conf
+</pre>
 <p>Check if <tt class="docutils literal">named</tt> delivers the correct zone:</p>
 <pre class="literal-block">
+dig &#64;localhost axfr 4delphi.com
 dig &#64;localhost axfr pluimers.com
 </pre>
 <p>See:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><a class="reference external" href="http://www.cyberciti.biz/tips/howto-linux-unix-check-dns-file-errors.html">Check BIND – DNS Server configuration file for errors with named-checkconf tools</a></li>
 <li><a class="reference external" href="hhttp://www.cyberciti.biz/faq/howto-linux-unix-zone-file-validity-checking/">Troubleshoot Linux / UNIX bind dns server zone problems with named-checkzone tool</a></li>
 </ul>
+<p><a class="reference external" href="https://ask.fedoraproject.org/en/question/24288/how-to-debug-bind-conf-and-zone-files/">Check the named configuration</a>:</p>
+<pre class="literal-block">
+named-checkconf /etc/named.conf
+</pre>
+<p><a class="reference external" href="http://www.ewhathow.com/2013/09/how-do-i-check-bind-zone-file-for-errors/">Check each named zone</a>:</p>
+<pre class="last literal-block">
+named-checkzone localhost /var/lib/named/master/4delphi.com
+named-checkzone localhost /var/lib/named/master/pluimers.com
+</pre>
 </div>
 </div>
 <div class="section" id="ensure-that-var-lib-named-master-gets-synced-to-etc-named-master">
-<h2><a class="toc-backref" href="#id37">Ensure that <tt class="docutils literal">/var/lib/named/master</tt> gets synced to <tt class="docutils literal">/etc/named/master</tt></a></h2>
+<h2><a class="toc-backref" href="#id39">Ensure that <tt class="docutils literal">/var/lib/named/master</tt> gets synced to <tt class="docutils literal">/etc/named/master</tt></a></h2>
 <p>Based on these links, I've added a sync script.</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/joeyh/etckeeper#configuration">etckeeper configuration documentation</a></li>
 <li><a class="reference external" href="http://www.tutorialspoint.com/unix/unix-using-variables.htm">unix: using variables</a></li>
 </ul>
-<p>I stored it in <tt class="docutils literal"><span class="pre">/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh</span></tt>:</p>
+<p>I stored it in <tt class="docutils literal"><span class="pre">/etc/etckeeper/pre-commit.d/10rsync-var-lib-named-master</span></tt>:</p>
 <pre class="literal-block">
 #! /bin/sh
 ## http://www.tutorialspoint.com/unix/unix-using-variables.htm
@@ -1397,7 +1503,7 @@ chmod 755 /etckeeper/pre-commit.d/10rsync-var-lib-named-master.sh
 </pre>
 </div>
 <div class="section" id="adding-aliases-for-commands-removed-in-net-tools">
-<h2><a class="toc-backref" href="#id38">Adding aliases for commands removed in <tt class="docutils literal"><span class="pre">net-tools</span></tt></a></h2>
+<h2><a class="toc-backref" href="#id40">Adding aliases for commands removed in <tt class="docutils literal"><span class="pre">net-tools</span></tt></a></h2>
 <p>Add this to <tt class="docutils literal">/etc/bash.bashrc.local</tt>:</p>
 <pre class="literal-block">
 # stuff removed from net-tools
@@ -1413,7 +1519,7 @@ alias &quot;iptunnel=echo 'use \&quot;ip tunnel\&quot;' &amp;&amp; ip tunnel&quo
 </pre>
 </div>
 <div class="section" id="configuring-monit-monitoring-service">
-<h2><a class="toc-backref" href="#id39">Configuring <tt class="docutils literal">monit</tt> monitoring service</a></h2>
+<h2><a class="toc-backref" href="#id41">Configuring <tt class="docutils literal">monit</tt> monitoring service</a></h2>
 <p>At first, <a class="reference external" href="https://software.opensuse.org/package/monit">monit</a> won't run:</p>
 <pre class="literal-block">
 revue:~ # rcmonit restart
@@ -1542,34 +1648,96 @@ systemctl start monit.service
 </ul>
 </div>
 <div class="section" id="configuring-apache2-for-the-first-time">
-<h2><a class="toc-backref" href="#id40">Configuring apache2 for the first time</a></h2>
-<ol class="arabic simple">
-<li>Start <tt class="docutils literal">yast</tt></li>
-<li>Open <tt class="docutils literal">Security and Users</tt>, then <tt class="docutils literal">Sudo</tt></li>
-<li>Click <tt class="docutils literal">Add</tt></li>
-</ol>
+<h2><a class="toc-backref" href="#id42">Configuring apache2 for the first time</a></h2>
+<p>To display the <em>Apache</em> version:</p>
+<pre class="literal-block">
+# httpd2 -v
+Server version: Apache/2.4.12 (Linux/SUSE)
+Server built:   2015-06-09 09:24:07.000000000 +0000
+</pre>
+<p>Or since both <tt class="docutils literal">httpd</tt> and <tt class="docutils literal">httpd2</tt> point to the same file:</p>
+<pre class="literal-block">
+# httpd2 -v
+Server version: Apache/2.4.12 (Linux/SUSE)
+Server built:   2015-06-09 09:24:07.000000000 +0000
+
+# ls -al `which httpd2` `which httpd`
+lrwxrwxrwx 1 root root 23 Jun 20 15:26 /usr/sbin/httpd -&gt; /usr/sbin/httpd-prefork
+lrwxrwxrwx 1 root root 23 Jun 20 15:26 /usr/sbin/httpd2 -&gt; /usr/sbin/httpd-prefork
+</pre>
+<p>To verify your configuration files are correct, use this command before restarting the apache2 httpd2 server:</p>
+<pre class="literal-block">
+httpd2 -S
+</pre>
+<p>Apart from replacing <tt class="docutils literal">combined</tt> by <tt class="docutils literal">vhost_combined</tt>, you might want to ensure logging is done for each vhost in a separate file: it makes checkout out vhost issues a lot easier.</p>
+<p>You can either use the default <tt class="docutils literal">vhost.template</tt> for that, or the <a class="reference external" href="http://wiki.apache.org">apache wiki</a> examples: <a class="reference external" href="https://wiki.apache.org/httpd/ExampleVhosts">https://wiki.apache.org/httpd/ExampleVhosts</a></p>
+<p>This is my diff between the default <tt class="docutils literal">vhost.template `` and ``pluimers.com.conf</tt> in <tt class="docutils literal">/etc/apache2/vhosts.d</tt>:</p>
+<pre class="literal-block">
+/etc/apache2/vhosts.d # diff pluimers.com.conf vhost.template
+1c1
+&lt; # pluimers.com apache2 vhost configuration based on
+---
+&gt; #
+15,19c15,17
+&lt; # &lt;VirtualHost *:80&gt;
+&lt; &lt;VirtualHost *&gt;
+&lt;     ServerAlias *.pluimers.com
+&lt;     ServerAdmin jeroen.pluimers.com+pluimers.com&#64;gmail.com
+&lt;     ServerName revue
+---
+&gt; &lt;VirtualHost *:80&gt;
+&gt;     ServerAdmin webmaster&#64;dummy-host.example.com
+&gt;     ServerName dummy-host.example.com
+24c22
+&lt;     DocumentRoot /srv/www/vhosts/pluimers.com
+---
+&gt;     DocumentRoot /srv/www/vhosts/dummy-host.example.com
+27,30c25,26
+&lt;     # ErrorLog /var/log/apache2/pluimers.com/error_log
+&lt;     ErrorLog /var/log/apache2/pluimers.com-error_log
+&lt;     # CustomLog /var/log/apache2/pluimers.com/access_log vhost_combined
+&lt;     CustomLog /var/log/apache2/pluimers.com-access_log vhost_combined
+---
+&gt;     ErrorLog /var/log/apache2/dummy-host.example.com-error_log
+&gt;     CustomLog /var/log/apache2/dummy-host.example.com-access_log combined
+59c55
+&lt;     ScriptAlias /cgi-bin/ &quot;/srv/www/vhosts/pluimers.com/cgi-bin/&quot;
+---
+&gt;     ScriptAlias /cgi-bin/ &quot;/srv/www/vhosts/dummy-host.example.com/cgi-bin/&quot;
+64c60
+&lt;     &lt;Directory &quot;/srv/www/vhosts/pluimers.com/cgi-bin&quot;&gt;
+---
+&gt;     &lt;Directory &quot;/srv/www/vhosts/dummy-host.example.com/cgi-bin&quot;&gt;
+102c98
+&lt;     &lt;Directory &quot;/srv/www/vhosts/pluimers.com&quot;&gt;
+---
+&gt;     &lt;Directory &quot;/srv/www/vhosts/dummy-host.example.com&quot;&gt;
+137d132
+&lt; &lt;/VirtualHost&gt;
+138a134
+&gt; &lt;/VirtualHost&gt;
+</pre>
+<p>Note that I experimented with a log directory per domain like <tt class="docutils literal">/var/log/apache2/pluimers.com/</tt>, but these won't be auto-created, like <tt class="docutils literal">httpd2 <span class="pre">-S</span></tt> shows:</p>
+<pre class="literal-block">
+/etc/apache2/vhosts.d # httpd2 -S
+VirtualHost configuration:
+...
+(2)No such file or directory: AH02291: Cannot access directory '/var/log/apache2/pluimers.com/' for error log of vhost defined at /etc/apache2/vhosts.d/pluimers.com.conf:16
+AH00014: Configuration check failed
+</pre>
+<p>Note that <tt class="docutils literal">httpd2 <span class="pre">-S</span></tt> by default does not execute ``
+This means that if you have <tt class="docutils literal">SSL</tt> configured, <tt class="docutils literal">httpd2 <span class="pre">-S</span></tt> will not take that into account the <tt class="docutils literal">APACHE_SERVER_FLAGS</tt> setting in <tt class="docutils literal">/etc/sysconfig/apache2</tt></p>
+<p><a class="reference external" href="http://web.ornl.gov/~jar/Apache/SSL_in_Apache_2.html">Workaround from another frustrated user</a> which <a class="reference external" href="http://serverfault.com/questions/702155/why-doesnt-httpd2-s-catch-ssl-certificate-issues-whereas-systemctl-restart/702156#comment868640_702156">one day I will make easier to use</a>:</p>
+<pre class="literal-block">
+httpd2 -D SSL -S
+</pre>
+<p>The same frustrated user also suggested to make this small change in <tt class="docutils literal">/etc/sysconfig/apache2</tt>, from</p>
 <blockquote>
-<ol class="arabic simple">
-<li>Select a <tt class="docutils literal">User</tt> (in my case <tt class="docutils literal">jeroenp</tt>)</li>
-<li>Select a <tt class="docutils literal">Host</tt> (in my case <tt class="docutils literal">ALL</tt>)</li>
-<li>At <tt class="docutils literal">RunAs</tt> type <tt class="docutils literal">ALL</tt> (this will get translated to <tt class="docutils literal">(ALL)</tt>)</li>
-<li>Ensure that <tt class="docutils literal">No Password</tt> has a checkmark</li>
-<li>Click <tt class="docutils literal">Add</tt></li>
-</ol>
-<blockquote>
-<ol class="arabic simple">
-<li>Select a <tt class="docutils literal">Command</tt> (in my case <tt class="docutils literal">ALL</tt>)</li>
-<li>Press <tt class="docutils literal">OK</tt></li>
-</ol>
-</blockquote>
-<ol class="arabic simple" start="5">
-<li>Press <tt class="docutils literal">OK</tt></li>
-</ol>
-</blockquote>
-<ol class="arabic simple" start="4">
-<li>Press <tt class="docutils literal">OK</tt></li>
-<li>Quit <tt class="docutils literal">yast</tt></li>
-</ol>
+APACHE_LOGLEVEL=&quot;warn&quot;</blockquote>
+<p>to:</p>
+<pre class="literal-block">
+APACHE_LOGLEVEL=&quot;debug&quot;
+</pre>
 <div class="sidebar">
 <p class="first sidebar-title">Notes when updating (vhosts) configuration from Apache 2.2 to Apache 2.4:</p>
 <p>Instead of using <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/mod_access_compat.html">mod_access_compat</a> modify the configuration files to use the directives in <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/mod_authz_host.html">mod_authz_host</a>.</p>
@@ -1615,7 +1783,7 @@ Require all granted
 </div>
 </div>
 <div class="section" id="getting-and-running-testssl-sh">
-<h2><a class="toc-backref" href="#id41">Getting and running <tt class="docutils literal">testssl.sh</tt></a></h2>
+<h2><a class="toc-backref" href="#id43">Getting and running <tt class="docutils literal">testssl.sh</tt></a></h2>
 <p>Simple steps from a non-root account:</p>
 <pre class="literal-block">
 git clone https://github.com/drwetter/testssl.sh.git
@@ -1628,7 +1796,7 @@ OPENSSL=./testssl.sh www.beginend.net
 </pre>
 </div>
 <div class="section" id="login-reboot-fritz-box">
-<h2><a class="toc-backref" href="#id42">Login / Reboot Fritz!Box</a></h2>
+<h2><a class="toc-backref" href="#id44">Login / Reboot Fritz!Box</a></h2>
 <p>There is a bash script for Fritz!Box access at &lt;<a class="reference external" href="https://github.com/jpluimers/bash-fritzclient">https://github.com/jpluimers/bash-fritzclient</a>&gt;.</p>
 <p>Installation is simple:</p>
 <ol class="arabic simple">
@@ -1639,7 +1807,7 @@ OPENSSL=./testssl.sh www.beginend.net
 </ol>
 </div>
 <div class="section" id="configuring-and-running-shellinabox-with-ssh">
-<h2><a class="toc-backref" href="#id43">configuring and running shellinabox with ssh</a></h2>
+<h2><a class="toc-backref" href="#id45">configuring and running shellinabox with ssh</a></h2>
 <p>A great tool for configuring your machine over a connection not allowing ssh is <a class="reference external" href="http://shellinabox.com">shellinabox</a>.</p>
 <p>Certificates are in <tt class="docutils literal">/etc/shellinabox/certs</tt>.</p>
 <p>After installation, it isn't running:</p>
@@ -1753,6 +1921,461 @@ mod_proxy mod_proxy_http
 </pre>
 <p>I found out about this by rereading <a class="reference external" href="https://httpd.apache.org/docs/2.4/mod/mod_proxy_http.html">Apache Module mod_proxy_http</a> three times.</p>
 <p>If this works, then you should see <tt class="docutils literal">shellinabox</tt> when going to &lt;<a class="reference external" href="http://localhost/shell">http://localhost/shell</a>&gt;&gt; but not yet for &lt;<a class="reference external" href="https://localhost/shell">https://localhost/shell</a>&gt;. For the latter we need to enable <tt class="docutils literal">https</tt> in <tt class="docutils literal">`apache2</tt>.</p>
+</div>
+<div class="section" id="viewing-the-long-journal">
+<h2><a class="toc-backref" href="#id46">Viewing the long journal</a></h2>
+<p>Like mentioned before, <tt class="docutils literal">journalctl</tt> views the log journal.</p>
+<p>An even handier command is this:</p>
+<pre class="literal-block">
+journalctl -xe
+</pre>
+<p>This is shorthand for:</p>
+<pre class="literal-block">
+journalctl --catalog --pager-end
+</pre>
+<p>It uses these options:</p>
+<pre class="literal-block">
+-e --pager-end           Immediately jump to the end in the pager
+-x --catalog             Add message explanations where available
+</pre>
+<p>This is exactly why I like it over log files:</p>
+<ul class="simple">
+<li>it has explanations that can come in very handy</li>
+<li>it directly goes to the pager (on my system <tt class="docutils literal">less</tt>)</li>
+</ul>
+</div>
+<div class="section" id="hardening-apache2-ssl-cyphers">
+<h2><a class="toc-backref" href="#id47">Hardening apache2 SSL cyphers</a></h2>
+<p>Via <a class="reference external" href="https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/">Hardening Your Web Server’s SSL Ciphers — Hynek Schlawack</a>:</p>
+<p>Edit <tt class="docutils literal"><span class="pre">/etc/apache2/ssl-global.conf</span></tt>, then modify/add these lines:</p>
+<pre class="literal-block">
+--- a/apache2/ssl-global.conf
++++ b/apache2/ssl-global.conf
+&#64;&#64; -77,7 +77,17 &#64;&#64;
+        #   SSL Cipher Suite:
+        #   List the ciphers that the client is permitted to negotiate.
+        #   See the mod_ssl documentation for a complete list.
+-       SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
++       # SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
++        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
++        SSLCipherSuite ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
++        # normally this is in copies of default-vhost-ssl.conf, but it needs to be default:
++        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
++        SSLHonorCipherOrder On
++
++        ##  SSL compression:
++        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
++        # as of Apache2 2.4.4 the default is Off; this is in case you ever run on a lower version.
++        SSLCompression Off
+
+        #   Server Certificate:
+        #   Point SSLCertificateFile at a PEM encoded certificate.  If
+</pre>
+<p>After that, test the config, then restart <tt class="docutils literal">apache2</tt>:</p>
+<pre class="literal-block">
+revue:~ # apache2ctl -t
+Syntax OK
+revue:~ # systemctl restart apache2.service
+revue:~ # systemctl status apache2.service
+● apache2.service - The Apache Webserver
+   Loaded: loaded (/usr/lib/systemd/system/apache2.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2015-06-11 20:58:12 CEST; 8s ago
+ Main PID: 23760 (httpd-prefork)
+   Status: &quot;Processing requests...&quot;
+   CGroup: /system.slice/apache2.service
+           ├─23760 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           ├─23780 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           ├─23781 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           ├─23782 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           ├─23783 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+           └─23784 /usr/sbin/httpd-prefork -f /etc/apache2/httpd.conf -DSSL -D SYSTEMD -DFOREGROUND -k start
+
+Jun 11 20:58:11 revue systemd[1]: Starting The Apache Webserver...
+Jun 11 20:58:12 revue systemd[1]: Started The Apache Webserver.
+revue:~ #
+</pre>
+<p>Additional information at <a class="reference external" href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html">Secure your Apache Server</a>.</p>
+</div>
+<div class="section" id="enabling-https-for-apache2">
+<h2><a class="toc-backref" href="#id48">Enabling https for apache2</a></h2>
+<p>First get and install a certificate.</p>
+<p>Then enable <a class="reference external" href="http://httpd.apache.org/docs/2.4/mod/mod_ssl.html">mod_ssl</a>, in <tt class="docutils literal">/etc/sysconfig/apache2</tt> you need one entrie appended to <tt class="docutils literal">APACHE_MODULES</tt>:</p>
+<pre class="literal-block">
+mod_ssl
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">TODO figure out how to use this together with <cite>mod_proxy</cite> and <cite>mod_proxy_http</cite>; see <cite>how to make Apache proxy http requests to https &lt;http://stackoverflow.com/questions/9977215/how-to-make-apache-proxy-http-requests-to-https&gt;</cite>.</p>
+</div>
+<div class="section" id="generating-the-private-key-protected-with-a-strong-password">
+<h3><a class="toc-backref" href="#id49">Generating the private key protected with a strong password</a></h3>
+<div class="sidebar">
+<p class="first sidebar-title">strong passwords</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Password_strength#Examples_of_weak_passwords">Avoid weak passwords</a>.</p>
+<p>One way of creating a single strong password is by estimating <a class="reference external" href="https://en.wikipedia.org/wiki/Password_strength#Required_Bits_of_Entropy">required bits of entropy</a>, then choosing a <cite>set of characters</cite> and <cite>password length</cite> and generate a <a class="reference external" href="https://en.wikipedia.org/wiki/Password_strength#Random_passwords">random password with at least that length</a>).</p>
+<p>Here 16 characters gets you about 80 bits of precision.</p>
+<p class="last">But remember that often you need multiple strong passwords, so be sure to read some <a class="reference external" href="https://en.wikipedia.org/wiki/Password_strength#Guidelines_for_strong_passwords">guidelines around strong passwords</a>.</p>
+</div>
+<p>First a few notes:</p>
+<ol class="arabic simple">
+<li><a class="reference external" href="http://crypto.stackexchange.com/questions/20253/why-we-cant-implement-aes-512-key-size">There is no AES-512</a>, so the best to use is <a class="reference external" href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard#Description_of_the_cipher">AES-256</a> (AES wiht a 256-bit key).</li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/RSA_(cryptosystem)#cite_note-20">RSA keys should be at least 2048 bits long</a>, but 4096 provide even more security (<a class="reference external" href="https://blog.hboeck.de/archives/872-About-the-supposed-factoring-of-a-4096-bit-RSA-key.html">the factoring of a 4096-bit RSA key was a faulty copy</a>).</li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/Digital_Signature_Algorithm">DSA keys</a> are limited to 1024 bits. Don't use them.</li>
+</ol>
+<p>The <a class="reference external" href="https://www.openssl.org/docs/apps/genrsa.html">genrsa</a> command of openssl generates RSA keys.</p>
+<p>Generate a 4096 bit RSA private key (keep it in a safe place!) encrypted using the 256-bit AES algorithm (be sure to give it a <a class="reference external" href="https://en.wikipedia.org/wiki/Password_strength">strong password</a>!:</p>
+<pre class="literal-block">
+openssl genrsa -out 4096-bit-rsa-key-encrypted-using-256-bit-aes.private.key -aes256 4096
+</pre>
+<p>You can also use <a class="reference external" href="https://en.wikipedia.org/wiki/Ssh-keygen">ssh-keygen</a>, but the <a class="reference external" href="https://wiki.osuosl.org/howtos/ssh_key_tutorial.html">default setup is not that secure</a> and <a class="reference external" href="https://github.com/nickchappell/personal-projects-docs/blob/master/services_notes/ssh_notes.md">making it more secure requires openssl</a>.</p>
+</div>
+<div class="section" id="generate-the-csr-certificate-signing-request">
+<h3><a class="toc-backref" href="#id50">Generate the CSR (Certificate Signing Request)</a></h3>
+<div class="sidebar">
+<p class="first sidebar-title"><cite>tmpfs</cite> on a Mac</p>
+<p>On a Mac you have <a class="reference external" href="https://gist.github.com/koshigoe/822455">these nice scripts</a> by <a class="reference external" href="https://gist.github.com/koshigoe">koshigoe</a> to help you creating a <cite>tmpfs</cite>.</p>
+<p>They use <a class="reference external" href="https://www.google.com/search?q=hdid">hdid</a>,
+<a class="reference external" href="https://www.google.com/search?q=newfs_hfs">newfs_hfs</a>,
+<a class="reference external" href="https://www.google.com/search?q=mount">mount</a>,
+<a class="reference external" href="https://www.google.com/search?q=umount">umount</a> and
+<a class="reference external" href="https://www.google.com/search?q=hdiutil">hdiutil</a>.</p>
+<p><a class="reference external" href="https://gist.githubusercontent.com/koshigoe/822455/raw/dd33aeeb0267040743a4f4272cab371e0880770f/mount-ram.sh">mount-ram.sh</a>:</p>
+<pre class="literal-block">
+#!/bin/sh
+
+# This program has two feature.
+#
+# 1. Create a disk image on RAM.
+# 2. Mount that disk image.
+#
+# Usage:
+#   $0 &lt;dir&gt; &lt;size&gt;
+#
+#   size:
+#     The `size' is a size of disk image (MB).
+#
+#   dir:
+#     The `dir' is a directory, the dir is used to mount the disk image.
+#
+# See also:
+#   - hdid(8)
+#
+
+mount_point=${1}
+size=${2:-64}
+
+mkdir -p $mount_point
+if [ $? -ne 0 ]; then
+    echo &quot;The mount point didn't available.&quot; &gt;&amp;2
+    exit $?
+fi
+
+sector=$(expr $size \* 1024 \* 1024 / 512)
+device_name=$(hdid -nomount &quot;ram://${sector}&quot; | awk '{print $1}')
+if [ $? -ne 0 ]; then
+    echo &quot;Could not create disk image.&quot; &gt;&amp;2
+    exit $?
+fi
+
+newfs_hfs $device_name &gt; /dev/null
+if [ $? -ne 0 ]; then
+    echo &quot;Could not format disk image.&quot; &gt;&amp;2
+    exit $?
+fi
+
+mount -t hfs $device_name $mount_point
+if [ $? -ne 0 ]; then
+    echo &quot;Could not mount disk image.&quot; &gt;&amp;2
+    exit $?
+fi
+</pre>
+<p><a class="reference external" href="https://gist.githubusercontent.com/koshigoe/822455/raw/802073f8f0791ba050180986dfe9091f1bca9abf/umount-ram.sh">umount-ram.sh</a>:</p>
+<pre class="last literal-block">
+#!/bin/sh
+
+# This program has two features.
+#
+# 1. Unmount a disk image.
+# 2. Detach the disk image from RAM.
+#
+# Usage:
+#   $0 &lt;dir&gt;
+#
+#   dir:
+#     The `dir' is a directory, the dir is mounting a disk image.
+#
+# See also:
+#   - hdid(8)
+#
+
+mount_point=$1
+if [ ! -d &quot;${mount_point}&quot; ]; then
+    echo &quot;The mount point didn't available.&quot; &gt;&amp;2
+    exit 1
+fi
+mount_point=$(cd $mount_point &amp;&amp; pwd)
+
+device_name=$(df &quot;${mount_point}&quot; 2&gt;/dev/null | tail -1 | grep &quot;${mount_point}&quot; | cut -d' ' -f1)
+if [ -z &quot;${device_name}&quot; ]; then
+    echo &quot;The mount point didn't mount disk image.&quot; &gt;&amp;2
+    exit 1
+fi
+
+umount &quot;${mount_point}&quot;
+if [ $? -ne 0 ]; then
+    echo &quot;Could not unmount.&quot; &gt;&amp;2
+    exit $?
+fi
+
+hdiutil detach -quiet $device_name
+</pre>
+</div>
+<p>Here we will generate a <a class="reference external" href="https://en.wikipedia.org/wiki/Certificate_signing_request">CSR</a> using SHA-256 (which is a <a class="reference external" href="https://en.wikipedia.org/wiki/Secure_Hash_Algorithm">secure hashing</a> function that is part of the <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-2#Comparison_of_SHA_functions">SHA-2</a> family of hashing functions <a class="reference external" href="http://crypto.stackexchange.com/questions/3153/sha-256-vs-any-256-bits-of-sha-512-which-is-more-secure">secure enough for the forseeable future</a>).</p>
+<ol class="arabic">
+<li><p class="first">Copy your encrypted private key to a temporary directory (important: you <strong>have to clean that directory later on</strong>) preferably in a <a class="reference external" href="https://en.wikipedia.org/wiki/Tmpfs">tmpfs</a> temporary file system.</p>
+</li>
+<li><p class="first">Decrypt your key (enter your password when openssl asks for it):</p>
+<pre class="literal-block">
+openssl rsa -in 4096-bit-rsa-key-encrypted-using-256-bit-aes.private.key -out 4096-bit-rsa-key.private.key
+</pre>
+</li>
+<li><p class="first">Create a signing request using the decrypted key for your domain (in this case for the <cite>pluimers.com</cite> domain) with some sensible attributes:</p>
+<pre class="literal-block">
+# openssl req -new -sha256 -key 4096-bit-rsa-key.private.key -out pluimers.com.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:NL
+State or Province Name (full name) [Some-State]:Noord-Holland
+Locality Name (eg, city) []:Amsterdam
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Pluimers Software Ontwikkeling B.V.
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:pluimers.com
+Email Address []:webmaster&#64;pluimers.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+# openssl req -noout -text -in pluimers.com.csr
+    Data:
+        Version: 0 (0x0)
+        Subject: C=NL, ST=Noord-Holland, L=Amsterdam, O=Pluimers Software Ontwikkeling B.V., CN=pluimers.com/emailAddress=webmaster&#64;pluimers.com
+        Subject Public Key Info:
+</pre>
+</li>
+<li><p class="first">Follow the <cite>StartSSL</cite> steps at <a class="reference external" href="https://konklone.com/post/switch-to-https-now-for-free#generating-the-certificate">Generating the Certificate</a>.</p>
+<blockquote>
+<ul>
+<li><p class="first">note you can only have 1 specific subdomain when your StartSSL identity is class 1.</p>
+</li>
+<li><p class="first">the upload and processing of the CRS takes a few minutes</p>
+</li>
+<li><p class="first">the generation of the certificate can take like 5 minutes</p>
+</li>
+<li><p class="first">copy the resulting certificate to <tt class="docutils literal">pluimers.com.crt</tt></p>
+</li>
+<li><dl class="first docutils">
+<dt>on your OpenSuSE server, save these files:</dt>
+<dd><ul class="first last simple">
+<li>Certificate: <tt class="docutils literal">/etc/apache2/ssl.crt/pluimers.com.crt</tt></li>
+<li>Decrypted private key: <tt class="docutils literal">/etc/apache2/ssl.key/pluimers.com.key</tt></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first">Fix this error by changing <tt class="docutils literal"><span class="pre">/etc/apache2/vhosts.d/pluimers.com-ssl.conf</span></tt> from <tt class="docutils literal">ServerName revue</tt> into <tt class="docutils literal">ServerName www.pluimers.com</tt>:</p>
+<pre class="literal-block">
+[Sun Jun 28 16:43:40.342067 2015] [ssl:debug] [pid 5251] ssl_util_ssl.c(356): AH02412: [revue:443] Cert does not match for name 'revue' [subject: emailAddress=webmaster&#64;pluimers.com,CN=www.pluimers.com,C=NL / issuer: CN=StartCom Class 1 Primary Intermediate Server CA,OU=Secure Digital Certificate Signing,O=StartCom Ltd.,C=IL / serial: 05D759EC0CF620 / notbefore: Jun 14 08:24:00 2015 GMT / notafter: Jun 14 14:46:36 2016 GMT]
+</pre>
+</li>
+</ol>
+<p>&lt;<a class="reference external" href="http://ndg-security.ceda.ac.uk/wiki/ndg_security/Apache2/SUSE#SSL">http://ndg-security.ceda.ac.uk/wiki/ndg_security/Apache2/SUSE#SSL</a>&gt;</p>
+<p>SSLLabs test will most likely give this downgrade:</p>
+<blockquote>
+This server's certificate chain is incomplete. Grade capped to B.</blockquote>
+<p>So make sure you chain your certificates when using startSSL:</p>
+<pre class="literal-block">
+pushd /etc/apache2/ssl.crt
+wget -m -np https://www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem
+cat pluimers.com.crt www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem &gt; pluimers.com-chain.crt
+popd
+</pre>
+<p>Now ensure these two lines in <tt class="docutils literal"><span class="pre">/etc/apache2/vhosts.d/pluimers.com-ssl.conf</span></tt> are as follows:</p>
+<pre class="literal-block">
+#SSLCertificateFile /etc/apache2/ssl.crt/pluimers.com.crt
+SSLCertificateKeyFile /etc/apache2/ssl.key/pluimers.com.key
+SSLCertificateChainFile /etc/apache2/ssl.crt/pluimers.com-chain.crt
+</pre>
+<p>Finally, restart the apache2 service:</p>
+<pre class="literal-block">
+rcapache2 stop
+rcapache2 start
+</pre>
+<p>If it fails, then look through errors in <tt class="docutils literal"><span class="pre">/var/log/apache2/pluimers.com-ssl-error_log</span></tt>, as <tt class="docutils literal">journalctl <span class="pre">-xe</span></tt> will not show details.</p>
+<div class="sidebar">
+<p class="first sidebar-title">Important apache restart note</p>
+<p><tt class="docutils literal">rcapache2 restart</tt> will not fully unload the apache configuration. Use this in stead:</p>
+<pre class="literal-block">
+rcapache2 stop
+rcapache2 start
+</pre>
+<p>Without it, you will get spurious errors (like <a class="reference external" href="https://www.pluimers.com">https://www.pluimers.com</a> re-using part of the virtual directory configuration for <a class="reference external" href="http://www.pluimers.com">http://www.pluimers.com</a> thereby generating spurious 403-errors) in log files like the <tt class="docutils literal">403 1032</tt> and <tt class="docutils literal">403 1018</tt> error codes and <tt class="docutils literal">authorization result of &lt;RequireAny&gt;: denied</tt> in below logs.</p>
+<p>BTW:</p>
+<blockquote>
+Note the differences in time-stamp logging. Don't you hate that? What happened to ISO-8601?</blockquote>
+<p>pluimers.com-ssl_request_log:</p>
+<pre class="literal-block">
+[29/Jun/2015:20:16:40 +0200] 80.100.143.119 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 &quot;GET / HTTP/1.1&quot; 1032 &quot;-&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36&quot;
+[29/Jun/2015:20:16:40 +0200] 80.100.143.119 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 &quot;GET /favicon.ico HTTP/1.1&quot; 1018 &quot;https://www.pluimers.com/&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36&quot;
+</pre>
+<p>pluimers.com-access_log:</p>
+<pre class="literal-block">
+revue 80.100.143.119 - - [29/Jun/2015:20:16:40 +0200] &quot;GET / HTTP/1.1&quot; 403 1032 &quot;-&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36&quot;
+revue 80.100.143.119 - - [29/Jun/2015:20:16:40 +0200] &quot;GET /favicon.ico HTTP/1.1&quot; 403 1018 &quot;https://www.pluimers.com/&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36&quot;
+</pre>
+<p>pluimers.com-ssl-error_log:</p>
+<pre class="last literal-block">
+[Mon Jun 29 20:16:40.266336 2015] [ssl:info] [pid 5588] [client 80.100.143.119:63297] AH01964: Connection to child 5 established (server revue:443)
+[Mon Jun 29 20:16:40.267090 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(1908): [client 80.100.143.119:63297] AH02043: SSL virtual host for servername www.pluimers.com found
+[Mon Jun 29 20:16:40.267832 2015] [ssl:info] [pid 5589] [client 80.100.143.119:63298] AH01964: Connection to child 6 established (server revue:443)
+[Mon Jun 29 20:16:40.268728 2015] [ssl:debug] [pid 5589] ssl_engine_kernel.c(1908): [client 80.100.143.119:63298] AH02043: SSL virtual host for servername www.pluimers.com found
+[Mon Jun 29 20:16:40.298407 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(1841): [client 80.100.143.119:63297] AH02041: Protocol: TLSv1.2, Cipher: ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits)
+[Mon Jun 29 20:16:40.303995 2015] [ssl:debug] [pid 5589] ssl_engine_kernel.c(1841): [client 80.100.143.119:63298] AH02041: Protocol: TLSv1.2, Cipher: ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits)
+[Mon Jun 29 20:16:40.646809 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(243): [client 80.100.143.119:63297] AH02034: Initial (No.1) HTTPS request received for child 5 (server revue:443)
+[Mon Jun 29 20:16:40.647091 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all denied: denied
+[Mon Jun 29 20:16:40.647104 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of &lt;RequireAny&gt;: denied
+[Mon Jun 29 20:16:40.647112 2015] [authz_core:error] [pid 5588] [client 80.100.143.119:63297] AH01630: client denied by server configuration: /srv/www/vhosts/pluimers.com/
+[Mon Jun 29 20:16:40.647239 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all granted: granted
+[Mon Jun 29 20:16:40.647250 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of &lt;RequireAny&gt;: granted
+[Mon Jun 29 20:16:40.792584 2015] [ssl:debug] [pid 5588] ssl_engine_kernel.c(243): [client 80.100.143.119:63297] AH02034: Subsequent (No.2) HTTPS request received for child 5 (server revue:443), referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792637 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all denied: denied, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792667 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of &lt;RequireAny&gt;: denied, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792676 2015] [authz_core:error] [pid 5588] [client 80.100.143.119:63297] AH01630: client denied by server configuration: /srv/www/vhosts/pluimers.com/favicon.ico, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792711 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of Require all granted: granted, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:40.792722 2015] [authz_core:debug] [pid 5588] mod_authz_core.c(809): [client 80.100.143.119:63297] AH01626: authorization result of &lt;RequireAny&gt;: granted, referer: https://www.pluimers.com/
+[Mon Jun 29 20:16:50.646230 2015] [ssl:info] [pid 5589] (70014)End of file found: [client 80.100.143.119:63298] AH01991: SSL input filter read failed.
+[Mon Jun 29 20:16:50.646659 2015] [ssl:debug] [pid 5589] ssl_engine_io.c(1003): [client 80.100.143.119:63298] AH02001: Connection closed to child 6 with standard shutdown (server revue:443)
+[Mon Jun 29 20:16:55.808702 2015] [ssl:info] [pid 5588] (70007)The timeout specified has expired: [client 80.100.143.119:63297] AH01991: SSL input filter read failed.
+[Mon Jun 29 20:16:55.808989 2015] [ssl:debug] [pid 5588] ssl_engine_io.c(1003): [client 80.100.143.119:63297] AH02001: Connection closed to child 5 with standard shutdown (server revue:443)
+</pre>
+</div>
+<hr class="docutils" />
+<ol class="arabic simple" start="0">
+<li>Remove the temporary directory (preferably, delete the whole <tt class="docutils literal">tmpfs</tt> volume it is on).</li>
+</ol>
+<p>&lt;<a class="reference external" href="https://blog.websenat.de/2014/05/03/sysadmin-openssl-befehle-und-tipps/">https://blog.websenat.de/2014/05/03/sysadmin-openssl-befehle-und-tipps/</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://twitter.com/konklone/status/493748256933810178">https://twitter.com/konklone/status/493748256933810178</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://konklone.com/post/switch-to-https-now-for-free#generating-the-certificate">https://konklone.com/post/switch-to-https-now-for-free#generating-the-certificate</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://gist.github.com/konklone/98f48a90bfd9cfd076dc">https://gist.github.com/konklone/98f48a90bfd9cfd076dc</a>&gt;
+Full log:</p>
+<pre class="literal-block">
+# openssl req -new -sha256 -key 4096-bit-rsa-key.private.key -out pluimers.com.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:NL
+State or Province Name (full name) [Some-State]:Noord-Holland
+Locality Name (eg, city) []:Amsterdam
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Pluimers Software Ontwikkeling B.V.
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:pluimers.com
+Email Address []:webmaster&#64;pluimers.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+</pre>
+</div>
+<div class="section" id="id15">
+<h3><a class="toc-backref" href="#id51">Notes</a></h3>
+<p>&lt;<a class="reference external" href="https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html#sec_apache2_ssl_configuration_name-based">https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html#sec_apache2_ssl_configuration_name-based</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://192.168.71.62/shell">https://192.168.71.62/shell</a>&gt;</p>
+<p>fails: &lt;<a class="reference external" href="https://revue.pluimers.com/shell">https://revue.pluimers.com/shell</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://80.100.143.119/shell">https://80.100.143.119/shell</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/">https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/</a>&gt;</p>
+<p>&lt;<a class="reference external" href="http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html">http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html">https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html</a>&gt;</p>
+<p>&lt;<a class="reference external" href="http://www.techytalk.info/remote-cli-access-to-ubuntu-pc-using-web-browser-through-authenticated-https/comment-page-1/">http://www.techytalk.info/remote-cli-access-to-ubuntu-pc-using-web-browser-through-authenticated-https/comment-page-1/</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://konklone.com/post/switch-to-https-now-for-free">https://konklone.com/post/switch-to-https-now-for-free</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://letsencrypt.org">https://letsencrypt.org</a>&gt;</p>
+<p>&lt;<a class="reference external" href="http://www.unixmen.com/create-ssl-cetificates-in-opensuse-12-3/">http://www.unixmen.com/create-ssl-cetificates-in-opensuse-12-3/</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://en.opensuse.org/SDB:Apache_installation">https://en.opensuse.org/SDB:Apache_installation</a>&gt;</p>
+<p>&lt;<a class="reference external" href="https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html">https://www.suse.com/documentation/sles11/book_sle_admin/data/sec_apache2_ssl.html</a>&gt;</p>
+<p>&lt;<a class="reference external" href="http://stackoverflow.com/questions/24888407/setting-up-apache-w-ssl-using-opensuse-yast">http://stackoverflow.com/questions/24888407/setting-up-apache-w-ssl-using-opensuse-yast</a>&gt;</p>
+<p>&lt;<a class="reference external" href="http://blog.remibergsma.com/2013/03/15/always-available-linux-terminal-shell-in-a-box-on-raspberry-pi/">http://blog.remibergsma.com/2013/03/15/always-available-linux-terminal-shell-in-a-box-on-raspberry-pi/</a>&gt;</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">test with testssl.sh</p>
+</div>
+<p>&lt;<a class="reference external" href="https://weakdh.org/">https://weakdh.org/</a>&gt;</p>
+<p>Ligt complexer; het SHA-256 verhaal gaat over de certificate signature; niet over de versleuteling van de verbinding zelf. Zie ook: <a class="reference external" href="http://googleonlinesecuri...lly-sunsetting-sha-1.html">http://googleonlinesecuri...lly-sunsetting-sha-1.html</a></p>
+<p>Om 'modern cryptography / groene balk / geen warnings / errors ' te krijgen in de nieuwste Chrome, IE en Firefox moet je dus certs hebben die op RSA 2048 with SHA-256 of langer gebaseerd zijn of langer, dus geen RSA-512/1024 of SHA-1 of MD5 meer in de certificaat-chain (op de root CA na) en tevens dient er moderne, veilige ciphers met Forward Secrecy gebruikt te worden; waarbij AES-GCM de meest gangbare is. Ook b.v. AES-256-CBC is dus niet goed, omdat CBC een niet-authenticated blockcipher is en GCM wel authenticated is (en stukken sneller !).</p>
+<p>Voor meer info zie b.v: <a class="reference external" href="http://googleonlinesecuri...lly-sunsetting-sha-1.html">http://googleonlinesecuri...lly-sunsetting-sha-1.html</a> Of de SslLabs blog: <a class="reference external" href="https://community.qualys.com/blogs/securitylabs">https://community.qualys.com/blogs/securitylabs</a></p>
+</div>
+</div>
+<div class="section" id="zypper-updating">
+<h2><a class="toc-backref" href="#id52">Zypper updating</a></h2>
+<p>The only way to update Tumbleweed is through the distribution update:</p>
+<pre class="literal-block">
+zypper dup
+</pre>
+<p>If it doesn't update anything: find when more repostories are added:</p>
+<p>&lt;<a class="reference external" href="https://forums.opensuse.org/showthread.php/506273-Distribution-Upgrade-on-Tumbleweed-Gnome-(sudo-zypper-dup)">https://forums.opensuse.org/showthread.php/506273-Distribution-Upgrade-on-Tumbleweed-Gnome-(sudo-zypper-dup)</a>&gt;</p>
+<p>&lt;<a class="reference external" href="http://linux.derkeiler.com/Mailing-Lists/SuSE/2014-11/msg01554.html">http://linux.derkeiler.com/Mailing-Lists/SuSE/2014-11/msg01554.html</a>&gt;</p>
+<p>Show all the details of your configured repositories:</p>
+<pre class="literal-block">
+zypper repos --details
+</pre>
+</div>
+<div class="section" id="mariadb-dependency">
+<h2><a class="toc-backref" href="#id53">mariadb dependency</a></h2>
+<p>20150706 - somehow mariadb got installed (MySQL):</p>
+<pre class="literal-block">
+(Use the Enter or Space key to scroll the text by lines or pages.)
+
+Message from package mariadb:
+
+
+You just installed MySQL server for the first time.
+
+You can start it using:
+ rcmysql start
+
+During first start empty database will be created for your automatically.
+
+PLEASE REMEMBER TO SET A PASSWORD FOR THE MariaDB root USER !
+To do so, start the server, then issue the following commands:
+
+'/usr/bin/mysqladmin' -u root password 'new-password'
+'/usr/bin/mysqladmin' -u root -h misibook password 'new-password'
+
+Alternatively you can run:
+'/usr/bin/mysql_secure_installation'
+
+which will also give you the option of removing the test
+databases and anonymous user created by default. This is
+strongly recommended for production servers.
+
+
+-----------------------------------------------------------------------------
+
+
+(Press 'q' to exit the pager.)
+/var/tmp/TmpFile.A0c0jv lines 1-30/30 (END)
+</pre>
 <hr class="docutils" />
 <table class="docutils footnote" frame="void" id="opensuse-footnote" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
