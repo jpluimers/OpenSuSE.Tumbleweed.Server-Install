@@ -20,6 +20,7 @@ TODO
 
 - harden OpenSSL.
 - web site (HTTP-HTTPS)
+- `HSTS <https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security>`_ for https (which basically makes browsers favour https over http) with `two <https://yuridejager.wordpress.com/2014/05/06/securing-your-https-apache-2-4-web-server-with-correct-parameters/>`_ `examples <https://gist.github.com/azet/6143635>`_.
 - pop3 (port 110)
 - email (SMTP-SSMTP) 25/587
 - rsync (backups) port 873
@@ -28,7 +29,8 @@ TODO
 - update root zones through cron
 - DNS security <https://www.digitalocean.com/community/tutorials/how-to-setup-dnssec-on-an-authoritative-bind-dns-server--2> and <http://csrc.nist.gov/groups/SMA/fasp/documents/network_security/NISTSecuringDNS/NISTSecuringDNS.htm>
 - ensure 10rsync-var-lib-named-master.sh works
-- fix syslogd and logrotate
+- fix logrotate
+- fail2ban: http://www.blocklist.de/﻿ and https://plus.google.com/u/0/photos/+jwildeboer/albums/6304977139661570785/6304977138086638930?pid=6304977138086638930&oid=112648813199640203443
 - via `Secure your Apache Server <https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html>`_:
 
   - `HTTP Strict Transport Security <https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security>`_
@@ -44,6 +46,10 @@ Things that might need doing.
 
 syslogd
 -------
+
+If you installed it, then remove it as it's old and unmaintained::
+
+  zypper uninstall syslogd
 
 See `this output <http://www.linuxquestions.org/questions/linux-general-1/how-to-completely-remove-service-from-systemd-using-systemctl-opensuse-4175531795/>`_::
 
@@ -277,7 +283,6 @@ Finally time for some manual adding of **packages**:
   Note that some of these won't install just yet, see the `text-mode installation and conflicts <text-mode-installation-and-conflicts>`_ section.
 
 - `etckeeper <https://software.opensuse.org/package/etckeeper>`_
-- `syslogd <https://software.opensuse.org/package/syslogd>`_
 - `emacs <https://software.opensuse.org/package/emacs>`_
 - `joe <https://software.opensuse.org/package/joe>`_
 - `nano <https://software.opensuse.org/package/nano>`_
@@ -311,6 +316,7 @@ Finally time for some manual adding of **packages**:
 - `shellinabox <https://software.opensuse.org/package/shellinabox>`_
 - `kvirustotal <hhttps://software.opensuse.org/package/kvirustotal>`_
 - `monit <https://software.opensuse.org/package/monit>`_
+- `speedtest-cli <https://software.opensuse.org/package/speedtest-cli>`_ which depends on `python-setuptools <https://software.opensuse.org/package/python-setuptools>`_
 
 These packages were already installed:
 
@@ -382,7 +388,6 @@ This is how I got started:
     git commit -m "initial checkin"
     git gc # pack git repo to save a lot of space
 
-    cd /path/to/my/repo
     git remote add origin https://jeroenp@bitbucket.org/jeroenp/etckeeper.revue.git
     git push -u origin --all # pushes up the repo and its refs for the first time
     git push -u origin --tags # pushes up any tags
@@ -447,6 +452,8 @@ Note the ``--cache`` part in the command to delete, as then the files will not b
 Adding user ``jeroenp`` to ``SUDOERS`` so it can perform ``sudo``
 -----------------------------------------------------------------
 
+If not installeed yet ``zypper install yast2-sudo``
+
 1. Start ``yast``
 2. Open ``Security and Users``, then ``Sudo``
 3. Click ``Add``
@@ -460,7 +467,7 @@ Adding user ``jeroenp`` to ``SUDOERS`` so it can perform ``sudo``
     1. Select a ``Command`` (in my case ``ALL``)
     2. Press ``OK``
 
-  5. Press ``OK``
+  6. Press ``OK``
 
 4. Press ``OK``
 5. Quit ``yast``
@@ -619,19 +626,47 @@ This is what the diff looks like::
 Now ensure that the firewall allows for ssh:
 
 1. Start ``yast``
-2. Go to ``Security and Users``, ``Firewall``
-3. Go to ``Allowed Services``
-4. Ensure ``Secure Shell Server`` is in the list, when not:
+2. Go to ``Start-Up``
+3. Tick ``Enable Firewall Automatic Starting ``
+4. Go to ``Security and Users``, ``Firewall``
+5. Go to ``Allowed Services``
+6. Ensure ``Secure Shell Server`` is in the list, when not:
 
   1. Add ``Secure Shell Server`` to the list
   2. Press ``Next`` followed by ``Finish`` to apply the changes
 
-5. Quit ``yast``
+7. Quit ``yast``
 
 Finally start ``sshd``::
 
     rcsshd start
     rcsshd status
+
+On Mac OS X: generate private and public key pairs for OpenSSH
+--------------------------------------------------------------
+
+Though the `man pages suggest you can use ecdsa or ed25519 <http://apple.stackexchange.com/questions/77731/ecdsa-ssh-key-on-10-8-2>`_ you will get an ``unknown key type ecdsa`` or ``unknown key type ed25519`` when generating keys with such algorithms.
+In fact you `need Mac OS X El Capitan <https://www.reddit.com/r/OSXElCapitan/comments/3b9v3w/does_ssh_in_el_cap_support_ed25519_keys/>`_
+to support `ECDSA <https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm>`_
+(with for instance the `ed25519 <https://en.wikipedia.org/wiki/EdDSA#Ed25519>`_ algorithm that has been optimized for x64)
+which is the `Eliptic Curve <https://en.wikipedia.org/wiki/Elliptic_curve_cryptography>`_ variant
+of `DSA <https://en.wikipedia.org/wiki/Digital_Signature_Algorithm>`_.
+
+There is a `homebrew workaround on OS X <https://www.cryptomonkeys.com/2014/02/osx-openssh-ecdsa/>`_, but I can't ensure all my OS X instances run that and it is a bit invasive.
+
+So I've generated less strong keys with the benefit they work on a broader range of platforms.
+
+- http://epocsquadron.com/a-comprehensive-ssh-key-primer/
+- https://help.ubuntu.com/community/SSH/OpenSSH/Keys
+
+- https://pthree.org/2014/12/08/super-size-the-strength-of-your-openssh-private-keys/
+
+- http://www.tedunangst.com/flak/post/new-openssh-key-format-and-bcrypt-pbkdf
+
+- https://martin.kleppmann.com/2013/05/24/improving-security-of-ssh-private-keys.html
+
+
+
 
 install and configure `noip` dynamic DNS update script
 ------------------------------------------------------
@@ -859,7 +894,7 @@ Check it with `pdbedit <https://www.samba.org/samba/docs/man/manpages/pdbedit.8.
 
     pdbedit --list --verbose jeroenp
 
-If it shows ``Username not found!`` then you need to add the user:
+If it shows ``Username not found!`` then you need to add the user::
 
     revue:/etc # pdbedit --create --user jeroenp
     new password:
@@ -1210,6 +1245,29 @@ But it still doesn't start, as `journalctl <https://www.google.com/search?q=jour
   - `Why journalctl is cool and syslog will survive for another decade « Luc de Louw's Blog <http://blog.delouw.ch/2013/07/24/why-journalctl-is-cool-and-syslog-will-survive-for-another-decade/>`_.
   - `3.8 Configuring and Using System Logging <https://docs.oracle.com/cd/E52668_01/E54670/html/ol7-log-sec.html>`_.
 
+Some investigation::
+
+    # grep -w monit.pid /etc/init.d/monit /etc/monitrc
+    /etc/init.d/monit:MONIT_PID_FILE="/run/monit/monit.pid"
+    /etc/monitrc:## running Monit instance. By default this file is stored in $HOME/.monit.pid
+    /etc/monitrc:set pidfile /var/run/monit.pid
+
+    # grep -w monit.id /etc/init.d/monit /etc/monitrc
+    /etc/monitrc:## default the file is placed in $HOME/.monit.id.
+    /etc/monitrc:set idfile /run/monit/.monit.id
+
+    # grep -w run/monit /etc/init.d/monit /etc/monitrc
+    /etc/init.d/monit:MONIT_PID_FILE="/run/monit/monit.pid"
+    /etc/init.d/monit:		mkdir -p -m0700 "/var/run/monit"
+    /etc/monitrc:set pidfile /var/run/monit.pid
+    /etc/monitrc:set idfile /run/monit/.monit.id
+    /etc/monitrc:set statefile /run/monit/monit.state
+    /etc/monitrc:    basedir /run/monit/events
+
+    # ls -l --directory /run /var/run
+    drwxr-xr-x 37 root root 980 Jul  8 06:18 /run
+    lrwxrwxrwx  1 root root   4 May 16  2015 /var/run -> /run
+
 A quick look into ``/etc/monitrc`` reveals the initialisation of the ``monit`` package forgot to create ``/run/monit/.monit.id``::
 
     revue:/etc # grep "\.monit\.id" /etc/monitrc
@@ -1226,7 +1284,7 @@ If it exists but does not have a valid id, then you get this error::
     Jun 06 15:34:13 revue monit[4404]: Starting Monit 5.10 daemon with http interface at [localhost:2812]
     Jun 06 15:34:13 revue systemd[1]: monit.service: main process exited, code=exited, status=1/FAILURE
 
-Both issues is easily fixed by creating and running this ``/etc/monit-create-idfile.sh`` script::
+Both issues seem to be easily fixed by creating and running this ``/etc/monit-create-idfile.sh`` script::
 
     #! /bin/sh
     #
@@ -1246,7 +1304,11 @@ Both issues is easily fixed by creating and running this ``/etc/monit-create-idf
     echo y | monit --resetid
     cat $ID_FILE && echo
 
-Finally we caome to the last error: some more replacement needs to take place to prevent this error because ``monit`` cannot find its `pid <http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204>`_ file::
+But the idfile fix didn't work.
+
+The reason is that monit is started from ``/etc/systemd/system/monit.service`` instead of ``/etc/init.d/monit``
+
+Then we bump into another error: some more replacement needs to take place to prevent this error because ``monit`` cannot find its `pid <http://stackoverflow.com/questions/8296170/what-is-a-pid-file-and-what-does-it-contain/8296204#8296204>`_ file::
 
     Jun 06 16:20:48 revue monit[4760]: Error opening pidfile '@@PIDDIR@@/monit.pid' for writing -- No such file or directory
     Jun 06 16:20:48 revue monit[4760]: Monit daemon died
@@ -1262,9 +1324,23 @@ This is then fixed by creating and running this ``/etc/monitrc-fix.sh``::
     echo old:
     sed -n "/^# set pidfile \/var\/run\/monit.pid$/ p" $ETC_TARGET
     sed -e "/^# set pidfile \/var\/run\/monit.pid$/ s/^# //" $ETC_TARGET > $ETC_TARGET.tmp && mv $ETC_TARGET.tmp $ETC_TARGET
+    chmod 700 $ETC_TARGET
     echo new:
     sed -n "/^set pidfile \/var\/run\/monit.pid$/ p" $ETC_TARGET
     systemctl status monit.service
+    systemctl start monit.service
+
+The final error to resolve was this::
+
+    Jun 07 23:03:06 revue monit[1481]: Cannot translate 'revue' to FQDN name -- Name or service not known
+
+It took a bit of searching to understand what goes wrong and `Source: linux - getaddrinfo: command not found - Server Fault <http://serverfault.com/questions/449712/getaddrinfo-command-not-found>`_ mentioned trailing part of the error message ``to FQDN name -- Name or service not known``.
+
+What happens is that the defined ``hostname`` is not in ``/etc/hosts`` which means that ``getaddrinfo`` cannot resolve it.
+
+That's easy to fix::
+
+    >> /etc/hosts echo -e "\n# fix monit \"Cannot translate 'revue' to FQDN name -- Name or service not known\"\n127.0.0.1\t`hostname`\n"
     systemctl start monit.service
 
 More ``monit`` configuration tips (including setting up `HTTPs <https://en.wikipedia.org/wiki/HTTPS>`_ with a `self-signed certificate <https://en.wikipedia.org/wiki/Self-signed_certificate>`_ - imporant as ``monit`` uses plain username/password `http basic authentication <https://en.wikipedia.org/wiki/Basic_access_authentication>`_) are at:
@@ -1309,7 +1385,7 @@ This is my diff between the default ``vhost.template `` and ``pluimers.com.conf`
     15,19c15,17
     < # <VirtualHost *:80>
     < <VirtualHost *>
-    <     ServerAlias *.pluimers.com
+    <     ServerAlias pluimers.com *.pluimers.com
     <     ServerAdmin jeroen.pluimers.com+pluimers.com@gmail.com
     <     ServerName revue
     ---
@@ -1353,14 +1429,23 @@ Note that I experimented with a log directory per domain like ``/var/log/apache2
     (2)No such file or directory: AH02291: Cannot access directory '/var/log/apache2/pluimers.com/' for error log of vhost defined at /etc/apache2/vhosts.d/pluimers.com.conf:16
     AH00014: Configuration check failed
 
-Note that ``httpd2 -S`` by default does not execute ``
-This means that if you have ``SSL`` configured, ``httpd2 -S`` will not take that into account the ``APACHE_SERVER_FLAGS`` setting in ``/etc/sysconfig/apache2``
+Note that ``httpd2 -S`` by default does not execute ``/etc/sysconfig/apache2``.
+
+This means that if you have ``SSL`` configured, ``httpd2 -S`` will not take that into account the ``APACHE_SERVER_FLAGS`` setting in ``/etc/sysconfig/apache2`` which on my system specifies ``APACHE_SERVER_FLAGS="SSL"``.
+
+.. sidebar:: If you don't have the ``SSL`` flag in ``APACHE_SERVER_FLAGS``
+
+  Use the command ``a2enflag SSL`` to enable the ``SSL`` flag in ``APACHE_SERVER_FLAGS``.
+
+  It uses the OpenSuSE specific `a2enflag <https://build.opensuse.org/package/view_file/Apache/apache2/a2enflag?expand=1> `_
+
+
 
 `Workaround from another frustrated user <http://web.ornl.gov/~jar/Apache/SSL_in_Apache_2.html>`_ which `one day I will make easier to use <http://serverfault.com/questions/702155/why-doesnt-httpd2-s-catch-ssl-certificate-issues-whereas-systemctl-restart/702156#comment868640_702156>`_::
 
     httpd2 -D SSL -S
 
-The same frustrated user also suggested to make this small change in ``/etc/sysconfig/apache2``, from
+The same frustrated user also suggested to make this small change in ``/etc/sysconfig/apache2``, from::
 
     APACHE_LOGLEVEL="warn"
 
@@ -1368,8 +1453,16 @@ to::
 
     APACHE_LOGLEVEL="debug"
 
+Links on ``ServerAlias``, ``ServerName`` and having multiple servers per Vhost:
 
-
+  - http://serverfault.com/questions/274928/server-alias-with-wildcard-subdomain/275371#275371
+  - http://httpd.apache.org/docs/2.4/vhosts/name-based.html#using
+  - http://httpd.apache.org/docs/2.0/mod/core.html#serveralias
+  - http://httpd.apache.org/docs/2.0/mod/core.html#servername
+  - http://serverfault.com/questions/294423/multiple-servername-per-vhost/294424#294424
+  - http://httpd.apache.org/docs/2.4/vhosts/examples.html
+  - http://serverfault.com/questions/520195/how-does-servername-and-serveralias-work
+  - http://httpd.apache.org/docs/2.4/vhosts/details.html
 
 .. sidebar:: Notes when updating (vhosts) configuration from Apache 2.2 to Apache 2.4:
 
@@ -1506,14 +1599,15 @@ Remotely, it needs the firewall to be enabled for it:
 1. Start ``yast``
 2. Go to ``Security and Users``, ``Firewall``
 3. Go to ``Allowed Services``
-4. Ensure ``Shellinabox`` is in the list, when not:
+4. Ensure ``Shellinabox`` is in the list for ``External zone``, when not:
 
   1. Add ``Shellinabox`` to the list
   2. Press ``Next`` followed by ``Finish`` to apply the changes
 
 5. Quit ``yast``
 
-Now it works, but note that the https isn't really secure. Chrome will show ``ERR_SSL_VERSION_OR_CIPHER_MISMATCH``, and this will show far more details::
+| Now it works as you will be able to connect to something like http://192.168.71.62:4200 which then redirects to https://192.168.71.62:4200
+| Note however that the https isn't really secure. Chrome will show ``ERR_SSL_VERSION_OR_CIPHER_MISMATCH``, and this will show far more details::
 
     jeroenp@revue:~/testssl.sh> OPENSSL=./openssl-bins/openssl-1.0.2-chacha.pm/openssl32-1.0.2pm-krb5.chacha+poly ./testssl.sh localhost:4200
 
@@ -1525,24 +1619,47 @@ So the best is setting up an Apache redirect as shown in in the `shellinabox con
       Allow      from all
     </Location>
 
+This is using Apache ``alias_module`` `mod_alias <https://httpd.apache.org/docs/current/mod/mod_alias.html>`_ where you need multiple `Location <https://httpd.apache.org/docs/current/mod/core.html#location>`_ statements as `LocationMatch <https://httpd.apache.org/docs/current/mod/core.html#locationmatch>`_ doesn't like the terminating optional slash.
+
 For Apache 2.4 we need to slightly change that as we saw when configuring ``apache2`` above. So add these lines to ``/etc/apache2/vhosts.d/00-default.snap.conf``::
 
     <Location /shell>
       ProxyPass  http://localhost:4200/
       Require all granted
     </Location>
+    <Location /shell/revue>
+      ProxyPass  http://localhost:4200/
+      Require all granted
+    </Location>
+    <Location /shell/revue/>
+      ProxyPass  http://localhost:4200/
+      Require all granted
+    </Location>
 
 Now test your vhost configuration by running this command::
 
-    htttpd2 -S
+    httpd2 -S
+    httpd2 -S -D SSL -D SYSTEMD -D FOREGROUND
 
-If you get the below error, then you need tht http proxy modue to be installed in apache2::
+If you get the `below error <http://serverfault.com/questions/715905/why-am-i-getting-an-invalid-command-proxypass-error-when-i-start-my-apache-2>`_, then you need the http proxy module to be installed in apache2::
 
     Invalid command 'ProxyPass', perhaps misspelled or defined by a module not included in the server configuration
 
-In that case, in ``/etc/sysconfig/apache2`` find the line starting with ``APACHE_MODULES`` and add ``proxy_http_module`` to the lis of modules, then perform the ``httpd2 -S `` check again. Finally, restart ``apache2`` with this command::
+In that case,
 
+1. in ``/etc/sysconfig/apache2`` find the line starting with ``APACHE_MODULES`` and add both ``mod_proxy`` and ``mod_proxy_http``  to the lis of modules (they will add both ``proxy_module`` and ``proxy_http_module`` to the generated ``/etc/apache2/sysconfig.d/loadmodule.conf`` when ``/usr/sbin/rcapache2`` is executed),
+2. then perform the ``httpd2 -S`` check again.
+3. if it still fails, sync the generated ``/etc/apache2/sysconfig.d/loadmodule.conf`` into ``/etc/apache2/loadmodule.conf`` (as ``apache2.service`` uses the former, but ``httpd2`` uses the latter).
+   Reminder to self: check if `this <https://www.mail-archive.com/opensuse-commit@opensuse.org/msg78672.html>`_ is the cause.
+4. Finally, restart ``apache2`` with this command::
+
+    systemctl restart apache2.service
     systemctl status apache2.service
+
+5. or::
+
+    rcapache2 restart
+    rcapache2 status
 
 .. note::
 
@@ -1555,6 +1672,111 @@ If apache doesn't restart, then use ``journalctl -xe`` fo find out what went wro
 I found out about this by rereading `Apache Module mod_proxy_http <https://httpd.apache.org/docs/2.4/mod/mod_proxy_http.html>`_ three times.
 
 If this works, then you should see ``shellinabox`` when going to <http://localhost/shell>> but not yet for <https://localhost/shell>. For the latter we need to enable ``https`` in ```apache2``.
+
+When you get a `503` error, then usually `the shellinabox has died <http://wiert.me/?p=29424>`_, this fixes that::
+
+    revue:~ # systemctl status shellinabox.service
+    ● shellinabox.service - LSB: shellinabox
+       Loaded: loaded (/etc/init.d/shellinabox)
+       Active: inactive (dead)
+         Docs: man:systemd-sysv-generator(8)
+    revue:~ # systemctl enable shellinabox.service
+    shellinabox.service is not a native service, redirecting to /sbin/chkconfig.
+    Executing /sbin/chkconfig shellinabox on
+    revue:~ # systemctl start shellinabox.service
+    revue:~ # systemctl status shellinabox.service
+    ● shellinabox.service - LSB: shellinabox
+       Loaded: loaded (/etc/init.d/shellinabox)
+       Active: active (running) since Sat 2015-09-26 11:33:43 CEST; 5s ago
+         Docs: man:systemd-sysv-generator(8)
+      Process: 8741 ExecStart=/etc/init.d/shellinabox start (code=exited, status=0/SUCCESS)
+       CGroup: /system.slice/shellinabox.service
+               ├─8754 /usr/bin/shellinaboxd --background=/var/run/shellinaboxd.pid -u shellinabox -s /:SSH -c /etc/shellinabox/certs
+               └─8755 /usr/bin/shellinaboxd --background=/var/run/shellinaboxd.pid -u shellinabox -s /:SSH -c /etc/shellinabox/certs
+
+    Sep 26 11:33:43 revue systemd[1]: Starting LSB: shellinabox...
+    Sep 26 11:33:43 revue shellinabox[8741]: Starting shellinabox ..done
+    Sep 26 11:33:43 revue systemd[1]: Started LSB: shellinabox.
+
+Adding ``CONNECT`` support to Apache with ``proxy_connect_module``
+------------------------------------------------------------------
+
+If you want to forward CONNECT requests to another ``server:port`` for instance to `support SSH through an http Web-Proxy <http://mark.koli.ch/configuring-apache-to-support-ssh-through-an-http-web-proxy-with-proxytunnel>`_ then you need the ``proxy_connect_module`` which in the configuration is called ``mod_proxy_connect``.
+
+The steps below allow you to perform this when connected to ``pcm.pluimers.com`` or ``pcm.4delphi.com``::
+
+    CONNECT revue.4delphi.com:22 HTTP/1.1
+    Host: revue.4delphi.com
+
+or::
+
+    CONNECT revue.pluimers.com:22 HTTP/1.1
+    Host: revue.pluimers.com
+
+The first part is getting your DNS entries right:
+
+1. Add a line like this to your zone files::
+
+    pcm             IN      A       80.100.143.119 ; Apache2 proxy_connect_module / mod_proxy_connect
+
+2. Verify your named configuration::
+
+    named-checkzone 4delphi.com /var/lib/named/master/4delphi.com
+    named-checkzone pluimers.com /var/lib/named/master/pluimers.com
+
+3. Restart ``named`` and wait for your secondaries to catch up::
+
+    rcnamed stop && rcnamed start && rcnamed status && grep "zone .*/IN" /var/lib/named/log/general.log
+
+    less /var/lib/named/log/general.log
+
+The second part is getting certificates for ``pcm.pluimers.com`` and ``pcm.4delphi.com``.
+
+
+
+The third part is getting your virtual host configuration right:
+
+1. Adapt the vhosts files in ``/etc/apache2/vhosts.d ``::
+
+    pcm.pluimers.com.conf
+    pcm.pluimers.com-ssl.conf
+    pcm.4delphi.com.conf
+    pcm.4delphi.com-ssl.conf
+
+2. Test apache::
+
+    httpd2 -S && httpd2 -D SSL -S
+
+3. Restart apache::
+
+    rcapache2 stop && rcapache2 start && rcapache2 status
+
+
+
+The fourth part is this:
+
+1. in ``/etc/sysconfig/apache2`` find the line starting with ``APACHE_MODULES`` and add ``mod_proxy_connect`` to the lis of modules (they will add ``proxy_connect_module`` to the generated ``/etc/apache2/sysconfig.d/loadmodule.conf`` when ``/usr/sbin/rcapache2`` is executed),
+2. then perform the ``httpd2 -S`` check again using this command::
+
+    httpd2 -S
+    httpd2 -D SSL -S
+
+3. if it still fails, sync the generated ``/etc/apache2/sysconfig.d/loadmodule.conf`` into ``/etc/apache2/loadmodule.conf`` (as ``apache2.service`` uses the former, but ``httpd2`` uses the latter).
+   Reminder to self: check if `this <https://www.mail-archive.com/opensuse-commit@opensuse.org/msg78672.html>`_ is the cause.
+4. Finally, restart ``apache2`` with this command::
+
+    systemctl restart apache2.service
+    systemctl status apache2.service
+
+5. or::
+
+    rcapache2 restart
+    rcapache2 status
+
+    I found out about this by rereading `Apache Module mod_proxy_connect <https://httpd.apache.org/docs/2.4/mod/mod_proxy_connect.html>`_ more than once.
+
+
+
 
 Viewing the long journal
 ------------------------
@@ -1579,38 +1801,78 @@ This is exactly why I like it over log files:
 - it has explanations that can come in very handy
 - it directly goes to the pager (on my system ``less``)
 
-Hardening apache2 SSL cyphers
------------------------------
+Verify you have a recent Apache version
+---------------------------------------
 
-Via `Hardening Your Web Server’s SSL Ciphers — Hynek Schlawack <https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/>`_:
+Somehow not documented in the ``apachectl`` or ``apache2ctl`` man pages is ``apache2ctl -V``, but it accepts the same parameters as the `httpd2 man page <http://linux.die.net/man/8/httpd>`_ describes::
+
+    revue:/etc # apache2ctl -v
+    Server version: Apache/2.4.12 (Linux/SUSE)
+    Server built:   2015-06-11 09:16:28.000000000 +0000
+    revue:/etc # apache2ctl -V
+    Server version: Apache/2.4.12 (Linux/SUSE)
+    Server built:   2015-06-11 09:16:28.000000000 +0000
+    Server's Module Magic Number: 20120211:41
+    Server loaded:  APR 1.5.2, APR-UTIL 1.5.4
+    Compiled using: APR 1.5.2, APR-UTIL 1.5.4
+    Architecture:   64-bit
+    Server MPM:     prefork
+      threaded:     no
+        forked:     yes (variable process count)
+    Server compiled with....
+     -D APR_HAS_SENDFILE
+     -D APR_HAS_MMAP
+     -D APR_HAVE_IPV6 (IPv4-mapped addresses enabled)
+     -D APR_USE_PROC_PTHREAD_SERIALIZE
+     -D APR_USE_PTHREAD_SERIALIZE
+     -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+     -D APR_HAS_OTHER_CHILD
+     -D AP_HAVE_RELIABLE_PIPED_LOGS
+     -D DYNAMIC_MODULE_LIMIT=256
+     -D HTTPD_ROOT="/srv/www"
+     -D SUEXEC_BIN="/usr/sbin/suexec"
+     -D DEFAULT_PIDLOG="/run/httpd.pid"
+     -D DEFAULT_SCOREBOARD="logs/apache_runtime_status"
+     -D DEFAULT_ERRORLOG="/var/log/apache2/error_log"
+     -D AP_TYPES_CONFIG_FILE="/etc/apache2/mime.types"
+     -D SERVER_CONFIG_FILE="/etc/apache2/httpd.conf"
+
+Hardening apache2 SSL part one: cyphers and stapling
+----------------------------------------------------
+
+Via
+
+1. `Hardening Your Web Server’s SSL Ciphers — Hynek Schlawack <https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/>`_:
+2. `Mozilla.org Security, Server Side TLS: Apache <https://wiki.mozilla.org/Security/Server_Side_TLS#Apache>`_
 
 Edit ``/etc/apache2/ssl-global.conf``, then modify/add these lines::
 
-    --- a/apache2/ssl-global.conf
-    +++ b/apache2/ssl-global.conf
-    @@ -77,7 +77,17 @@
-            #   SSL Cipher Suite:
-            #   List the ciphers that the client is permitted to negotiate.
-            #   See the mod_ssl documentation for a complete list.
-    -       SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
-    +       # SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
-    +        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
-    +        SSLCipherSuite ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
-    +        # normally this is in copies of default-vhost-ssl.conf, but it needs to be default:
-    +        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
-    +        SSLHonorCipherOrder On
-    +
-    +        ##  SSL compression:
-    +        # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
-    +        # as of Apache2 2.4.4 the default is Off; this is in case you ever run on a lower version.
-    +        SSLCompression Off
-
-            #   Server Certificate:
-            #   Point SSLCertificateFile at a PEM encoded certificate.  If
+    < 	SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+    ---
+    > 	# SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+    >         # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+    >         SSLCipherSuite ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
+    >
+    >         # normally this is in copies of default-vhost-ssl.conf, but it needs to be default:
+    >         # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+    >         SSLHonorCipherOrder On
+    >
+    >         ##  SSL compression:
+    >         # https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+    >         # as of Apache2 2.4.4 the default is Off; this is in case you ever run on a lower version.
+    >         SSLCompression Off
+    >
+    >         ## OCSP Stapling, only in httpd 2.3.3 and later
+    >         # https://wiki.mozilla.org/Security/Server_Side_TLS#Apache
+    >         SSLUseStapling on
+    >         SSLStaplingResponderTimeout 5
+    >         SSLStaplingReturnResponderErrors off
+    >         # On Apache 2.4+, SSLStaplingCache must be set *outside* of the VirtualHost
+    >         SSLStaplingCache shmcb:/var/run/ocsp(128000)
 
 After that, test the config, then restart ``apache2``::
 
-    revue:~ # apache2ctl -t
+    revue:~ # apache2ctl configtest
     Syntax OK
     revue:~ # systemctl restart apache2.service
     revue:~ # systemctl status apache2.service
@@ -1633,12 +1895,95 @@ After that, test the config, then restart ``apache2``::
 
 Additional information at `Secure your Apache Server <https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html>`_.
 
+Hardening apache2 SSL part two: disabling `weak Diffie-Hellman <https://weakdh.org/>`_
+--------------------------------------------------------------------------------------
+
+As a final part in hardening, configure apache to use non-stock `Diffie-Hellman key exchange <https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange>`_ parameters by generating them once, then configuring them in the apache configuration.
+
+The reason is that large organizations like NSA can precompute attacks based on the stock keys (see `Schneier on Security, Crypto-Gram, June 15, 2015, The Logjam (and Another) Vulnerability against Diffie-Hellman Key Exchange <https://www.schneier.com/crypto-gram/archives/2015/0615.html#1>`_).
+
+Lets start with the first step: generate non-stock DH parameters using the `openssl dhparam command <https://www.openssl.org/docs/apps/dhparam.html>`_.
+
+This indeed takes a very long time on my system (a HP `XW6600 <https://h10057.www1.hp.com/ecomcat/hpcatalog/specs/provisioner/99/FR814UC.htm>`_ running an `ESXi <https://en.wikipedia.org/wiki/VMware_ESX>`_ based VM with two `Intel <https://en.wikipedia.org/wiki/Intel>`_(R) `Xeon <https://en.wikipedia.org/wiki/List_of_Intel_Xeon_microprocessors>`_(R) CPU `E5420 <http://ark.intel.com/products/33927/Intel-Xeon-Processor-E5420-12M-Cache-2_50-GHz-1333-MHz-FSB>`_ @ 2.50GHz cores)::
+
+    revue:~ # time openssl dhparam -out /etc/apache2/ssl.crt/dh4096.pem 4096
+    Generating DH parameters, 4096 bit long safe prime, generator 2
+    This is going to take a long time
+    .............................................................................................................+.........................................................................................................................................................................................................................................................................................................................................................................+...............................................................................................+.........+............................................................................................................................+....................................................................................................................................................................................................................................................................................................................................................................+...........................................................................................................................................................................................................................................................................................................+.............................................................................................................................+...........................................................................................+..............................................................................................................................................................................................................................................................................................................................................................................................................................+..................................................................................................................................+.........................................................................+........................+..+...................................................................................................................+...........................................................................................................................................................................................................................................................................................................................................................................+........................................................................................................................................................................................................................................................................................................................................................................................................................................................+....................................................................................................................................................................................................................................................................+..........+.......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................+.......................+....................................................................................................................................................................................................+..................................................................................................................+.+..............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................+........................................+.......................+......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................+..................................................................+..........................................................................................................................................................................................................................................................................................................................................+......................................+...............+......+..........................................................................................+...............................................................................................................................................................................................................................................................................................................................................................................................................+.........................................................................................................+...................................................................................................................................................................................................................................+.............................................................+...............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................+..........................+.+.........................................................................................................................................................................................................................................................+.......................................................................+........................................................................................................................................+............................+...................................+..........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................+..............+....................................................................................................................................................................+.................................................................................................................................................................................+........................................................+............................................................................................................+.............................................................................................................................................................+.........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................+..................................................................................................................................................+.............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................+...............................................................................................................................................................................................................................................+....................................................................................................................................................................................................................................................................................................................+..............................................................................................+....................................................................................................................................+..........................................................................................+.........................................................................................................................................+..................................................................................................................................................................................................................................................+......................................................................................................................................................+.......................................................................................................................+.......................................................................................................................................................................................................................................................................................................................+...................................................................................................................................................................................................................................................................................................................................................................++*++*
+
+    real    9m23.519s
+    user    9m23.416s
+    sys     0m0.312s
+
+.. sidebar:: `Legend for OpenSSL’s dhparam output <Legend for OpenSSL’s dhparam output>`_
+
+  A legend of the meaning of all the dots, pluses and stars that openssl dhparam outputs while computing Diffie-Hellman parameters::
+
+      . : A potential prime number was generated.
+      + : Number is being tested for primality.
+      * : A prime number was found.
+
+For comparison (2048 bits should work out OK, `1024 bits are on the border of being bad <http://nethack.ch/2014/03/23/increase-ssltls-security-nginx-apache-enabling-pfs-hsts/>`_, but `768 and 512 bits is definitely too small <https://www.openssl.org/blog/blog/2015/05/20/logjam-freak-upcoming-changes/>`_)::
+
+    revue:~ # time openssl dhparam -out /tmp/dh1024.pem 1024
+    Generating DH parameters, 1024 bit long safe prime, generator 2
+    This is going to take a long time
+    ...............................................+.........+...................................+.................+.+....................................................................................+................................................+................+........................................................................+......................+...+.....................................................++*++*++*
+
+    real    0m1.687s
+    user    0m1.652s
+    sys     0m0.028s
+    revue:~ # time openssl dhparam -out /tmp/dh2048.pem 2048
+    Generating DH parameters, 2048 bit long safe prime, generator 2
+    This is going to take a long time
+    ..........................................................................................................................................+...........+.......................+..........................................................+...................................................................................................................................................................................................................................................................................................................................................+..................................+....................+...........................................................................................+.............................+..................................................................................+..............................................................................+......................................+............................................................................................................................................................................................................+....................+.................................................................+......................................................................................................................................+...........................................................................................................................................................................................................+...................................................................................................+.....................+.................................................................................................................................................................+.....+......................................................................................................................................................................+...............................+.........+...................................................................................+......................................................+.......................+............................................................................................................+.................................................................................................+..............................................................................+..........+...........................................................+......................................................................................................................................................................+..................................+.......................+...............................+..........................................................................................................................................................................................................................................................................................+.........................................+...................+......................+...............................................+..........+..........................................................+.....+................................+..............+....+...............................................................+...............................................................................................+.....................................................................................................................................................................................................................................................................................................................+...............+.................+....................................+.................+...............................+..................................................+........+.+........................................................+.....................................................................................................................................+..............................................................++*++*
+
+    real    1m3.122s
+    user    1m2.896s
+    sys     0m0.172s
+
+Now continue with modifying the apache config, based on the *Forward Secrecy & Diffie Hellman Ephemeral Parameters* section in `Strong SSL Security on Apache2 - Raymii.org <https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html>`_, add a `SSLOpenSSLConfCmd <http://httpd.apache.org/docs/trunk/mod/mod_ssl.html#sslopensslconfcmd>`_ with a `DHParameters command<https://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS>`_ section to ``/etc/apache2/ssl-global.conf``::
+
+    ##  SSL Diffie-Hellman parameters:
+    # https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html
+    # Default Diffie-Hellman parameters as they are widely in use and pose a pre-computing attack risk.
+    # Manually generate parameters using this statement:
+    #    openssl dhparam -out /etc/apache2/ssl.crt/dh4096.pem 4096
+    # Then enable them here before restarting apache2:
+    SSLOpenSSLConfCmd DHParameters /etc/apache2/ssl.crt/dh4096.pem
+
+Finally restart apache2::
+
+    rcapache2 stop && rcapache2 start && rcapache2 status
+
+After having configured at least one https site, you need to check if indeed the `correct temporary keys <https://www.openssl.org/blog/blog/2015/05/20/logjam-freak-upcoming-changes/>`_ are being used by checking if ``Server Temp Key: DH, 4096 bits`` is in the output::
+
+    revue:~ # echo "GET /" | openssl s_client -connect www.4delphi.com:443 -cipher "EDH" | grep "Server Temp Key"
+    depth=2 C = IL, O = StartCom Ltd., OU = Secure Digital Certificate Signing, CN = StartCom Certification Authority
+    verify return:1
+    depth=1 C = IL, O = StartCom Ltd., OU = Secure Digital Certificate Signing, CN = StartCom Class 1 Primary Intermediate Server CA
+    verify return:1
+    depth=0 C = NL, CN = www.4delphi.com, emailAddress = webmaster@4delphi.com
+    verify return:1
+    DONE
+    Server Temp Key: DH, 4096 bits
+
+Finally ensure the SSL tests are OK:
+
+  - https://www.ssllabs.com/ssltest/analyze.html?d=4delphi.com&hideResults=on&latest
+  - https://www.ssllabs.com/ssltest/analyze.html?d=pluimers.com&hideResults=on&latest
+
+There, observe that a strong server is incompatible with these clients:
+
+  - Java 6u45: Client does not support DH parameters > 1024 bits
+  - IE 6 / XP: Protocol or cipher suite mismatch
+
 Enabling https for apache2
 --------------------------
 
 First get and install a certificate.
 
-Then enable `mod_ssl <http://httpd.apache.org/docs/2.4/mod/mod_ssl.html>`_, in ``/etc/sysconfig/apache2`` you need one entrie appended to ``APACHE_MODULES``::
+Then enable `mod_ssl <http://httpd.apache.org/docs/2.4/mod/mod_ssl.html>`_, in ``/etc/sysconfig/apache2`` you need one entry appended to ``APACHE_MODULES``::
 
      mod_ssl
 
@@ -1836,32 +2181,33 @@ SSLLabs test will most likely give this downgrade:
 
     This server's certificate chain is incomplete. Grade capped to B.
 
-So make sure you chain your certificates when using startSSL::
+So make sure you chain your certificates when using the `class1 startSSL ca certificate <https://www.startssl.com/certs/class1>`_. Favour the `sha2 ones <https://www.startssl.com/certs/class1/sha2`_ over the `sha1 ones <https://www.startssl.com/certs/class1/sha1/pem/>`_ and use the `textual pem format <http://how2ssl.com/articles/working_with_pem_files/>`_::
 
     pushd /etc/apache2/ssl.crt
     wget -m -np https://www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem
-    cat pluimers.com.crt www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem > pluimers.com-chain.crt
     popd
 
 Now ensure these two lines in ``/etc/apache2/vhosts.d/pluimers.com-ssl.conf`` are as follows::
 
     #SSLCertificateFile /etc/apache2/ssl.crt/pluimers.com.crt
     SSLCertificateKeyFile /etc/apache2/ssl.key/pluimers.com.key
-    SSLCertificateChainFile /etc/apache2/ssl.crt/pluimers.com-chain.crt
+    SSLCertificateChainFile /etc/apache2/ssl.crt/www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem
 
 Finally, restart the apache2 service::
 
-    rcapache2 stop
-    rcapache2 start
+    rcapache2 stop && rcapache2 start && rcapache2 status
 
 If it fails, then look through errors in ``/var/log/apache2/pluimers.com-ssl-error_log``, as ``journalctl -xe`` will not show details.
+
+.. sidebar:: Need to research http to https redirection.
+
+See this SE question: http://stackoverflow.com/questions/16200501/http-to-https-apache-redirection
 
 .. sidebar:: Important apache restart note
 
   ``rcapache2 restart`` will not fully unload the apache configuration. Use this in stead::
 
-      rcapache2 stop
-      rcapache2 start
+      rcapache2 stop && rcapache2 start && rcapache2 status
 
   Without it, you will get spurious errors (like https://www.pluimers.com re-using part of the virtual directory configuration for http://www.pluimers.com thereby generating spurious 403-errors) in log files like the ``403 1032`` and ``403 1018`` error codes and ``authorization result of <RequireAny>: denied`` in below logs.
 
@@ -1905,6 +2251,262 @@ If it fails, then look through errors in ``/var/log/apache2/pluimers.com-ssl-err
       [Mon Jun 29 20:16:55.808989 2015] [ssl:debug] [pid 5588] ssl_engine_io.c(1003): [client 80.100.143.119:63297] AH02001: Connection closed to child 5 with standard shutdown (server revue:443)
 
 
+Migrating to or using LetsEncrypt
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Based on `LetsEncrypt on openSUSE Leap <https://rootco.de/2016-05-16-letsencrypt-on-leap/> `_ and `How to set up letsencrypt on OpenSUSE 13.2 (Tutorial) <https://community.letsencrypt.org/t/how-to-set-up-letsencrypt-on-opensuse-13-2-tutorial/5580/8>`_::
+
+  # mkdir /root/Versioned/
+  # cd /root/Versioned/
+  # git clone https://github.com/certbot/certbot
+  # cd certbot/
+  # ./certbot-auto --help
+  # ./certbot-auto
+  Bootstrapping dependencies for openSUSE-based OSes...
+  Retrieving repository 'server:monitoring' metadata .....................................................................................................................................................................................[done]
+  Building repository 'server:monitoring' cache ..........................................................................................................................................................................................[done]
+  Loading repository data...
+  Reading installed packages...
+  'python' is already installed.
+  No update candidate for 'python-2.7.12-1.2.x86_64'. The highest available version is already installed.
+  'gcc' is already installed.
+  No update candidate for 'gcc-6-1.18.x86_64'. The highest available version is already installed.
+  'ca-certificates' is already installed.
+  No update candidate for 'ca-certificates-2+git20151110.c15593c-1.2.noarch'. The highest available version is already installed.
+  'libopenssl-devel' is already installed.
+  No update candidate for 'libopenssl-devel-1.0.2h-1.3.x86_64'. The highest available version is already installed.
+  'augeas-lenses' is already installed.
+  No update candidate for 'augeas-lenses-1.5.0-1.2.x86_64'. The highest available version is already installed.
+  Resolving package dependencies...
+
+  The following 6 NEW packages are going to be installed:
+    dialog libdialog13 libffi-devel libffi6 python-devel python-virtualenv
+
+  6 new packages to install.
+  Overall download size: 5.2 MiB. Already cached: 0 B. After the operation, additional 23.5 MiB will be used.
+
+  Continue? [y/n/? shows all options] (y): y
+  Retrieving package python-virtualenv-13.1.2-1.5.noarch                                                                                                                                                   (1/6),   1.5 MiB (  1.8 MiB unpacked)
+  Retrieving: python-virtualenv-13.1.2-1.5.noarch.rpm ........................................................................................................................................................................[done (3.9 MiB/s)]
+  Retrieving package libdialog13-1.3-1.3.x86_64                                                                                                                                                            (2/6),  99.9 KiB (208.2 KiB unpacked)
+  Retrieving: libdialog13-1.3-1.3.x86_64.rpm .............................................................................................................................................................................................[done]
+  Retrieving package python-devel-2.7.12-1.1.x86_64                                                                                                                                                        (3/6),   3.4 MiB ( 20.9 MiB unpacked)
+  Retrieving: python-devel-2.7.12-1.1.x86_64.rpm .........................................................................................................................................................................................[done]
+  Retrieving package dialog-1.3-1.3.x86_64                                                                                                                                                                 (4/6), 103.9 KiB (245.5 KiB unpacked)
+  Retrieving: dialog-1.3-1.3.x86_64.rpm ..................................................................................................................................................................................................[done]
+  Retrieving package libffi6-3.0.11-1.27.x86_64                                                                                                                                                            (5/6),  20.9 KiB ( 30.4 KiB unpacked)
+  Retrieving: libffi6-3.0.11-1.27.x86_64.rpm .............................................................................................................................................................................................[done]
+  Retrieving package libffi-devel-3.0.11-1.27.x86_64                                                                                                                                                       (6/6),  67.7 KiB (254.7 KiB unpacked)
+  Retrieving: libffi-devel-3.0.11-1.27.x86_64.rpm ........................................................................................................................................................................................[done]
+  Checking for file conflicts: ...........................................................................................................................................................................................................[done]
+  (1/6) Installing: python-virtualenv-13.1.2-1.5.noarch ..................................................................................................................................................................................[done]
+  Additional rpm output:
+  update-alternatives: using /usr/bin/virtualenv-2.7 to provide /usr/bin/virtualenv (virtualenv) in auto mode
+
+
+  (2/6) Installing: libdialog13-1.3-1.3.x86_64 ...........................................................................................................................................................................................[done]
+  (3/6) Installing: python-devel-2.7.12-1.1.x86_64 .......................................................................................................................................................................................[done]
+  (4/6) Installing: dialog-1.3-1.3.x86_64 ................................................................................................................................................................................................[done]
+  (5/6) Installing: libffi6-3.0.11-1.27.x86_64 ...........................................................................................................................................................................................[done]
+  (6/6) Installing: libffi-devel-3.0.11-1.27.x86_64 ......................................................................................................................................................................................[done]
+  Creating virtual environment...
+  Installing Python packages...
+  Installation succeeded.
+  Directory '/etc/apache2/sites-enabled' does not exist. Please ensure that the values for --apache-handle-sites and --apache-server-root are correct for your environment.
+  # mkdir /etc/letsencrypt
+  # cp ./examples/cli.ini /etc/letsencrypt/
+
+Now edit ``/etc/letsencrypt/`` find the line ``# email = foo@example.com``, remove the ``#`` and replace your email address. Then perform this::
+
+  # ./certbot-auto register
+
+Confirm the terms of service, then ensure ``/etc/letsencrypt`` is backed-up.
+
+Now test::
+
+  # httpd2 -S
+  httpd2: Syntax error on line 114 of /etc/apache2/httpd.conf: Syntax error on line 25 of /etc/apache2/loadmodule.conf: Cannot load /usr/lib64/apache2/mod_php5.so into server: /usr/lib64/apache2/mod_php5.so: cannot open shared object file: No such file or directory
+  # httpd2 -D SSL -S
+  httpd2: Syntax error on line 114 of /etc/apache2/httpd.conf: Syntax error on line 25 of /etc/apache2/loadmodule.conf: Cannot load /usr/lib64/apache2/mod_php5.so into server: /usr/lib64/apache2/mod_php5.so: cannot open shared object file: No such file or directory
+
+It means that ``php5_module`` is missing likely because php5 was replaced by php7::
+
+  # ls -al /usr/lib64/apache2/mod_php*
+  -rwxr-xr-x 1 root root 6545592 Jun 27 15:43 /usr/lib64/apache2/mod_php7.so
+
+As a solution, replace this in ``/etc/apache2/loadmodule.conf``::
+
+  LoadModule php5_module                    /usr/lib64/apache2/mod_php5.so
+
+By::
+
+  LoadModule php7_module                    /usr/lib64/apache2/mod_php7.so
+
+Then continue fixing::
+
+  # httpd2 -D SSL -S
+  AH00526: Syntax error on line 14 of /etc/apache2/conf.d/nagios.conf:
+  Invalid command '<IfVersion', perhaps misspelled or defined by a module not included in the server configuration
+
+This is not because the ``nagios`` package `forgot to install mod_version <https://forums.opensuse.org/showthread.php/500526-apache-IfVersion>`_.
+
+It is because there was a difference between ``/etc/apache2/loadmodule.conf`` and ``/etc/apache2/sysconfig.d/loadmodule.conf``, the former was missing this line::
+
+  LoadModule version_module                 /usr/lib64/apache2-prefork/mod_version.so
+
+The cause is likely this commit: https://www.mail-archive.com/opensuse-commit@opensuse.org/msg78672.html
+
+
+
+The above is a one-time thing after which you do these for each domain::
+
+  # ./certbot-auto certonly --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --apache-vhost-root /etc/apache2/vhosts.d/ --domains pluimers.com,www.pluimers.com
+
+  IMPORTANT NOTES:
+   - Congratulations! Your certificate and chain have been saved at
+     /etc/letsencrypt/live/pluimers.com/fullchain.pem. Your cert will
+     expire on 2016-10-28. To obtain a new or tweaked version of this
+     certificate in the future, simply run certbot-auto again. To
+     non-interactively renew *all* of your certificates, run
+     "certbot-auto renew"
+
+Then install based on `Install LE on test server before making the site live - Server - Let's Encrypt Community Support <http://community.letsencrypt.org/t/install-le-on-test-server-before-making-the-site-live/17657> `_::
+
+  # ./certbot-auto install --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --apache-vhost-root /etc/apache2/vhosts.d/ --cert-path /etc/letsencrypt/live/pluimers.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/pluimers.com/fullchain.pem --key-path /etc/letsencrypt/live/pluimers.com/privkey.pem --domains pluimers.com,www.pluimers.com
+
+
+  # ./certbot-auto certonly --noninteractive --apache --domains 4delphi.com,www.4delphi.com
+  Directory '/etc/apache2/sites-enabled' does not exist. Please ensure that the values for --apache-handle-sites and --apache-server-root are correct for your environment.
+
+  # ./certbot-auto certonly --noninteractive --apache --apache-handle-modules "" --domains 4delphi.com,www.4delphi.com
+  Directory '/etc/apache2/sites-enabled' does not exist. Please ensure that the values for --apache-handle-sites and --apache-server-root are correct for your environment.
+
+  # ./certbot-auto certonly --noninteractive --apache --apache-handle-sites "" --domains 4delphi.com,www.4delphi.com
+  Unsupported directory layout. You may try to enable mod socache_shmcb and try again.
+
+  # ./certbot-auto certonly --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --domains 4delphi.com,www.4delphi.com
+
+  IMPORTANT NOTES:
+   - Congratulations! Your certificate and chain have been saved at
+     /etc/letsencrypt/live/4delphi.com/fullchain.pem. Your cert will
+     expire on 2016-10-30. To obtain a new or tweaked version of this
+     certificate in the future, simply run certbot-auto again. To
+     non-interactively renew *all* of your certificates, run
+     "certbot-auto renew"
+   - If you like Certbot, please consider supporting our work by:
+
+     Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+     Donating to EFF:                    https://eff.org/donate-le
+
+  # ./certbot-auto install --noninteractive --apache --cert-path /etc/letsencrypt/live/4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/4delphi.com/privkey.pem --domains 4delphi.com,www.4delphi.com
+  Directory '/etc/apache2/sites-enabled' does not exist. Please ensure that the values for --apache-handle-sites and --apache-server-root are correct for your environment.
+
+  # ./certbot-auto install --noninteractive --apache --apache-handle-modules "" --cert-path /etc/letsencrypt/live/4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/4delphi.com/privkey.pem --domains 4delphi.com,www.4delphi.com
+  Directory '/etc/apache2/sites-enabled' does not exist. Please ensure that the values for --apache-handle-sites and --apache-server-root are correct for your environment.
+
+  # ./certbot-auto install --noninteractive --apache --apache-handle-sites "" --cert-path /etc/letsencrypt/live/4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/4delphi.com/privkey.pem --domains 4delphi.com,www.4delphi.com
+  Unsupported directory layout. You may try to enable mod socache_shmcb and try again.
+
+  # ./certbot-auto install --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --cert-path /etc/letsencrypt/live/4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/4delphi.com/privkey.pem --domains 4delphi.com,www.4delphi.com
+
+No need for this even more complex command-line::
+
+  # ./certbot-auto
+
+After that, test again with a these commands::
+
+  # httpd2 -S
+  # httpd2 -D SSL -S
+
+If it works out, then restart apache::
+
+  # rcapache2 stop && rcapache2 start && rcapache2 status
+
+
+│ │                  [*] la-perlina.com                              │ │
+│ │                  [*] la-perlina.eu                               │ │
+│ │                  [*] la-perlina.nl                               │ │
+│ │                  [*] laperlina.eu                                │ │
+│ │                  [*] laperlina.nl                                │ │
+│ │                  [*] laperlina.net                               │ │
+│ │                  [*] perlina.nl                                  │ │
+│ │                  [*] 4delphi.com                                 │ │
+│ │                  [*] www.4delphi.com                             │ │
+│ │                  [*] continuaci.4delphi.com                      │ │
+│ │                  [*] pcm.4delphi.com                             │ │
+│ │                  [*] revue                                       │ │
+│ │                  [*] revue.noip.me                               │ │
+│ │                  [*] pluimers.com                                │ │
+│ │                  [*] www.pluimers.com                            │ │
+│ │                  [*] continuaci.pluimers.com                     │ │
+│ │                  [*] pcm.pluimers.com                            │ │
+│ │                  [*] snip.xs4all.nl                              │ │
+
+# ./certbot-auto install --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --apache-vhost-root /etc/apache2/vhosts.d/ --cert-path /etc/letsencrypt/live/pluimers.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/pluimers.com/fullchain.pem --key-path /etc/letsencrypt/live/snip.xs4all.nl/privkey.pem --domains snip.xs4all.nl
+
+# ./certbot-auto certonly --noninteractive --apache --domains snip.xs4all.nl
+
+# ./certbot-auto certonly --noninteractive --apache --domains la-perlina.com
+# ./certbot-auto certonly --noninteractive --apache --domains la-perlina.eu
+# ./certbot-auto certonly --noninteractive --apache --domains la-perlina.nl
+# ./certbot-auto certonly --noninteractive --apache --domains laperlina.eu
+# ./certbot-auto certonly --noninteractive --apache --domains laperlina.nl
+# ./certbot-auto certonly --noninteractive --apache --domains laperlina.net
+# ./certbot-auto certonly --noninteractive --apache --domains perlina.nl
+│ │                  [*] 4delphi.com                                 │ │
+│ │                  [*] www.4delphi.com                             │ │
+│ │                  [*] continuaci.4delphi.com                      │ │
+# ./certbot-auto certonly --noninteractive --apache --domains pcm.4delphi.com
+# ./certbot-auto certonly --noninteractive --apache --domains revue
+# ./certbot-auto certonly --noninteractive --apache --domains revue.noip.me
+│ │                  [*] pluimers.com                                │ │
+│ │                  [*] www.pluimers.com                            │ │
+
+# ./certbot-auto certonly --noninteractive --apache --domains continuaci.pluimers.com
+certbot --noninteractive --apache --domains continuaci.pluimers.com
+
+# ./certbot-auto certonly --noninteractive --apache --domains pcm.pluimers.com
+
+# ./certbot-auto certonly --noninteractive --apache --domains pcm.4delphi.com
+Directory '/etc/apache2/sites-enabled' does not exist. Please ensure that the values for --apache-handle-sites and --apache-server-root are correct for your environment.
+
+# ./certbot-auto certonly --noninteractive --apache --apache-handle-sites "" --domains pcm.4delphi.com
+Unsupported directory layout. You may try to enable mod socache_shmcb and try again.
+
+# ./certbot-auto certonly --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --domains pcm.4delphi.com
+
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at
+   /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem. Your cert will
+   expire on 2016-11-11. To obtain a new or tweaked version of this
+   certificate in the future, simply run certbot-auto again. To
+   non-interactively renew *all* of your certificates, run
+   "certbot-auto renew"
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+
+# certbot certonly --noninteractive --apache --domains pcm.4delphi.com
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Starting new HTTPS connection (1): acme-v01.api.letsencrypt.org
+Cert not yet due for renewal
+Keeping the existing certificate
+
+-------------------------------------------------------------------------------
+Certificate not yet due for renewal; no action taken.
+-------------------------------------------------------------------------------
+
+--apache-handle-modules "" --apache-handle-sites "" --apache-vhost-root /etc/apache2/vhosts.d/ --cert-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/pcm.4delphi.com/privkey.pem
+# certbot install --noninteractive --apache --cert-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/pcm.4delphi.com/privkey.pem --domains pcm.4delphi.com
+
+# ./certbot-auto install --noninteractive --apache --domains pcm.4delphi.com
+# ./certbot-auto install --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --apache-vhost-root /etc/apache2/vhosts.d/ --cert-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/pcm.4delphi.com/privkey.pem --domains pcm.4delphi.com
+# ./certbot-auto install --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --apache-vhost-root /etc/apache2/vhosts.d/ --cert-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/pcm.4delphi.com/privkey.pem --domains pcm.4delphi.com
+# ./certbot-auto install --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --apache-vhost-root /etc/apache2/vhosts.d/ --cert-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/pcm.4delphi.com/privkey.pem --domains pcm.4delphi.com
+# ./certbot-auto install --noninteractive --apache --apache-handle-modules "" --apache-handle-sites "" --apache-vhost-root /etc/apache2/vhosts.d/ --cert-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --fullchain-path /etc/letsencrypt/live/pcm.4delphi.com/fullchain.pem --key-path /etc/letsencrypt/live/pcm.4delphi.com/privkey.pem --domains pcm.4delphi.com
+
+
 ------------------
 
 0. Remove the temporary directory (preferably, delete the whole ``tmpfs`` volume it is on).
@@ -1939,6 +2541,13 @@ Full log::
     to be sent with your certificate request
     A challenge password []:
     An optional company name []:
+
+Node.js
+~~~~~~~
+
+First time installation::
+
+  zypper install nodejs
 
 
 
@@ -2003,6 +2612,78 @@ If it doesn't update anything: find when more repostories are added:
 Show all the details of your configured repositories::
 
     zypper repos --details
+
+disabling the DVD repo
+~~~~~~~~~~~~~~~~~~~~~~
+
+As per IRC::
+
+  [14:03] <DimStar> jeroenp_: ah - and you should disable your DVD repo - this won't really be helpful on TW
+
+First list them::
+
+  # zypper lr -d
+  # | Alias                            | Name                       | Enabled | GPG Check | Refresh | Priority | Type   | URI                                                                                    | Service
+  --+----------------------------------+----------------------------+---------+-----------+---------+----------+--------+----------------------------------------------------------------------------------------+--------
+  1 | download.opensuse.org-non-oss    | Main Repository (NON-OSS)  | Yes     | (r ) Yes  | Yes     |   99     | yast2  | http://download.opensuse.org/tumbleweed/repo/non-oss/                                  |
+  2 | download.opensuse.org-oss        | Main Repository (OSS)      | Yes     | (r ) Yes  | Yes     |   99     | yast2  | http://download.opensuse.org/tumbleweed/repo/oss/                                      |
+  3 | download.opensuse.org-tumbleweed | Main Update Repository     | Yes     | (r ) Yes  | Yes     |   99     | rpm-md | http://download.opensuse.org/update/tumbleweed/                                        |
+  4 | openSUSE-20150508-0              | openSUSE-20150508-0        | Yes     | ( p) Yes  | No      |   99     | yast2  | cd:///?devices=/dev/disk/by-id/ata-VMware_Virtual_IDE_CDROM_Drive_10000000000000000001 |
+  5 | repo-debug                       | openSUSE-Tumbleweed-Debug  | No      | ----      | Yes     |   99     | NONE   | http://download.opensuse.org/debug/tumbleweed/repo/oss/                                |
+  6 | repo-source                      | openSUSE-Tumbleweed-Source | No      | ----      | Yes     |   99     | NONE   | http://download.opensuse.org/source/tumbleweed/repo/oss/                               |
+
+You can remove by ``alias`` as follows (or using ``zypper mr -d openSUSE-20150508-0``)::
+
+  # zypper modifyrepo --disable openSUSE-20150508-0
+  Repository 'openSUSE-20150508-0' has been successfully disabled.
+
+Or even completely remove it::
+
+  # zypper removerepo openSUSE-20150508-0
+
+Reasoning::
+
+  Sometimes a package is replaced by a new version in the online repositories (for insance when a major update of python has taken place and packages using it  - like ``python-cupshelpers`` are renamed).
+  If the old package still exists in an ``enabled`` repo, then ``zypper`` will not consider removal of it as a "first-class valid solution" and complain about depending stuff that needs to be deinstalled.
+
+relaxing internal network traffic on the external NIC
+-----------------------------------------------------
+
+With the default settings, I had many journalctl messages like this::
+
+  Jul 08 10:02:09 revue kernel: SFW2-INext-DROP-DEFLT IN=ens32 OUT= MAC=00:0c:29:72:f2:7e:00:0c:29:f7:f0:fe:08:00 SRC=192.168.71.44 DST=192.168.71.62 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=19759 DF PROTO=TCP SPT=54301 DPT=135 WINDOW=8192 RES=0x00 SYN URGP=0 OPT (020405B4010
+
+They were caused by this ``iptables-save`` fragement::
+
+  -A input_ext -p tcp -m limit --limit 3/min -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j LOG --log-prefix "SFW2-INext-DROP-DEFLT " --log-tcp-options --log-ip-options
+  -A input_ext -p icmp -m limit --limit 3/min -j LOG --log-prefix "SFW2-INext-DROP-DEFLT " --log-tcp-options --log-ip-options
+  -A input_ext -p udp -m limit --limit 3/min -m conntrack --ctstate NEW -j LOG --log-prefix "SFW2-INext-DROP-DEFLT " --log-tcp-options --log-ip-options
+
+I wanted to relax either the ``3/min`` or the internal network. https://www.google.com/search?q=opensuse+increas+SFW2-INext-DROP-DEFLT+limit didn't get satisfactory results.
+
+Since it's a `DCOM thing <https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers#Well-known_ports>`_ from my scanner Windows machine, I decided to relax by adding a custom rule in ``yast2``::
+
+  SRC=192.168.71.44
+  PROTO=TCP
+  DPT=135
+
+That ends up in this setting in ``/etc/sysconfig/SuSEfirewall2``::
+
+  FW_SERVICES_ACCEPT_EXT="192.168.71.44,tcp,135"
+
+fix piix4 detection
+-------------------
+
+From the logs::
+
+  Jul 07 23:02:47 revue systemd-udevd[507]: maximum number (136) of children reached
+  Jul 07 23:02:47 revue systemd-udevd[507]: maximum number (136) of children reached
+  ...
+  Jul 07 23:02:47 revue systemd-udevd[507]: maximum number (136) of children reached
+  Jul 07 23:02:47 revue systemd-udevd[507]: maximum number (136) of children reached
+  ...
+  Jul 07 23:02:47 revue kernel: piix4_smbus 0000:00:07.3: SMBus Host Controller not enabled!
+
 
 mariadb dependency
 ------------------
